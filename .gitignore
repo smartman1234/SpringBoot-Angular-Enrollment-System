@@ -1,0 +1,75 @@
+######################## Spring boot ###################
+### environment variable ###
+.env
+
+### build file ###
+HELP.md
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+
+######################## Angular webapp ###################
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/webapp/dist
+/webapp/tmp
+/webapp/out-tsc
+# Only exists if Bazel was run
+/webapp/bazel-out
+
+# dependencies
+/webapp/node_modules
+
+# profiling files
+chrome-profiler-events*.json
+
+# IDEs and editors
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# misc
+/webapp/.sass-cache
+/webapp/connect.lock
+/webapp/coverage
+/webapp/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/webapp/typings
+
+# System Files
+.DS_Store
+Thumbs.db
