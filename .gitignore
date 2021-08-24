@@ -1,6 +1,12 @@
 ######################## Spring boot ###################
-### environment variable ###
+### environment variables ###
 .env
+
+### localhost tsl p12 cert ###
+src/main/resources/*.p12
+
+### telosys tool ###
+TelosysTools
 
 ### build file ###
 HELP.md
