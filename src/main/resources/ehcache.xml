@@ -1,0 +1,34 @@
+<config
+        xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xmlns:jsr107='http://www.ehcache.org/v3/jsr107'>
+
+    <service>
+        <jsr107:defaults default-template="default">
+        </jsr107:defaults>
+    </service>
+
+    <!-- Persistent cache directory -->
+<!--    <persistence directory="spring-boot-ehcache/cache"/>-->
+
+    <!-- Default cache template -->
+    <cache-template name="default">
+        <key-type>java.lang.Object</key-type>
+        <value-type>java.lang.Object</value-type>
+        <expiry>
+            <ttl unit="seconds">600</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">1000</heap>
+<!--            <offheap unit="MB">10</offheap>-->
+<!--            <disk persistent="true" unit="MB">20</disk>-->
+        </resources>
+    </cache-template>
+
+    <cache alias="io.spring.enrollmentsystem.entity.User" uses-template="default"/>
+    <cache alias="io.spring.enrollmentsystem.entity.User.authorities" uses-template="default"/>
+    <cache alias="io.spring.enrollmentsystem.entity.Authority" uses-template="default"/>
+    <cache alias="io.spring.enrollmentsystem.entity.Authority.users" uses-template="default"/>
+    <cache alias="default-query-results-region" uses-template="default"/>
+    <cache alias="default-update-timestamps-region" uses-template="default"/>
+</config>

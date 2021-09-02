@@ -1,8 +1,12 @@
 ######################## Spring boot ###################
+### miscellaneous ###
+hotswap-agent.properties
+/spring-boot-ehcache/
+
 ### environment variables ###
 .env
 
-### localhost tsl p12 cert ###
+### localhost ssl p12 cert ###
 src/main/resources/*.p12
 
 ### telosys tool ###
@@ -79,3 +83,4 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+

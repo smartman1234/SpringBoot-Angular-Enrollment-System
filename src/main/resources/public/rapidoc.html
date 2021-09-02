@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Rapidoc</title>
+    <!-- needed for adaptive design -->
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="/js/rapidoc-min.js"></script>
+<!--    <script type="module" src="https://unpkg.com/rapidoc/dist/rapidoc-min.js"></script>-->
+    <!--
+    ReDoc doesn't change outer page styles
+    -->
+    <!--    <style>-->
+    <!--        body {-->
+    <!--            margin: 0;-->
+    <!--            padding: 0;-->
+    <!--        }-->
+    <!--    </style>-->
+</head>
+<body>
+
+<rapi-doc id="the-doc"
+          spec-url="https://localhost:8443/v3/api-docs"
+          goto-path="post-/api/v1/auth/login"
+          render-style="focused"
+          sort-tags="true"
+          use-path-in-nav-bar="true"
+>
+    <div slot="header"> <!-- This is a header slot -->
+        <div id="response-time" style="padding-left: 10px; color: aqua">Response Time:      </div>
+    </div>
+</rapi-doc>
+
+<script src="/js/rapidoc.js"></script>
+</body>
+</html>

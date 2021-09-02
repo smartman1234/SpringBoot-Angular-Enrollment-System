@@ -18,6 +18,7 @@
         <java.version>11</java.version>
         <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+        <jasypt.version>3.0.4</jasypt.version>
     </properties>
 
     <dependencies>
@@ -38,6 +39,11 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
 
         <!-- Security-->
         <dependency>
@@ -45,9 +51,20 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+
+        <!-- Spring-context-indexer to create component index, may increase Spring startup time-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-indexer</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+
+        <!-- Jasypt-->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>${jasypt.version}</version>
         </dependency>
 
 
@@ -67,11 +84,11 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!--    <dependency>-->
-        <!--      <groupId>org.postgresql</groupId>-->
-        <!--      <artifactId>postgresql</artifactId>-->
-        <!--      <scope>runtime</scope>-->
-        <!--    </dependency>-->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
 
 
         <!-- Migration tools-->
@@ -89,8 +106,25 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
-            <version>2.5.2</version>
             <optional>true</optional>
+        </dependency>
+
+
+        <!-- Hibernate 2nd level cache EhCache provider-->
+        <!-- EhCache 2 - discontinued-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.hibernate</groupId>-->
+        <!--            <artifactId>hibernate-ehcache</artifactId>-->
+        <!--        </dependency>-->
+
+        <!-- EhCache 3 - newer and recommended-->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jcache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
         </dependency>
 
 
@@ -135,29 +169,19 @@
         </dependency>
 
 
-
-        <!-- Springfox - Swagger 2 API development-->
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.5.9</version>
-        </dependency>
+        <!-- Springdoc without swagger and supports spring data-->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-data-rest</artifactId>
-            <version>1.5.9</version>
+            <version>1.5.10</version>
         </dependency>
 
 
-        <!-- JSON-P implementation Apache Johnzon, and jackson-datatype-jsr353, used for HTTP PATCH method-->
+        <!-- JSON-P implementation, used for HTTP PATCH method-->
         <dependency>
-            <groupId>org.apache.johnzon</groupId>
-            <artifactId>johnzon-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr353</artifactId>
-            <version>2.13.0-rc1</version>
+            <groupId>com.github.java-json-tools</groupId>
+            <artifactId>json-patch</artifactId>
+            <version>1.13</version>
         </dependency>
 
 
@@ -195,9 +219,15 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>com.github.ulisesbocchio</groupId>
+                <artifactId>jasypt-maven-plugin</artifactId>
+                <version>${jasypt.version}</version>
+            </plugin>
+
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.parent.version}</version>
                 <configuration>
                     <excludes>
                         <exclude>
@@ -246,6 +276,26 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+
+            <!-- Plugin to enable Hibernate bytecode enhancement for lazy loading.
+            Combining with @LazyToOne(LazyToOneOption.NO_PROXY) on the parent side of
+            @OneToOne relationship to enable lazy loading (By default, lazy
+            loading does not work for parent side of @OneToOne) -->
+            <!--            <plugin>-->
+            <!--                <groupId>org.hibernate.orm.tooling</groupId>-->
+            <!--                <artifactId>hibernate-enhance-maven-plugin</artifactId>-->
+            <!--                <version>${hibernate.version}</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <configuration>-->
+            <!--                            <enableLazyInitialization>true</enableLazyInitialization>-->
+            <!--                        </configuration>-->
+            <!--                        <goals>-->
+            <!--                            <goal>enhance</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 
