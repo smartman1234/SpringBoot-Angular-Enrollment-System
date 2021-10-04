@@ -1,7 +1,13 @@
 ######################## Spring boot ###################
 ### miscellaneous ###
-hotswap-agent.properties
 /spring-boot-ehcache/
+src/main/java/io/spring/enrollmentsystem/common/bootstrap
+src/main/resources/hotswap-agent.properties
+src/main/resources/application-prod.properties
+src/main/java/io/spring/enrollmentsystem/Main.java
+src/main/resources/db/changelog/versions
+src/main/resources/*.sql
+*.sql
 
 ### environment variables ###
 .env
@@ -83,4 +89,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
 

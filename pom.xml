@@ -16,9 +16,11 @@
 
     <properties>
         <java.version>11</java.version>
-        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
+        <!--        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>-->
+        <org.mapstruct.version>1.5.0.Beta1</org.mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <jasypt.version>3.0.4</jasypt.version>
+        <querydsl.version>4.4.0</querydsl.version>
     </properties>
 
     <dependencies>
@@ -78,11 +80,11 @@
 
 
         <!-- Database-->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.h2database</groupId>-->
+<!--            <artifactId>h2</artifactId>-->
+<!--            <scope>runtime</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -92,10 +94,10 @@
 
 
         <!-- Migration tools-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.liquibase</groupId>-->
-        <!--            <artifactId>liquibase-core</artifactId>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+        </dependency>
 
 
         <!-- Configuration Processor generates metadata about classes in application
@@ -110,13 +112,6 @@
         </dependency>
 
 
-        <!-- Hibernate 2nd level cache EhCache provider-->
-        <!-- EhCache 2 - discontinued-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.hibernate</groupId>-->
-        <!--            <artifactId>hibernate-ehcache</artifactId>-->
-        <!--        </dependency>-->
-
         <!-- EhCache 3 - newer and recommended-->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -128,12 +123,14 @@
         </dependency>
 
 
-        <!-- Lombok and mapstruct-->
+        <!-- Lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!-- Mapstruct-->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
@@ -193,14 +190,6 @@
         </dependency>
 
 
-        <!-- Dotenv-->
-        <dependency>
-            <groupId>me.paulschwarz</groupId>
-            <artifactId>spring-dotenv</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-
-
         <!-- Test-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -218,11 +207,12 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>com.github.ulisesbocchio</groupId>
-                <artifactId>jasypt-maven-plugin</artifactId>
-                <version>${jasypt.version}</version>
-            </plugin>
+            <!-- jasypt maven plugin to encrypt application.properties from terminal-->
+            <!--            <plugin>-->
+            <!--                <groupId>com.github.ulisesbocchio</groupId>-->
+            <!--                <artifactId>jasypt-maven-plugin</artifactId>-->
+            <!--                <version>${jasypt.version}</version>-->
+            <!--            </plugin>-->
 
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -234,6 +224,10 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                         </exclude>
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-starter-actuator</artifactId>
+                        </exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -241,12 +235,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
 
                     <annotationProcessorPaths>
+                        <!-- needed for generating Hibernate meta model classes-->
+                        <path>
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>hibernate-jpamodelgen</artifactId>
+                            <version>${hibernate.version}</version>
+                        </path>
+
                         <!--  needed for lombok and mapstruct working together-->
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -271,11 +272,12 @@
                     <compilerArgs>
                         <compilerArg>
                             -Amapstruct.defaultComponentModel=spring
-                            <!--                            -Amapstruct.unmappedTargetPolicy=IGNORE-->
                         </compilerArg>
                     </compilerArgs>
+
                 </configuration>
             </plugin>
+
 
             <!-- Plugin to enable Hibernate bytecode enhancement for lazy loading.
             Combining with @LazyToOne(LazyToOneOption.NO_PROXY) on the parent side of

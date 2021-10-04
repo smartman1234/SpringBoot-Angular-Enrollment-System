@@ -17,18 +17,58 @@
     <!--        }-->
     <!--    </style>-->
 </head>
+<style>
+    .btn {
+        width: 90px;
+        height: 32px;
+        padding:2px;
+        font-size:13px;
+        background-color: DodgerBlue;
+        color: #fff;
+        border: none;
+        margin: 0 2px;
+        border-radius: 2px;
+        cursor:pointer;
+        outline:none;
+    }
+    .btn.medium {
+        width: 75px;
+        height: 28px
+    }
+</style>
+
 <body>
+
 
 <rapi-doc id="the-doc"
           spec-url="https://localhost:8443/v3/api-docs"
           goto-path="post-/api/v1/auth/login"
           render-style="focused"
+          sort-endpoints-by="method"
           sort-tags="true"
           use-path-in-nav-bar="true"
+          default-schema-tab="example"
 >
     <div slot="header"> <!-- This is a header slot -->
         <div id="response-time" style="padding-left: 10px; color: aqua">Response Time:      </div>
     </div>
+
+    <div slot="nav-logo">
+        <div style="text-align: center; padding: 0 0 12px 0; color:#47AFE8"> Select a definition </div>
+        <div style="width:100%; display: flex;justify-content: center;">
+            <button class="btn medium" id="btn1">User</button>
+            <button class="btn medium" id="btn2">Admin</button>
+            <button class="btn medium" id="btn3">All</button>
+        </div>
+        <br>
+        <div style="text-align: center; padding: 0 0 12px 0; color:#47AFE8"> Navigation Item Text </div>
+        <div style="width:100%; display: flex;justify-content: center;">
+            <button class="btn medium" id="btn4">Path</button>
+            <button class="btn medium" id="btn5">Summary</button>
+        </div>
+    </div>
+
+
 </rapi-doc>
 
 <script src="/js/rapidoc.js"></script>

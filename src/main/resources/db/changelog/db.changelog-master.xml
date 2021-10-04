@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <!-- initialize database-->
+    <changeSet id="init-schema-data-postgres" author="khoale" dbms="postgresql" context="dev" >
+        <sqlFile encoding="UTF-8"
+                 path="versions/0.0.0/init-dev-postgres.sql"
+                 relativeToChangelogFile="true"
+        />
+        <rollback>
+            <sqlFile encoding="UTF-8"
+                     path="versions/0.0.0/rollback-dev-postgres.sql"
+                     relativeToChangelogFile="true"
+            />
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
