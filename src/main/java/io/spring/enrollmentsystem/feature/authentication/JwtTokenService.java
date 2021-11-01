@@ -6,6 +6,7 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import io.spring.enrollmentsystem.common.configuration.JwtProperties;
 import io.spring.enrollmentsystem.common.service.CookieService;
 import lombok.RequiredArgsConstructor;
@@ -104,7 +105,7 @@ public class JwtTokenService {
         cookieService.addCookie(response,
                                 "REFRESH-TOKEN-TTL",
                                 jwtProperties.getRefreshExpirationTime().toString(),
-                                "",
+                                "/",
                                 jwtProperties.getRefreshExpirationTime().intValue());
     }
 
@@ -113,7 +114,7 @@ public class JwtTokenService {
         cookieService.deleteHttpOnlyCookie(response,
                                            jwtProperties.getRefreshCookieName(),
                                            jwtProperties.getRefreshCookieUrl());
-        cookieService.deleteCookie(response, "REFRESH-TOKEN-TTL", "");
+        cookieService.deleteCookie(response, "REFRESH-TOKEN-TTL", "/");
     }
 
     public String generateAccessToken(UUID userId, String jti, Set<String> authorities) {
@@ -151,7 +152,7 @@ public class JwtTokenService {
 
         try {
             return Optional.ofNullable(parseClaimsJws(token.get()));
-        } catch (SecurityException ex) {
+        } catch (SignatureException ex) {
             log.error("Invalid JWT signature - {}", ex.getMessage());
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token - {}", ex.getMessage());

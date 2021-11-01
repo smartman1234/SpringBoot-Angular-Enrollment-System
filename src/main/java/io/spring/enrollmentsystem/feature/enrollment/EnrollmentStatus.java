@@ -2,7 +2,7 @@ package io.spring.enrollmentsystem.feature.enrollment;
 
 public enum EnrollmentStatus {
     ENROLLED("Enrolled"),
-    ON_WAITLIST("WaitList"),
+    ON_WAIT_LIST("WaitList"),
     IN_CART("Cart");
 
     private final String status;

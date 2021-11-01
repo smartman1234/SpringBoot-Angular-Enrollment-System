@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import javax.validation.groups.Default;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -56,6 +58,17 @@ public class RoomController {
     }
 
     @GetMapping("")
+    @Operation(summary = "Find all instances of room by predicate", tags = "room")
+    @JsonView(BaseView.HighWithId.class)
+    public ResponseEntity<List<RoomDto>> getAllRoomByPredicate(
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(roomService.getAllRoomDtoByPredicate(parameters));
+    }
+
+    @GetMapping("/page")
     @Operation(summary = "Find all instances of room as pages by predicate", tags = "room")
     @JsonView(BaseView.HighWithId.class)
     public ResponseEntity<Page<RoomDto>> getRoomPageableByPredicate(
@@ -65,6 +78,18 @@ public class RoomController {
         return ResponseEntity
                 .ok()
                 .body(roomService.getRoomDtoPageableByPredicate(parameters, pageable));
+    }
+
+    @GetMapping("/slice")
+    @Operation(summary = "Find all instances of room as slices by predicate", tags = "room")
+    @JsonView(BaseView.HighWithId.class)
+    public ResponseEntity<Slice<RoomDto>> getRoomSliceByPredicate(
+            @ParameterObject Pageable pageable,
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(roomService.getRoomDtoSliceByPredicate(parameters, pageable));
     }
 
     @PostMapping("")

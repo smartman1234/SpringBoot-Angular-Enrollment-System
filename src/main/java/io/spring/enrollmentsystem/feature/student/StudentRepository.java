@@ -2,8 +2,6 @@ package io.spring.enrollmentsystem.feature.student;
 
 import io.spring.enrollmentsystem.common.repository.CustomRepository;
 import lombok.NonNull;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
@@ -32,4 +30,8 @@ public interface StudentRepository extends
     @QueryHints(@QueryHint(name = CACHEABLE, value = "true"))
     @Query("select student from Student student join fetch student.listOfEnrollment where student.id=:id")
     Optional<Student> findWithListOfEnrollmentById(@Param("id") UUID id);
+
+//    @QueryHints(@QueryHint(name = CACHEABLE, value = "true"))
+//    @EntityGraph(attributePaths = {"listOfEnrollment"})
+//    Optional<Student> findWithListOfEnrollmentById(UUID id);
 }

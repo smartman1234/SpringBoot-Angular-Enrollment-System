@@ -1,0 +1,11 @@
+<ng-container>
+	<h2 mat-dialog-title>Error Logs</h2>
+	<mat-dialog-content class="mat-typography">
+		<p *ngFor="let message of errorMessages$ | async" class="message">
+			{{message}}
+		</p>
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-button mat-dialog-close>Close</button>
+	</mat-dialog-actions>
+</ng-container>

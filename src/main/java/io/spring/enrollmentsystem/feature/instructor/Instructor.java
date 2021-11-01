@@ -35,7 +35,7 @@ import java.util.Set;
 public class Instructor extends UserProfile {
 
     @OneToMany(mappedBy = "instructor")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<Section> listOfSection = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

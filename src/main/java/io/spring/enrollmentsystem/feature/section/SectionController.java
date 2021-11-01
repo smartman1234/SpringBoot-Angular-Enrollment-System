@@ -11,10 +11,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +36,7 @@ import static io.spring.enrollmentsystem.common.constant.SpecsConstant.KEY_SEPAR
 
 @RestController
 @Tag(name = "section", description = "section API")
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 @Validated
 @RequiredArgsConstructor @Slf4j
 public class SectionController {
@@ -42,7 +45,6 @@ public class SectionController {
     private static final String FILTER_PAGE_URL = "/api/v1/sections/page";
     private static final String FILTER_SLICE_URL = "/api/v1/sections/slice";
     public static final Set<String> FILTER_URLS = new HashSet<>(Set.of(FILTER_URL, FILTER_PAGE_URL, FILTER_SLICE_URL));
-    private final String defaultSortValue = "course" + KEY_SEPARATOR + "courseCode";
 
     private final SectionService sectionService;
 
@@ -73,9 +75,14 @@ public class SectionController {
     @Operation(summary = "Find all instances of section as pages by predicate", tags = "section")
     @JsonView(BaseView.VeryHighWithId.class)
     public ResponseEntity<Page<SectionDto>> getSectionDtoPageableByPredicate(
-            @ParameterObject @PageableDefault(size = 20, sort = defaultSortValue) Pageable pageable,
+            @ParameterObject @PageableDefault(size = 20) Pageable pageable,
             @RequestParam(required = false) MultiValueMap<String, String> parameters) {
-
+        if (pageable.getSort().stream().count() == 0) {
+            pageable = PageRequest.of(pageable.getPageNumber(),
+                                      pageable.getPageSize(),
+                                      Sort.by(Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_CODE,
+                                              Section_.SECTION_NUMBER));
+        }
         validateParameters(parameters);
 
         return ResponseEntity
@@ -87,9 +94,14 @@ public class SectionController {
     @Operation(summary = "Find all instances of section as slices by predicate", tags = "section")
     @JsonView(BaseView.VeryHighWithId.class)
     public ResponseEntity<Slice<SectionDto>> getSectionDtoSliceByPredicate(
-            @ParameterObject @PageableDefault(size = 20, sort = defaultSortValue) Pageable pageable,
+            @ParameterObject @PageableDefault(size = 20) Pageable pageable,
             @RequestParam(required = false) MultiValueMap<String, String> parameters) {
-
+        if (pageable.getSort().stream().count() == 0) {
+            pageable = PageRequest.of(pageable.getPageNumber(),
+                                      pageable.getPageSize(),
+                                      Sort.by(Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_CODE,
+                                              Section_.SECTION_NUMBER));
+        }
         validateParameters(parameters);
 
         return ResponseEntity

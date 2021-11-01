@@ -74,8 +74,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-        // Set Content Security Policy to allow only particular script source(s) and resources
-        http.headers().contentSecurityPolicy("script-src 'self'");
+        // Set Content Security Policy to allow only particular script source(s) and resource(s)
+        // style-src 'unsafe-inline' for Angular to work properly
+        http.headers().contentSecurityPolicy("default-src 'self'; " +
+                                                     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+                                                     "font-src 'self' https://fonts.gstatic.com");
 
         // Enable CORS and enable CSRF token requirement for every request
         http.cors().and()

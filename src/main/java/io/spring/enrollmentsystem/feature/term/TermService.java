@@ -8,10 +8,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -41,11 +44,25 @@ public class TermService {
     }
 
     @Transactional(readOnly = true)
+    public List<TermDto> getAllTermDtoByPredicate(MultiValueMap<String, String> parameters) {
+        List<TermDto> termDtoList = termRepository
+                .findAll(TermDto.class, specificationService.getSpecifications(parameters));
+        termDtoList.sort(Comparator.comparing(TermDto::getDateStart));
+        return termDtoList;
+    }
+
+    @Transactional(readOnly = true)
     public Page<TermDto> getTermDtoPageableByPredicate(MultiValueMap<String, String> parameters,
                                                        Pageable pageable) {
         return termRepository
-                .findAll(Term.class, specificationService.getSpecifications(parameters), pageable)
-                .map(termMapper::toTermDto);
+                .findAll(TermDto.class, specificationService.getSpecifications(parameters), pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<TermDto> getTermDtoSliceByPredicate(MultiValueMap<String, String> parameters,
+                                                     Pageable pageable) {
+        return termRepository
+                .findAllSlice(TermDto.class, specificationService.getSpecifications(parameters), pageable);
     }
 
     @Transactional

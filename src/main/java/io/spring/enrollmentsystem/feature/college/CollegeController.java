@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import javax.validation.groups.Default;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -59,6 +61,18 @@ public class CollegeController {
     }
 
     @GetMapping("")
+    @Operation(summary = "Find all instances of college by predicate", tags = "college")
+    @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
+    @JsonView(BaseView.MediumWithId.class)
+    public ResponseEntity<List<CollegeDto>> getAllCollegeByPredicate(
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(collegeService.getAllCollegeDtoByPredicate(parameters));
+    }
+
+    @GetMapping("/page")
     @Operation(summary = "Find all instances of college as pages by predicate", tags = "college")
     @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
     @JsonView(BaseView.MediumWithId.class)
@@ -69,6 +83,19 @@ public class CollegeController {
         return ResponseEntity
                 .ok()
                 .body(collegeService.getCollegeDtoPageableByPredicate(parameters, pageable));
+    }
+
+    @GetMapping("/slice")
+    @Operation(summary = "Find all instances of college as pages by predicate", tags = "college")
+    @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
+    @JsonView(BaseView.MediumWithId.class)
+    public ResponseEntity<Slice<CollegeDto>> getCollegeSliceByPredicate(
+            @ParameterObject Pageable pageable,
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(collegeService.getCollegeDtoSliceByPredicate(parameters, pageable));
     }
 
     @PostMapping("")

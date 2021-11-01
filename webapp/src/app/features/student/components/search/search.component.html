@@ -1,0 +1,305 @@
+<div class="wrapper">
+	<div class="main">
+		<form id="searchForm" *ngIf="!listVisibility && !pageVisibility && !sliceVisibility"
+			  [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+			<mat-card class="search-form">
+				<mat-card-title>Search for Classes</mat-card-title>
+				<mat-card-subtitle>Enter Search Criteria</mat-card-subtitle>
+				<mat-card-content>
+					<div class="form-field">
+						<mat-label class="button-toggle-label"><strong>Search Mode</strong></mat-label>
+						<mat-button-toggle-group formControlName="searchMode" class="toggle-button-group">
+							<mat-button-toggle class="toggle-button" *ngFor="let mode of searchModes" [value]="mode">
+								{{mode.toUpperCase()}}
+							</mat-button-toggle>
+						</mat-button-toggle-group>
+					</div>
+
+					<div>
+						<mat-form-field class="form-field" appearance="outline">
+							<mat-label>Term</mat-label>
+							<mat-select formControlName="term" required>
+								<mat-option *ngFor="let termName of termNames" [value]="termName">
+									{{termName}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="term.invalid && (term.dirty || term.touched)">
+								<div *ngIf="term.errors?.required">Term is required</div>
+							</mat-error>
+						</mat-form-field>
+					</div>
+
+					<div>
+						<mat-form-field class="form-field" appearance="outline">
+							<mat-label>Subject</mat-label>
+							<mat-select formControlName="subject" required>
+								<mat-option *ngFor="let subjectName of subjectNames" [value]="subjectName[0]">
+									{{subjectName[1]}}
+								</mat-option>
+							</mat-select>
+							<mat-error *ngIf="subject.invalid && (subject.dirty || subject.touched)">
+								<div *ngIf="subject.errors?.required">Subject is required</div>
+							</mat-error>
+						</mat-form-field>
+					</div>
+					<div>
+						<mat-form-field class="form-field" appearance="outline">
+							<mat-label>Course Keyword</mat-label>
+							<input matInput formControlName="courseName">
+							<button *ngIf="courseName.value" matSuffix mat-icon-button
+									(click)="courseName.setValue('')">
+								<mat-icon>close</mat-icon>
+							</button>
+							<mat-hint>
+								Example: Statistics
+							</mat-hint>
+						</mat-form-field>
+					</div>
+
+					<div>
+						<mat-form-field class="form-field" appearance="outline">
+							<mat-label>Course Number</mat-label>
+							<input matInput type="number" formControlName="courseNumber">
+							<button *ngIf="courseNumber.value" matSuffix mat-icon-button
+									(click)="courseNumber.setValue('')">
+								<mat-icon>close</mat-icon>
+							</button>
+						</mat-form-field>
+						<mat-form-field class="form-field-query" appearance="outline">
+							<mat-select formControlName="courseNumberQuery">
+								<mat-option *ngFor="let courseNumberQuery of courseNumberQueries"
+											[value]="courseNumberQuery[0]">
+									{{courseNumberQuery[1]}}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+
+					<div>
+						<mat-checkbox class="form-field" formControlName="sectionStatusOpen">
+							Open classes only
+						</mat-checkbox>
+					</div>
+
+				</mat-card-content>
+			</mat-card>
+
+			<mat-card class="additional-search-form">
+				<mat-card-title>Additional Search Criteria</mat-card-title>
+				<mat-card-subtitle>Enter Search Criteria</mat-card-subtitle>
+				<mat-card-content>
+					<div>
+						<mat-form-field [class]="timeStartSelect.value === 'between' ? 'time-field' : 'form-field'"
+										appearance="outline">
+							<mat-label>Meeting Start Time</mat-label>
+							<input matInput type="time" formControlName="meetingTimeStart">
+							<button *ngIf="meetingTimeStart.value" matSuffix mat-icon-button
+									(click)="meetingTimeStart.setValue('')">
+								<mat-icon>close</mat-icon>
+							</button>
+						</mat-form-field>
+						<mat-form-field [class]="timeStartSelect.value === 'between' ? 'time-field' : 'time-field2'"
+										appearance="outline">
+							<mat-label>Meeting Start Time 2</mat-label>
+							<input matInput type="time" formControlName="meetingTimeStart2">
+							<button *ngIf="meetingTimeStart2.value" matSuffix mat-icon-button
+									(click)="meetingTimeStart2.setValue('')">
+								<mat-icon>close</mat-icon>
+							</button>
+						</mat-form-field>
+
+						<mat-form-field class="form-field-query" appearance="outline">
+							<mat-select #timeStartSelect formControlName="meetingTimeStartQuery">
+								<mat-option *ngFor="let meetingTimeQuery of meetingTimeQueries"
+											[value]="meetingTimeQuery[0]">
+									{{meetingTimeQuery[1]}}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+
+					<div>
+						<mat-form-field [class]="timeEndSelect.value === 'between' ? 'time-field' : 'form-field'"
+										appearance="outline">
+							<mat-label>Meeting End Time</mat-label>
+							<input matInput type="time" formControlName="meetingTimeEnd">
+							<button *ngIf="meetingTimeEnd.value" matSuffix mat-icon-button
+									(click)="meetingTimeEnd.setValue('')">
+								<mat-icon>close</mat-icon>
+							</button>
+						</mat-form-field>
+						<mat-form-field [class]="timeEndSelect.value === 'between' ? 'time-field' : 'time-field2'"
+										appearance="outline">
+							<mat-label>Meeting End Time 2</mat-label>
+							<input matInput type="time" formControlName="meetingTimeEnd2">
+							<button *ngIf="meetingTimeEnd2.value" matSuffix mat-icon-button
+									(click)="meetingTimeEnd2.setValue('')">
+								<mat-icon>close</mat-icon>
+							</button>
+						</mat-form-field>
+
+						<mat-form-field class="form-field-query" appearance="outline">
+							<mat-select #timeEndSelect formControlName="meetingTimeEndQuery">
+								<mat-option *ngFor="let meetingTimeQuery of meetingTimeQueries"
+											[value]="meetingTimeQuery[0]">
+									{{meetingTimeQuery[1]}}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+
+					<div>
+					<span class="form-field" formGroupName="meetingDays">
+						<mat-label><strong>Days of Weeks</strong></mat-label>
+						<mat-checkbox class="form-check-box" formControlName="monday">Monday</mat-checkbox>
+						<mat-checkbox class="form-check-box" formControlName="tuesday">Tuesday</mat-checkbox>
+						<mat-checkbox class="form-check-box" formControlName="wednesday">Wednesday</mat-checkbox>
+						<mat-checkbox class="form-check-box" formControlName="thursday">Thursday</mat-checkbox>
+						<mat-checkbox class="form-check-box" formControlName="friday">Friday</mat-checkbox>
+						<mat-checkbox class="form-check-box" formControlName="saturday">Saturday</mat-checkbox>
+						<mat-checkbox class="form-check-box" formControlName="sunday">Sunday</mat-checkbox>
+					</span>
+
+						<mat-form-field class="form-field-query" appearance="outline">
+							<mat-select formControlName="meetingDayQuery">
+								<mat-option *ngFor="let meetingDayQuery of meetingDayQueries"
+											[value]="meetingDayQuery">
+									{{meetingDayQuery}}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+
+					<div>
+						<mat-form-field class="form-field" appearance="outline">
+							<mat-label>Instructor Last Name</mat-label>
+							<input matInput formControlName="instructorLastName">
+							<button *ngIf="instructorLastName.value" matSuffix mat-icon-button
+									(click)="instructorLastName.setValue('')">
+								<mat-icon>close</mat-icon>
+							</button>
+						</mat-form-field>
+						<mat-form-field class="form-field-query" appearance="outline">
+							<mat-select formControlName="instructorLastNameQuery">
+								<mat-option *ngFor="let instructorLastNameQuery of instructorLastNameQueries"
+											[value]="instructorLastNameQuery[0]">
+									{{instructorLastNameQuery[1]}}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+
+					<div>
+						<mat-form-field class="form-field" appearance="outline">
+							<mat-label>Number of Units</mat-label>
+							<input matInput type="number" formControlName="unit">
+							<button *ngIf="unit.value" matSuffix mat-icon-button
+									(click)="unit.setValue('')">
+								<mat-icon>close</mat-icon>
+							</button>
+						</mat-form-field>
+						<mat-form-field class="form-field-query" appearance="outline">
+							<mat-select formControlName="unitQuery">
+								<mat-option *ngFor="let unitQuery of unitQueries"
+											[value]="unitQuery[0]">
+									{{unitQuery[1]}}
+								</mat-option>
+							</mat-select>
+						</mat-form-field>
+					</div>
+
+				</mat-card-content>
+			</mat-card>
+		</form>
+
+		<mat-card class="result-card" *ngIf="listVisibility">
+			<mat-card-title>Search Result</mat-card-title>
+			<mat-card-subtitle>List of Class Section(s)</mat-card-subtitle>
+			<mat-card-content>
+				<app-search-result-list
+					[pageSection$]="pageSection$"
+					[registeredSectionIds$]="registeredSectionIds$"
+					(courseInfoEvent)="openCourseInfo($event)"
+					(addToCartEvent)="addToCart($event)">
+				</app-search-result-list>
+			</mat-card-content>
+		</mat-card>
+
+		<mat-card class="result-card" *ngIf="pageVisibility">
+			<mat-card-title>Search Result</mat-card-title>
+			<mat-card-subtitle>Class Section(s) Pagination</mat-card-subtitle>
+			<mat-card-content>
+				<app-search-result-page
+					[pageSize]="size.value"
+					[pageSection$]="pageSection$"
+					[registeredSectionIds$]="registeredSectionIds$"
+					(courseInfoEvent)="openCourseInfo($event)"
+					(addToCartEvent)="addToCart($event)"
+					(pageChangeEvent)="onPageEvent($event)">
+				</app-search-result-page>
+			</mat-card-content>
+		</mat-card>
+
+		<mat-card class="result-card" *ngIf="sliceVisibility">
+			<mat-card-title>Search Result</mat-card-title>
+			<mat-card-subtitle>Class Section(s) Infinite Scroll</mat-card-subtitle>
+			<mat-card-content>
+				<app-search-result-slice
+					[pageSection$]="pageSection$"
+					[registeredSectionIds$]="registeredSectionIds$"
+					(courseInfoEvent)="openCourseInfo($event)"
+					(addToCartEvent)="addToCart($event)"
+					(scrollEvent)="onScrollBottom($event)">
+				</app-search-result-slice>
+			</mat-card-content>
+		</mat-card>
+	</div>
+
+	<mat-card class="navigation">
+		<div class="sticky">
+			<mat-card-title>Navigation</mat-card-title>
+			<mat-card-subtitle>navigate</mat-card-subtitle>
+			<mat-card-actions>
+				<button mat-raised-button type="button"
+						class="navigation-button" (click)="toggleResult()">
+					<mat-icon *ngIf="listVisibility || pageVisibility || sliceVisibility">arrow_back</mat-icon>
+					{{listVisibility || pageVisibility || sliceVisibility ? "Back to Search" : "Go to Last Result"}}
+					<mat-icon *ngIf="!listVisibility && !pageVisibility && !sliceVisibility">arrow_forward</mat-icon>
+				</button>
+			</mat-card-actions>
+			<ng-container *ngIf="!listVisibility && !pageVisibility && !sliceVisibility">
+				<mat-card-actions>
+					<button mat-raised-button color="warn" class="clear-button"
+							type="button" (click)="clearForm()">
+						New Search
+					</button>
+				</mat-card-actions>
+				<mat-card-actions>
+					<button mat-raised-button color="primary" class="submit-button"
+							type="submit" form="searchForm" [disabled]="!searchForm.valid">
+						Search
+					</button>
+				</mat-card-actions>
+			</ng-container>
+		</div>
+	</mat-card>
+</div>
+
+<div class="bottom-navigation sticky">
+	<ng-container *ngIf="!listVisibility && !pageVisibility && !sliceVisibility">
+		<button mat-raised-button color="primary" type="submit"
+				class="submit-button" form="searchForm" [disabled]="!searchForm.valid">
+			Search
+		</button>
+		<button mat-raised-button color="warn" class="clear-button"
+				type="button" (click)="clearForm()">
+			New Search
+		</button>
+	</ng-container>
+	<button mat-raised-button type="button" (click)="toggleResult()"
+			[class]="listVisibility || pageVisibility || sliceVisibility ? 'navigation-button100' : 'navigation-button'">
+		<mat-icon *ngIf="listVisibility || pageVisibility || sliceVisibility">arrow_back</mat-icon>
+		{{listVisibility || pageVisibility || sliceVisibility ? "Back to Search" : "Go to Last Result"}}
+		<mat-icon *ngIf="!listVisibility && !pageVisibility && !sliceVisibility">arrow_forward</mat-icon>
+	</button>
+</div>

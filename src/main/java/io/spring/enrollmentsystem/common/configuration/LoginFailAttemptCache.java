@@ -5,17 +5,18 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import lombok.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class LoginFailAttemptCache {
-    private final int MAX_ATTEMPT = 5;
+    private final int MAX_ATTEMPT;
     private final LoadingCache<String, Integer> attemptsCache;
 
-    public LoginFailAttemptCache() {
-        attemptsCache = CacheBuilder
+    public LoginFailAttemptCache(SystemProperties systemProperties) {
+        this.MAX_ATTEMPT = systemProperties.getLoginAttemptLimit();
+
+        this.attemptsCache = CacheBuilder
                 .newBuilder()
                 .expireAfterWrite(1, TimeUnit.DAYS)
                 .build(new CacheLoader<>() {

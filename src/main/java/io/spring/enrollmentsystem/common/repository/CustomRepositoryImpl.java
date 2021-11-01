@@ -1,7 +1,7 @@
 package io.spring.enrollmentsystem.common.repository;
 
+import com.google.common.collect.Sets;
 import io.spring.enrollmentsystem.common.annotation.QuerySelectHint;
-import io.spring.enrollmentsystem.feature.section.Section_;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -29,25 +29,23 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.ListJoin;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
-import javax.persistence.metamodel.ListAttribute;
 import javax.validation.ValidationException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.KEY_SEPARATOR;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.KEY_SEPARATOR_REGEX;
 import static org.springframework.data.jpa.repository.query.QueryUtils.toOrders;
+import static org.springframework.data.jpa.repository.EntityGraph.EntityGraphType.FETCH;
 
 /**
  * Custom repository implementation that extends SimpleJpaRepository class
@@ -63,10 +61,12 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
 
     private static final Logger log = LoggerFactory.getLogger(CustomRepository.class);
 
+    private final JpaEntityInformation<T, ID> entityInformation;
     private final EntityManager entityManager;
 
-    public CustomRepositoryImpl(JpaEntityInformation<T, ?> entityInformation, EntityManager entityManager) {
+    public CustomRepositoryImpl(JpaEntityInformation<T, ID> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
+        this.entityInformation = entityInformation;
         this.entityManager = entityManager;
     }
 
@@ -74,7 +74,8 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
     @Transactional(readOnly = true)
     public <S> Optional<S> findById(Class<S> type, ID id) {
         TypedQuery<S> typedQuery = getQuery(type,
-                                            (root, query, builder) -> builder.equal(root.get("id"), id),
+                                            (root, query, builder) ->
+                                                    builder.equal(root.get(this.entityInformation.getIdAttribute()), id),
                                             getDomainClass(),
                                             Sort.unsorted());
 
@@ -89,6 +90,11 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
     @Override
     @Transactional(readOnly = true)
     public <S> Page<S> findAll(Class<S> type, @Nullable Specification<T> spec, Pageable pageable) {
+        if (isFetchGraphHint()) {
+            // using two queries approach when applying join fetch with pageable
+            return findAllWithJoinFetch(type, spec, pageable);
+        }
+
         TypedQuery<S> query = getQuery(type, spec, pageable);
         return isUnpaged(pageable) ? new PageImpl<>(query.getResultList())
                 : readExtraPage(query, getDomainClass(), pageable, spec);
@@ -97,6 +103,11 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
     @Override
     @Transactional(readOnly = true)
     public <S> Slice<S> findAllSlice(Class<S> type, @Nullable Specification<T> spec, Pageable pageable) {
+        if (isFetchGraphHint()) {
+            // using two queries approach when applying join fetch with pageable
+            return findAllSliceWithJoinFetch(type, spec, pageable);
+        }
+
         TypedQuery<S> query = getQuery(type, spec, pageable);
         return isUnpaged(pageable) ? new SliceImpl<>(query.getResultList())
                 : readSlice(query, pageable);
@@ -110,7 +121,6 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
 
     protected <S> Slice<S> readSlice(TypedQuery<S> query, Pageable pageable) {
         int pageSize = 0;
-
 
         if (pageable.isPaged()) {
             pageSize = pageable.getPageSize();
@@ -153,9 +163,10 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
         CriteriaQuery<S> query = builder.createQuery(type);
         Root<U> root = applySpecificationToCriteria(spec, domainClass, query);
 
-        if (type.equals(root.getJavaType())) {
+        if (type.equals(this.entityInformation.getJavaType())) {
             query.select((Root<S>) root);
         } else {
+            // apply java reflection to select DTO class's properties in query
             List<String> fieldNameList = getClassFieldNames(type);
 
             if (!qualifiedClass(type, fieldNameList.size())) {
@@ -261,7 +272,6 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
             return root;
         }
 
-
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         Predicate predicate = spec.toPredicate(root, query, builder);
 
@@ -304,7 +314,69 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
         getQueryHints().withFetchGraphs(entityManager).forEach(query::setHint);
     }
 
+    private boolean isFetchGraphHint() {
+        AtomicBoolean isFetchGraphHint = new AtomicBoolean(false);
+        getQueryHints().withFetchGraphs(entityManager).forEach((hintKey, hintValue) -> {
+            if (hintKey.equals(FETCH.getKey())) {
+                isFetchGraphHint.set(true);
+            }
+        });
+        return isFetchGraphHint.get();
+    }
+
     private static boolean isUnpaged(Pageable pageable) {
         return pageable.isUnpaged();
+    }
+
+
+    private <S> Page<S> findAllWithJoinFetch(Class<S> type, @Nullable Specification<T> spec, Pageable pageable) {
+        TypedQuery<ID> typedQuery = getQueryIds(spec, pageable);
+
+        Page<ID> entityIdsPage = isUnpaged(pageable) ? new PageImpl<>(typedQuery.getResultList())
+                : readExtraPage(typedQuery, getDomainClass(), pageable, spec);
+
+        List<S> resultList = findAllByIdsIn(type, entityIdsPage.getContent());
+
+        return isUnpaged(pageable)
+                ? new PageImpl<>(resultList)
+                : PageableExecutionUtils.getPage(resultList, pageable, entityIdsPage::getTotalElements);
+    }
+
+    private <S> Slice<S> findAllSliceWithJoinFetch(Class<S> type, @Nullable Specification<T> spec, Pageable pageable) {
+        TypedQuery<ID> typedQuery = getQueryIds(spec, pageable);
+
+        Slice<ID> idsPage = isUnpaged(pageable) ? new SliceImpl<>(typedQuery.getResultList())
+                : readSlice(typedQuery,  pageable);
+
+        List<S> resultList = findAllByIdsIn(type, idsPage.getContent());
+
+        return new SliceImpl<>(resultList, pageable, idsPage.hasNext());
+    }
+
+    @SuppressWarnings("unchecked cast")
+    private TypedQuery<ID> getQueryIds(@Nullable Specification<T> spec, Pageable pageable) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<ID> query = builder.createQuery(this.entityInformation.getIdType());
+        Root<T> root = applySpecificationToCriteria(spec, getDomainClass(), query);
+
+        query.select((Path<ID>) root.get(this.entityInformation.getIdAttribute()));
+
+        Sort sort = pageable.isPaged() ? pageable.getSort() : Sort.unsorted();
+        if (sort.isSorted()) {
+            query.orderBy(toOrders(sort, root, builder));
+        }
+
+        return this.entityManager.createQuery(query);
+    }
+
+    private <S> List<S> findAllByIdsIn(Class<S> type, List<ID> listOfId) {
+        if (listOfId.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            Specification<T> specIdsIn = (specRoot, specQuery, specBuilder) -> specRoot
+                    .get(this.entityInformation.getIdAttribute())
+                    .in(Sets.newHashSet(listOfId));
+            return findAll(type, specIdsIn);
+        }
     }
 }

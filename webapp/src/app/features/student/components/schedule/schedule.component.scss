@@ -1,0 +1,19 @@
+.action-button {
+	width: 100%;
+}
+
+ul {
+	//margin: auto;
+	padding-inline-start: 0;
+	list-style: none;
+	display: table;
+}
+
+li {
+	display: table-row;
+}
+
+b {
+	display: table-cell;
+	padding-right: 2rem;
+}

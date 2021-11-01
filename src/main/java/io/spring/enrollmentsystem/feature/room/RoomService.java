@@ -8,10 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -48,10 +50,23 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
+    public List<RoomDto> getAllRoomDtoByPredicate(MultiValueMap<String, String> parameters) {
+        return roomRepository
+                .findAll(RoomDto.class, specificationService.getSpecifications(parameters));
+    }
+
+    @Transactional(readOnly = true)
     public Page<RoomDto> getRoomDtoPageableByPredicate(MultiValueMap<String, String> parameters,
                                                        Pageable pageable) {
         return roomRepository
                 .findAll(RoomDto.class, specificationService.getSpecifications(parameters), pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<RoomDto> getRoomDtoSliceByPredicate(MultiValueMap<String, String> parameters,
+                                                     Pageable pageable) {
+        return roomRepository
+                .findAllSlice(RoomDto.class, specificationService.getSpecifications(parameters), pageable);
     }
 
     @Transactional

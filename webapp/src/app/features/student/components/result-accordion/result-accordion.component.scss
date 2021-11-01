@@ -1,0 +1,39 @@
+table {
+	table-layout: fixed;
+	border-collapse: collapse;
+	width: 100%;
+	text-align: center;
+
+	.mat-cell {
+		padding: 0.4rem 0.4rem 0.4rem 0.4rem;
+	}
+
+	tr:nth-child(even) {
+		background-color: #f2f2f2;
+	}
+
+	tr:nth-child(odd) {
+		background-color: #ddd;
+	}
+
+	th {
+		text-align: center;
+		font-weight: bold;
+		font-size: 1.3rem;
+		background-color: #808080;
+		color: white;
+	}
+}
+
+.accordion {
+	background-color: #f4fdfa;
+}
+
+.course-info-title {
+	margin-right: 0.5rem;
+}
+
+.mat-expansion-panel-header-description {
+	display: flex;
+	justify-content: flex-end;
+}

@@ -4,6 +4,7 @@ import io.spring.enrollmentsystem.common.repository.CustomRepository;
 import lombok.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.QueryHints;
@@ -11,6 +12,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.QueryHint;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,7 +27,17 @@ public interface UserRepository extends
 
     @QueryHints(@QueryHint(name = CACHEABLE, value = "true"))
     @EntityGraph(attributePaths = {"authorities"})
+    <S> List<S> findAll(Class<S> type, @Nullable Specification<User> spec);
+
+    // using join fetch with pagination (firstResult/maxResults) leads to
+    // warning HHH000104: firstResult/maxResults specified with collection fetch; applying in memory!
+    @QueryHints(@QueryHint(name = CACHEABLE, value = "true"))
+    @EntityGraph(attributePaths = {"authorities"})
     <S> Page<S> findAll(Class<S> type, @Nullable Specification<User> spec, Pageable pageable);
+
+    @QueryHints(@QueryHint(name = CACHEABLE, value = "true"))
+    @EntityGraph(attributePaths = {"authorities"})
+    <S> Slice<S> findAllSlice(Class<S> type, @Nullable Specification<User> spec, Pageable pageable);
 
     @EntityGraph(attributePaths = {"authorities"})
     Optional<User> findByUsername(String username);

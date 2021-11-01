@@ -8,11 +8,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
 import javax.validation.ValidationException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -42,11 +44,23 @@ public class SubjectService {
     }
 
     @Transactional(readOnly = true)
+    public List<SubjectDto> getAllSubjectDtoByPredicate(MultiValueMap<String, String> parameters) {
+        return subjectRepository
+                .findAll(SubjectDto.class, specificationService.getSpecifications(parameters));
+    }
+
+    @Transactional(readOnly = true)
     public Page<SubjectDto> getSubjectDtoPageableByPredicate(MultiValueMap<String, String> parameters,
                                                              Pageable pageable) {
         return subjectRepository
-                .findAll(Subject.class, specificationService.getSpecifications(parameters), pageable)
-                .map(subjectMapper::toSubjectDto);
+                .findAll(SubjectDto.class, specificationService.getSpecifications(parameters), pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<SubjectDto> getSubjectDtoSliceByPredicate(MultiValueMap<String, String> parameters,
+                                                           Pageable pageable) {
+        return subjectRepository
+                .findAllSlice(SubjectDto.class, specificationService.getSpecifications(parameters), pageable);
     }
 
     @Transactional
@@ -98,7 +112,7 @@ public class SubjectService {
     private void validateSubjectDto(SubjectDto subjectDto, Subject subject) {
         if (subject == null ||
                 (subjectDto.getSubjectAcronym() != null &&
-                !subjectDto.getSubjectAcronym().equals(subject.getSubjectAcronym()))) {
+                        !subjectDto.getSubjectAcronym().equals(subject.getSubjectAcronym()))) {
             if (subjectRepository.existsBySubjectAcronym(subjectDto.getSubjectAcronym())) {
                 throw new ValidationException("Subject acronym already exists!");
             }

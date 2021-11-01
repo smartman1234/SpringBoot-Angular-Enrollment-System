@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -75,6 +76,18 @@ public class AdminEnrollmentController {
         return ResponseEntity
                 .ok()
                 .body(enrollmentService.getEnrollmentDtoPageableByPredicate(parameters, pageable));
+    }
+
+    @GetMapping("/enrollments/slice")
+    @Operation(summary = "Find all instances of enrollment as slices by predicate", tags = "enrollment-admin")
+    @JsonView(AdminView.AdminVeryHighWithId.class)
+    public ResponseEntity<Slice<EnrollmentDto>> getEnrollmentSliceByPredicate(
+            @ParameterObject Pageable pageable,
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(enrollmentService.getEnrollmentDtoSliceByPredicate(parameters, pageable));
     }
 
     @PostMapping("/students/{studentId}/sections")

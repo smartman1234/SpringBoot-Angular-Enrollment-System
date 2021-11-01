@@ -33,7 +33,7 @@ import java.util.UUID;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_profile_type")
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Getter @Setter @NoArgsConstructor
 @ToString(exclude = {"user"})
 public class UserProfile extends DateAudit implements Serializable {

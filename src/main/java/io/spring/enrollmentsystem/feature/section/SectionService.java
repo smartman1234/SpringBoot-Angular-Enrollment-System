@@ -6,6 +6,7 @@ import io.spring.enrollmentsystem.common.service.PatchService;
 import io.spring.enrollmentsystem.common.service.SpecificationService;
 import io.spring.enrollmentsystem.feature.course.Course;
 import io.spring.enrollmentsystem.feature.course.CourseService;
+import io.spring.enrollmentsystem.feature.course.Course_;
 import io.spring.enrollmentsystem.feature.instructor.Instructor;
 import io.spring.enrollmentsystem.feature.instructor.InstructorService;
 import io.spring.enrollmentsystem.feature.room.Room;
@@ -16,8 +17,10 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
@@ -28,6 +31,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import static io.spring.enrollmentsystem.common.constant.SpecsConstant.KEY_SEPARATOR;
 
 /**
  * (Section) service
@@ -67,6 +72,15 @@ public class SectionService {
     }
 
     @Transactional(readOnly = true)
+    public List<SectionDto> getAllSectionDtoByPredicate(MultiValueMap<String, String> parameters) {
+        List<SectionDto> sectionDtoList = sectionRepository
+                .findAll(SectionDto.class, specificationService.getSpecifications(parameters));
+        sectionDtoList
+                .sort(Comparator.comparing(SectionDto::getCourseCode).thenComparing(SectionDto::getSectionNumber));
+        return sectionDtoList;
+    }
+
+    @Transactional(readOnly = true)
     public Page<SectionDto> getSectionDtoPageableByPredicate(MultiValueMap<String, String> parameters,
                                                              Pageable pageable) {
         return sectionRepository
@@ -78,15 +92,6 @@ public class SectionService {
                                                            Pageable pageable) {
         return sectionRepository
                 .findAllSlice(SectionDto.class, specificationService.getSpecifications(parameters), pageable);
-    }
-
-    @Transactional(readOnly = true)
-    public List<SectionDto> getAllSectionDtoByPredicate(MultiValueMap<String, String> parameters) {
-        List<SectionDto> sectionDtoList = sectionRepository
-                .findAll(SectionDto.class, specificationService.getSpecifications(parameters));
-        sectionDtoList
-                .sort(Comparator.comparing(SectionDto::getCourseCode));
-        return sectionDtoList;
     }
 
     @Transactional

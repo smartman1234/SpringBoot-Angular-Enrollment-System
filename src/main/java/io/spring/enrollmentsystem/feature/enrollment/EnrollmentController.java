@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -51,11 +52,23 @@ public class EnrollmentController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping("/students/{studentId}/sections/sectionIds")
+    @Operation(summary = "Find all section ids registered by student id", tags = "enrollment")
+    @PreAuthorize("hasRole(@Role.ADMIN) or @webSecurity.hasStudentId(#studentId)")
+    public ResponseEntity<List<EnrollmentIdDto>> getSectionIds(
+            @PathVariable UUID studentId,
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        parameters.add(Enrollment_.STUDENT + KEY_SEPARATOR + Student_.ID, studentId.toString());
+        List<EnrollmentIdDto> responses = enrollmentService.getAllEnrollmentIdDtoByPredicate(parameters);
+        return ResponseEntity.ok().body(responses);
+    }
+
     @GetMapping("/students/{studentId}/sections")
     @Operation(summary = "Find all instances of enrollment by student id", tags = "enrollment")
     @PreAuthorize("hasRole(@Role.ADMIN) or @webSecurity.hasStudentId(#studentId)")
     @JsonView(BaseView.VeryHighWithId.class)
-    public ResponseEntity<List<EnrollmentDto>> getAllEnrollment(
+    public ResponseEntity<List<EnrollmentDto>> getAllEnrollmentByPredicate(
             @PathVariable UUID studentId,
             @RequestParam(required = false) MultiValueMap<String, String> parameters) {
 
@@ -68,13 +81,27 @@ public class EnrollmentController {
     @Operation(summary = "Find all instances of enrollment as pages by student id", tags = "enrollment")
     @PreAuthorize("hasRole(@Role.ADMIN) or @webSecurity.hasStudentId(#studentId)")
     @JsonView(BaseView.VeryHighWithId.class)
-    public ResponseEntity<Page<EnrollmentDto>> getEnrollmentPageable(
+    public ResponseEntity<Page<EnrollmentDto>> getEnrollmentPageableByPredicate(
             @PathVariable UUID studentId,
             @ParameterObject Pageable pageable,
             @RequestParam(required = false) MultiValueMap<String, String> parameters) {
 
         parameters.add(Enrollment_.STUDENT + KEY_SEPARATOR + Student_.ID, studentId.toString());
         Page<EnrollmentDto> response = enrollmentService.getEnrollmentDtoPageableByPredicate(parameters, pageable);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/students/{studentId}/sections/slice")
+    @Operation(summary = "Find all instances of enrollment as slices by student id", tags = "enrollment")
+    @PreAuthorize("hasRole(@Role.ADMIN) or @webSecurity.hasStudentId(#studentId)")
+    @JsonView(BaseView.VeryHighWithId.class)
+    public ResponseEntity<Slice<EnrollmentDto>> getEnrollmentSliceByPredicate(
+            @PathVariable UUID studentId,
+            @ParameterObject Pageable pageable,
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        parameters.add(Enrollment_.STUDENT + KEY_SEPARATOR + Student_.ID, studentId.toString());
+        Slice<EnrollmentDto> response = enrollmentService.getEnrollmentDtoSliceByPredicate(parameters, pageable);
         return ResponseEntity.ok().body(response);
     }
 

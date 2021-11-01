@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,10 +26,10 @@ import java.util.UUID;
 
 import static io.spring.enrollmentsystem.feature.enrollment.EnrollmentStatus.ENROLLED;
 import static io.spring.enrollmentsystem.feature.enrollment.EnrollmentStatus.IN_CART;
-import static io.spring.enrollmentsystem.feature.enrollment.EnrollmentStatus.ON_WAITLIST;
+import static io.spring.enrollmentsystem.feature.enrollment.EnrollmentStatus.ON_WAIT_LIST;
 import static io.spring.enrollmentsystem.feature.section.SectionStatus.CLOSED;
 import static io.spring.enrollmentsystem.feature.section.SectionStatus.OPEN;
-import static io.spring.enrollmentsystem.feature.section.SectionStatus.WAITLIST;
+import static io.spring.enrollmentsystem.feature.section.SectionStatus.WAIT_LIST;
 
 /**
  * (Enrollment) service
@@ -61,6 +62,12 @@ public class EnrollmentService {
     }
 
     @Transactional(readOnly = true)
+    public List<EnrollmentIdDto> getAllEnrollmentIdDtoByPredicate(MultiValueMap<String, String> parameters) {
+        return enrollmentRepository
+                .findAll(EnrollmentIdDto.class, specificationService.getSpecifications(parameters));
+    }
+
+    @Transactional(readOnly = true)
     public List<EnrollmentDto> getAllEnrollmentDtoByPredicate(MultiValueMap<String, String> parameters) {
         return enrollmentRepository
                 .findAll(EnrollmentDto.class, specificationService.getSpecifications(parameters));
@@ -71,6 +78,13 @@ public class EnrollmentService {
                                                                    Pageable pageable) {
         return enrollmentRepository
                 .findAll(EnrollmentDto.class, specificationService.getSpecifications(parameters), pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<EnrollmentDto> getEnrollmentDtoSliceByPredicate(MultiValueMap<String, String> parameters,
+                                                                 Pageable pageable) {
+        return enrollmentRepository
+                .findAllSlice(EnrollmentDto.class, specificationService.getSpecifications(parameters), pageable);
     }
 
     @Transactional
@@ -93,7 +107,7 @@ public class EnrollmentService {
         Enrollment currentEnrollment = getEnrollmentByCompositeId(studentId, sectionId);
 
         // if current enrollment is on waiting list status, check for access code
-        if (currentEnrollment.getEnrollmentStatus().equals(ON_WAITLIST.status())) {
+        if (currentEnrollment.getEnrollmentStatus().equals(ON_WAIT_LIST.status())) {
             if (currentEnrollment.getAccessCode() == null
                     || !currentEnrollment.getAccessCode().equals(accessCode)) {
                 throw new ValidationException("Access code is not valid!");
@@ -193,7 +207,7 @@ public class EnrollmentService {
         if (scheduleCheck && (currentSection.getEnrolledNumber() < currentSection.getClassCapacity())) {
             // change section to wait list status if the enrolling student is the last one of class capacity
             if (currentSection.getEnrolledNumber() + 1 >= currentSection.getClassCapacity()) {
-                currentSection.setSectionStatus(WAITLIST.status());
+                currentSection.setSectionStatus(WAIT_LIST.status());
             }
             currentSection.setEnrolledNumber(currentSection.getEnrolledNumber() + 1);
             currentEnrollment.setEnrollmentStatus(ENROLLED.status());
@@ -203,7 +217,7 @@ public class EnrollmentService {
                 currentSection.setSectionStatus(CLOSED.status());
             }
             currentSection.setWaitingNumber(currentSection.getWaitingNumber() + 1);
-            currentEnrollment.setEnrollmentStatus(ON_WAITLIST.status());
+            currentEnrollment.setEnrollmentStatus(ON_WAIT_LIST.status());
             currentEnrollment.setAccessCode(UUID.randomUUID().toString());
         } else {
             // throw exception if both class capacity and wait list are full
@@ -219,8 +233,8 @@ public class EnrollmentService {
             Section currentSection = sectionService.getSectionById(sectionId);
             if (currentSection.getSectionStatus().equals(CLOSED.status())) {
                 currentSection.setWaitingNumber(currentSection.getWaitingNumber() - 1);
-                currentSection.setSectionStatus(WAITLIST.status());
-            } else if (currentSection.getSectionStatus().equals(WAITLIST.status())) {
+                currentSection.setSectionStatus(WAIT_LIST.status());
+            } else if (currentSection.getSectionStatus().equals(WAIT_LIST.status())) {
                 if (currentSection.getWaitingNumber() > 0) {
                     currentSection.setWaitingNumber(currentSection.getWaitingNumber() - 1);
                 } else {

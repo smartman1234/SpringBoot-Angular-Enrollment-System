@@ -1,0 +1,61 @@
+<app-enrollment-list #enrollmentList
+					 [title]="title"
+					 [subtitle]="subtitle"
+					 [enrollmentStatuses]="enrollmentStatuses">
+	<ng-template #legend>
+		<div>
+			<mat-icon color="primary">check</mat-icon>
+			: Enrolled
+		</div>
+		<div>
+			<mat-icon color="accent">change_history</mat-icon>
+			: WaitList
+		</div>
+	</ng-template>
+
+	<ng-template let-enrollment #sectionStatus>
+		<ng-container  *ngIf="asEnrollment(enrollment) as enrollment"
+			[ngSwitch]="enrollment.enrollmentStatus">
+			<mat-icon *ngSwitchCase="'Enrolled'" color="primary">check</mat-icon>
+			<mat-icon *ngSwitchCase="'WaitList'" color="accent">change_history</mat-icon>
+		</ng-container>
+	</ng-template>
+
+	<ng-template let-enrollment #smallSectionStatus>
+		<li  *ngIf="asEnrollment(enrollment) as enrollment"
+			 [ngSwitch]="enrollment.enrollmentStatus">
+			<b>Status</b>:
+			<mat-icon *ngSwitchCase="'Enrolled'" color="primary">check</mat-icon>
+			<mat-icon *ngSwitchCase="'WaitList'" color="accent">change_history</mat-icon>
+		</li>
+	</ng-template>
+
+	<ng-template let-enrollment #actionButton>
+		<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+			<button *ngIf="enrollment.enrollmentStatus === 'WaitList'"
+					mat-raised-button color="primary"
+					(click)="enrollmentList.enrollFromWaitList(enrollment.sectionId)">
+				Enroll
+			</button>
+			<button mat-raised-button color="warn"
+					(click)="enrollmentList.dropEnrollment(enrollment)">
+				Drop
+			</button>
+		</ng-container>
+	</ng-template>
+
+	<ng-template let-enrollment #smallActionButton>
+		<mat-card-footer *ngIf="asEnrollment(enrollment) as enrollment">
+			<button *ngIf="enrollment.enrollmentStatus === 'WaitList'"
+					mat-raised-button class="action-button" color="primary"
+					(click)="enrollmentList.enrollFromWaitList(enrollment.sectionId)">
+				Enroll
+			</button>
+			<button mat-raised-button class="action-button" color="warn"
+					(click)="enrollmentList.dropEnrollment(enrollment)">
+				Drop
+			</button>
+		</mat-card-footer>
+	</ng-template>
+</app-enrollment-list>
+

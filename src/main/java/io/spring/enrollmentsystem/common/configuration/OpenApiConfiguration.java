@@ -35,7 +35,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.GroupedOpenApi;
 import org.springdoc.core.customizers.OpenApiCustomiser;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -61,36 +63,51 @@ public class OpenApiConfiguration {
 
     private final JwtProperties jwtProperties;
     private final SystemProperties systemProperties;
+    private final ApplicationContext applicationContext;
 
     @Bean
     public GroupedOpenApi userApi() {
         String[] paths = {"/api/v1/**"};
         String[] pathsToExclude = {"/api/v1/admin/**"};
-        return GroupedOpenApi.builder()
+
+        GroupedOpenApi.Builder userApiBuilder = GroupedOpenApi.builder()
                 .group("enrollmentsystem-user")
                 .pathsToMatch(paths)
                 .pathsToExclude(pathsToExclude)
                 .addOpenApiCustomiser(requestBodySchemaForPatchDocument())
                 .addOpenApiCustomiser(loginRequestExample())
                 .addOpenApiCustomiser(sectionFilterParameters())
-                .addOpenApiCustomiser(parametersKebabCaseNamingStrategy())
-                .addOpenApiCustomiser(rapidocCollapseTagByDefault())
-                .build();
+                .addOpenApiCustomiser(rapidocCollapseTagByDefault());
+
+        if (applicationContext.containsBeanDefinition("parametersKebabCaseNamingStrategy")) {
+            userApiBuilder
+                    .addOpenApiCustomiser((OpenApiCustomiser) applicationContext
+                            .getBean( "parametersKebabCaseNamingStrategy" ));
+        }
+
+        return userApiBuilder.build();
     }
 
     @Bean
     public GroupedOpenApi adminApi() {
         String[] paths = {"/api/v1/admin/**", "/api/v1/auth/**"};
         String[] packagesToScan = {};
-        return GroupedOpenApi.builder()
+        GroupedOpenApi.Builder adminApiBuilder = GroupedOpenApi.builder()
                 .group("enrollmentsystem-admin")
                 .pathsToMatch(paths)
                 .packagesToScan(packagesToScan)
                 .addOpenApiCustomiser(requestBodySchemaForPatchDocument())
                 .addOpenApiCustomiser(loginRequestExample())
-                .addOpenApiCustomiser(parametersKebabCaseNamingStrategy())
-                .addOpenApiCustomiser(rapidocCollapseTagByDefault())
-                .build();
+                .addOpenApiCustomiser(dynamicFilterParameters())
+                .addOpenApiCustomiser(rapidocCollapseTagByDefault());
+
+        if (applicationContext.containsBeanDefinition("parametersKebabCaseNamingStrategy")) {
+            adminApiBuilder
+                    .addOpenApiCustomiser((OpenApiCustomiser) applicationContext
+                            .getBean( "parametersKebabCaseNamingStrategy" ));
+        }
+
+        return adminApiBuilder.build();
     }
 
     // Springdoc bean configuration
@@ -344,15 +361,20 @@ public class OpenApiConfiguration {
             if (value.getGet() != null) {
                 switch (key) {
                     case adminUrl + "subjects":
+                    case adminUrl + "subjects" + "/page":
+                    case adminUrl + "subjects" + "/slice":
                         value.getGet().addParametersItem(subject);
                         value.getGet().addParametersItem(object);
                         break;
                     case adminUrl + "instructors":
+                    case adminUrl + "instructors" + "/page":
+                    case adminUrl + "instructors" + "/slice":
                         value.getGet().addParametersItem(instructor);
                         value.getGet().addParametersItem(object);
                         break;
                     case adminUrl + "sections":
                     case adminUrl + "sections" + "/page":
+                    case adminUrl + "sections" + "/slice":
                         value.getGet().addParametersItem(section1);
                         value.getGet().addParametersItem(section2);
                         value.getGet().addParametersItem(section3);
@@ -362,23 +384,32 @@ public class OpenApiConfiguration {
                         value.getGet().addParametersItem(object);
                         break;
                     case adminUrl + "students":
+                    case adminUrl + "students" + "/page":
+                    case adminUrl + "students" + "/slice":
                         value.getGet().addParametersItem(student);
                         value.getGet().addParametersItem(object);
                         break;
                     case adminUrl + "courses":
+                    case adminUrl + "courses" + "/page":
+                    case adminUrl + "courses" + "/slice":
                         value.getGet().addParametersItem(course);
                         value.getGet().addParametersItem(object);
                         break;
                     case adminUrl + "departments":
+                    case adminUrl + "departments" + "/page":
+                    case adminUrl + "departments" + "/slice":
                         value.getGet().addParametersItem(department);
                         value.getGet().addParametersItem(object);
                         break;
                     case adminUrl + "rooms":
+                    case adminUrl + "rooms" + "/page":
+                    case adminUrl + "rooms" + "/slice":
                         value.getGet().addParametersItem(room);
                         value.getGet().addParametersItem(object);
                         break;
                     case adminUrl + "enrollments":
                     case adminUrl + "enrollments" + "/page":
+                    case adminUrl + "enrollments" + "/slice":
                         value.getGet().addParametersItem(enrollment1);
                         value.getGet().addParametersItem(enrollment2);
                         value.getGet().addParametersItem(enrollment3);
@@ -388,6 +419,7 @@ public class OpenApiConfiguration {
                         break;
                     case "/api/v1/students/{studentId}/sections":
                     case "/api/v1/students/{studentId}/sections/page":
+                    case "/api/v1/students/{studentId}/sections/slice":
                         value.getGet().addParametersItem(enrollment3);
                         value.getGet().addParametersItem(object);
                         break;
@@ -397,19 +429,31 @@ public class OpenApiConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "system.naming-strategy", havingValue = "KEBAB_CASE")
+    @ConditionalOnProperty(name = "spring.jackson.property-naming-strategy", havingValue = "KEBAB_CASE")
     public OpenApiCustomiser parametersKebabCaseNamingStrategy() {
         final String adminUrl = "/api/v1/admin/";
         Set<String> filter_urls = new HashSet<>(SectionController.FILTER_URLS);
         filter_urls.add(adminUrl + "sections");
         filter_urls.add(adminUrl + "sections/page");
+        filter_urls.add(adminUrl + "sections/slice");
         filter_urls.add(adminUrl + "enrollments");
         filter_urls.add(adminUrl + "enrollments/page");
+        filter_urls.add(adminUrl + "enrollments/slice");
         filter_urls.add(adminUrl + "departments");
+        filter_urls.add(adminUrl + "departments/page");
+        filter_urls.add(adminUrl + "departments/slice");
         filter_urls.add(adminUrl + "rooms");
+        filter_urls.add(adminUrl + "rooms/page");
+        filter_urls.add(adminUrl + "rooms/slice");
         filter_urls.add(adminUrl + "instructors");
+        filter_urls.add(adminUrl + "instructors/page");
+        filter_urls.add(adminUrl + "instructors/slice");
         filter_urls.add(adminUrl + "subjects");
+        filter_urls.add(adminUrl + "subjects/page");
+        filter_urls.add(adminUrl + "subjects/slice");
         filter_urls.add(adminUrl + "courses");
+        filter_urls.add(adminUrl + "courses/page");
+        filter_urls.add(adminUrl + "courses/slice");
 
         return openApi -> openApi.getPaths().entrySet().stream()
                 .filter(entry -> filter_urls.contains(entry.getKey()))

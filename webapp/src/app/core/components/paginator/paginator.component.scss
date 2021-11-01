@@ -1,0 +1,12 @@
+.paginator {
+	display: flex;
+	flex-flow: row;
+	margin-bottom: 3rem;
+	@media only screen and (max-width: 599.98px) {
+		flex-flow: column wrap;
+	}
+}
+
+.form-field {
+	width: 18rem;
+}

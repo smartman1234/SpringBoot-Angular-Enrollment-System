@@ -31,9 +31,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name="enrollment")
 @Cacheable
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Getter @Setter @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false, onlyExplicitlyIncluded = true)
+//@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @ToString(exclude = {"student", "section"})
 public class Enrollment extends DateAudit {
 
@@ -42,13 +42,13 @@ public class Enrollment extends DateAudit {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @MapsId("studentId")
-    @EqualsAndHashCode.Include
+//    @EqualsAndHashCode.Include
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @MapsId("sectionId")
-    @EqualsAndHashCode.Include
+//    @EqualsAndHashCode.Include
     @JoinColumn(name = "section_id", nullable = false)
     private Section section;
 

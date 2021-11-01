@@ -10,6 +10,8 @@ public final class SpecsConstant {
     public static final String NOT_EQUAL_IGNORE_CASE = "neqIc";
     public static final String LIKE = "like";
     public static final String LIKE_IGNORE_CASE = "likeIc";
+    public static final String NOT_LIKE = "notLike";
+    public static final String NOT_LIKE_IGNORE_CASE = "notLikeIc";
     public static final String STARTS_WITH = "sw";
     public static final String STARTS_WITH_IGNORE_CASE = "swIc";
     public static final String ENDS_WITH = "ew";
@@ -22,11 +24,13 @@ public final class SpecsConstant {
     public static final String LESS_THAN = "lt";
     public static final String GREATER_THAN_OR_EQUAL = "gte";
     public static final String LESS_THAN_OR_EQUAL = "lte";
+    public static final String BETWEEN = "between";
     public static final Set<String> OPERATORS = Set.of(EQUALS, EQUALS_IGNORE_CASE, NOT_EQUAL, NOT_EQUAL_IGNORE_CASE,
-                                                       LIKE, LIKE_IGNORE_CASE, STARTS_WITH, STARTS_WITH_IGNORE_CASE,
+                                                       LIKE, LIKE_IGNORE_CASE, NOT_LIKE, NOT_LIKE_IGNORE_CASE,
+                                                       STARTS_WITH, STARTS_WITH_IGNORE_CASE,
                                                        ENDS_WITH, ENDS_WITH_IGNORE_CASE, IN, IN_IGNORE_CASE,
                                                        NOT_IN, NOT_IN_IGNORE_CASE, GREATER_THAN, LESS_THAN,
-                                                       GREATER_THAN_OR_EQUAL, LESS_THAN_OR_EQUAL);
+                                                       GREATER_THAN_OR_EQUAL, LESS_THAN_OR_EQUAL, BETWEEN);
     public static final String SPECIAL_FILTER_KEY = "specialFilter";
     public static final String IN_SEPARATOR = ",";
     public static final String KEY_SEPARATOR = ".";

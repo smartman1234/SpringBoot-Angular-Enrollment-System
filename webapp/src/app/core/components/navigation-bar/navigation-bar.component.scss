@@ -1,0 +1,57 @@
+.fill-remaining-spacer {
+	flex: auto;
+}
+
+.dashboard-container {
+	margin: auto;
+	max-width: 156rem;
+}
+
+.mat-sidenav {
+	padding: 1.6rem;
+	margin: 1.6rem 0.8rem 1.6rem 0.8rem;
+	width: 24rem;
+	background: #472482;
+	color: white;
+	text-align: center;
+	border-radius: 1rem;
+}
+
+.content {
+	height: calc(100vh - 9.8rem);
+	border-radius: 1rem;
+	margin: 1.6rem 1.6rem 1.6rem 1.6rem;
+	@media only screen and (max-width: 599.98px) {
+		height: calc(100vh - 9.8rem);
+		margin: 1.6rem 0 2.4rem 0;
+	}
+	overflow-y: auto;
+}
+
+.github {
+	img {
+		width: 3rem;
+		height: 3rem;
+		border-radius: 50%;
+		background-color: white;
+		margin-right: 1rem;
+	}
+
+	@media only screen and (max-width: 959.98px) {
+		display: none;
+	}
+}
+
+.scroll-top-button {
+	position: absolute;
+	bottom: 2rem;
+	right: 10%;
+	background-color: rgba(198, 198, 198, 0.4);
+	z-index: 10;
+
+	@media only screen and (max-width: 839.98px) {
+		transform: scale(0.7);
+		bottom: 8rem;
+		right: 1.1rem;
+	}
+}

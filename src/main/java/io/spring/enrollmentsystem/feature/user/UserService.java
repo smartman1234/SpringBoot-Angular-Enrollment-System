@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,8 +18,10 @@ import org.springframework.util.MultiValueMap;
 
 import javax.validation.ValidationException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static io.spring.enrollmentsystem.common.constant.Role.RoleName.STUDENT;
 
@@ -45,7 +48,21 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Page<UserDto> getUserDtoPageable(MultiValueMap<String, String> parameters, Pageable pageable) {
+    public List<UserDto> getAllUserDtoByPredicate(MultiValueMap<String, String> parameters) {
+        return userRepository
+                .findAll(User.class, specificationService.getSpecifications(parameters))
+                .stream().map(userMapper::toUserDto).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<UserDto> getUserDtoPageableByPredicate(MultiValueMap<String, String> parameters, Pageable pageable) {
+        return userRepository
+                .findAll(User.class, specificationService.getSpecifications(parameters), pageable)
+                .map(userMapper::toUserDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<UserDto> getUserDtoSliceByPredicate(MultiValueMap<String, String> parameters, Pageable pageable) {
         return userRepository
                 .findAll(User.class, specificationService.getSpecifications(parameters), pageable)
                 .map(userMapper::toUserDto);

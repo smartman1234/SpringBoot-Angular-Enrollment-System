@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -34,6 +35,14 @@ public class GlobalExceptionHandler {
                                               HttpServletResponse response,
                                               AuthenticationException ex) throws Exception {
         handleExceptionInternal(request, response, HttpStatus.UNAUTHORIZED, ex);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public void handleBadCredentialsException(HttpServletRequest request,
+                                              HttpServletResponse response,
+                                              BadCredentialsException ex) throws Exception {
+        String message = "Incorrect username or password!";
+        handleExceptionInternal(request, response, HttpStatus.UNAUTHORIZED, message, ex);
     }
 
     @ExceptionHandler(InvalidAccessTokenException.class)

@@ -25,6 +25,7 @@ import java.util.UUID;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.AND_GROUP_REGEX;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.AND_REGEX;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.AND_SEPARATOR;
+import static io.spring.enrollmentsystem.common.constant.SpecsConstant.BETWEEN;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.ENDS_WITH;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.ENDS_WITH_IGNORE_CASE;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.EQUALS;
@@ -43,6 +44,8 @@ import static io.spring.enrollmentsystem.common.constant.SpecsConstant.NOT_EQUAL
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.NOT_EQUAL_IGNORE_CASE;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.NOT_IN;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.NOT_IN_IGNORE_CASE;
+import static io.spring.enrollmentsystem.common.constant.SpecsConstant.NOT_LIKE;
+import static io.spring.enrollmentsystem.common.constant.SpecsConstant.NOT_LIKE_IGNORE_CASE;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.OPERATORS;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.OR_GROUP_REGEX;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.OR_REGEX;
@@ -76,8 +79,12 @@ public class SpecificationServiceImpl implements SpecificationService {
                 String[] keyOperatorTokens = entry.getKey().split("[\\[\\]]", 3);
                 String operator = EQUALS;
                 String key = keyOperatorTokens[0];
-                if (keyOperatorTokens.length > 1 && OPERATORS.contains(keyOperatorTokens[1])) {
-                    operator = keyOperatorTokens[1];
+                if (keyOperatorTokens.length > 1) {
+                    if (OPERATORS.contains(keyOperatorTokens[1])) {
+                        operator = keyOperatorTokens[1];
+                    } else {
+                        continue;
+                    }
                 }
 
                 Expression<?> expression = findExpression(root, key, JoinType.INNER);
@@ -135,8 +142,12 @@ public class SpecificationServiceImpl implements SpecificationService {
                     String operator = EQUALS;
                     String key = toLowerCamel(keyOperatorTokens[0]);
                     String value = subParameter[1];
-                    if (keyOperatorTokens.length > 1 && OPERATORS.contains(keyOperatorTokens[1])) {
-                        operator = keyOperatorTokens[1];
+                    if (keyOperatorTokens.length > 1) {
+                        if (OPERATORS.contains(keyOperatorTokens[1])) {
+                            operator = keyOperatorTokens[1];
+                        } else {
+                            continue;
+                        }
                     }
 
                     Expression<?> expression = findExpression(root, key, JoinType.INNER);
@@ -203,6 +214,11 @@ public class SpecificationServiceImpl implements SpecificationService {
             case LIKE_IGNORE_CASE:
                 return builder.like(builder.lower(expression.as(String.class)),
                                     "%" + value.toLowerCase() + "%");
+            case NOT_LIKE:
+                return builder.notLike(expression.as(String.class), "%" + value + "%");
+            case NOT_LIKE_IGNORE_CASE:
+                return builder.notLike(builder.lower(expression.as(String.class)),
+                                       "%" + value.toLowerCase() + "%");
             case STARTS_WITH:
                 return builder.like(expression.as(String.class), value + "%");
             case STARTS_WITH_IGNORE_CASE:
@@ -224,48 +240,72 @@ public class SpecificationServiceImpl implements SpecificationService {
                 return builder.not(builder.lower(expression.as(String.class))
                                            .in(castToLowerCaseList(value.split(IN_SEPARATOR_REGEX))));
             case GREATER_THAN:
-                if (Number.class.isAssignableFrom(type)) {
-                    return builder.gt((Expression<Number>) expression,
-                                      (Number) parseToType(type, value));
-                } else if (LocalTime.class.isAssignableFrom(type)) {
-                    return builder.greaterThan(expression.as(LocalTime.class),
-                                               (LocalTime) parseToType(type, value));
-                } else if (LocalDate.class.isAssignableFrom(type)) {
-                    return builder.greaterThan(expression.as(LocalDate.class),
-                                               (LocalDate) parseToType(type, value));
+//                if (Number.class.isAssignableFrom(type)) {
+//                    return builder.gt((Expression<Number>) expression,
+//                                      (Number) parseToType(type, value));
+//                } else if (LocalTime.class.isAssignableFrom(type)) {
+//                    return builder.greaterThan(expression.as(LocalTime.class),
+//                                               (LocalTime) parseToType(type, value));
+//                } else if (LocalDate.class.isAssignableFrom(type)) {
+//                    return builder.greaterThan(expression.as(LocalDate.class),
+//                                               (LocalDate) parseToType(type, value));
+//                }
+                if (Comparable.class.isAssignableFrom(type)) {
+                    return builder.greaterThan((Expression<Comparable>) expression,
+                                               (Comparable) parseToType(type, value));
                 }
             case LESS_THAN:
-                if (Number.class.isAssignableFrom(type)) {
-                    return builder.lt((Expression<Number>) expression,
-                                      (Number) parseToType(type, value));
-                } else if (LocalTime.class.isAssignableFrom(type)) {
-                    return builder.lessThan(expression.as(LocalTime.class),
-                                            (LocalTime) parseToType(type, value));
-                } else if (LocalDate.class.isAssignableFrom(type)) {
-                    return builder.lessThan(expression.as(LocalDate.class),
-                                            (LocalDate) parseToType(type, value));
+//                if (Number.class.isAssignableFrom(type)) {
+//                    return builder.lt((Expression<Number>) expression,
+//                                      (Number) parseToType(type, value));
+//                } else if (LocalTime.class.isAssignableFrom(type)) {
+//                    return builder.lessThan(expression.as(LocalTime.class),
+//                                            (LocalTime) parseToType(type, value));
+//                } else if (LocalDate.class.isAssignableFrom(type)) {
+//                    return builder.lessThan(expression.as(LocalDate.class),
+//                                            (LocalDate) parseToType(type, value));
+//                }
+                if (Comparable.class.isAssignableFrom(type)) {
+                    return builder.lessThan((Expression<Comparable>) expression,
+                                            (Comparable) parseToType(type, value));
                 }
             case GREATER_THAN_OR_EQUAL:
-                if (Number.class.isAssignableFrom(type)) {
-                    return builder.ge((Expression<Number>) expression,
-                                      (Number) parseToType(type, value));
-                } else if (LocalTime.class.isAssignableFrom(type)) {
-                    return builder.greaterThanOrEqualTo(expression.as(LocalTime.class),
-                                                        (LocalTime) parseToType(type, value));
-                } else if (LocalDate.class.isAssignableFrom(type)) {
-                    return builder.greaterThanOrEqualTo(expression.as(LocalDate.class),
-                                                        (LocalDate) parseToType(type, value));
+//                if (Number.class.isAssignableFrom(type)) {
+//                    return builder.ge((Expression<Number>) expression,
+//                                      (Number) parseToType(type, value));
+//                } else if (LocalTime.class.isAssignableFrom(type)) {
+//                    return builder.greaterThanOrEqualTo(expression.as(LocalTime.class),
+//                                                        (LocalTime) parseToType(type, value));
+//                } else if (LocalDate.class.isAssignableFrom(type)) {
+//                    return builder.greaterThanOrEqualTo(expression.as(LocalDate.class),
+//                                                        (LocalDate) parseToType(type, value));
+//                }
+                if (Comparable.class.isAssignableFrom(type)) {
+                    return builder.greaterThanOrEqualTo((Expression<Comparable>) expression,
+                                                        (Comparable) parseToType(type, value));
                 }
             case LESS_THAN_OR_EQUAL:
-                if (Number.class.isAssignableFrom(type)) {
-                    return builder.le((Expression<Number>) expression,
-                                      (Number) parseToType(type, value));
-                } else if (LocalTime.class.isAssignableFrom(type)) {
-                    return builder.lessThanOrEqualTo(expression.as(LocalTime.class),
-                                                     (LocalTime) parseToType(type, value));
-                } else if (LocalDate.class.isAssignableFrom(type)) {
-                    return builder.lessThanOrEqualTo(expression.as(LocalDate.class),
-                                                     (LocalDate) parseToType(type, value));
+//                if (Number.class.isAssignableFrom(type)) {
+//                    return builder.le((Expression<Number>) expression,
+//                                      (Number) parseToType(type, value));
+//                } else if (LocalTime.class.isAssignableFrom(type)) {
+//                    return builder.lessThanOrEqualTo(expression.as(LocalTime.class),
+//                                                     (LocalTime) parseToType(type, value));
+//                } else if (LocalDate.class.isAssignableFrom(type)) {
+//                    return builder.lessThanOrEqualTo(expression.as(LocalDate.class),
+//                                                     (LocalDate) parseToType(type, value));
+//                }
+                if (Comparable.class.isAssignableFrom(type)) {
+                    return builder.lessThanOrEqualTo((Expression<Comparable>) expression,
+                                                     (Comparable) parseToType(type, value));
+                }
+            case BETWEEN:
+                List<Object> betweenPair = parseToType(type, value.split(IN_SEPARATOR_REGEX, 2));
+                if (betweenPair.size() < 2 || betweenPair.get(0) == null || betweenPair.get(1) == null) {
+                    return null;
+                } else if (Comparable.class.isAssignableFrom(type)) {
+                    return builder.between((Expression<Comparable>) expression,
+                                           (Comparable) betweenPair.get(0), (Comparable) betweenPair.get(1));
                 }
             default:
                 return null;

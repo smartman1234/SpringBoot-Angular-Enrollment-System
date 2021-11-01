@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +27,15 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
+    @GetMapping("/csrf")
+    @Operation(summary = "Noop endpoint for getting CSRF token", tags = "authentication")
+    public ResponseEntity<Void> getCsrfToken() {
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/login")
     @Operation(summary = "Login a user by username and password", tags = "authentication")
-    @JsonView(BaseView.Medium.class)
+    @JsonView(BaseView.MediumWithId.class)
     public ResponseEntity<UserDto> login(@JsonView(UserView.LoginRequest.class)
                                          @RequestBody @Valid UserDto loginRequest,
                                          HttpServletResponse response) {

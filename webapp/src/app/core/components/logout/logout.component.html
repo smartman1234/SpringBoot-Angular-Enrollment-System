@@ -1,0 +1,15 @@
+<a mat-button class="logout-button big-button" (click)="onLogout()">
+	<mat-icon>power_settings_new</mat-icon>
+	Logout
+</a>
+
+<a mat-menu-item class="small-button" (click)="onLogout()">
+	Logout
+	<mat-icon>logout</mat-icon>
+</a>
+
+<ng-container *ngIf="true | isLoading | async">
+	<app-loading></app-loading>
+</ng-container>
+
+

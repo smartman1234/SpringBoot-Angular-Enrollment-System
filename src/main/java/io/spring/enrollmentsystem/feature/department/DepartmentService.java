@@ -8,11 +8,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
 import javax.validation.ValidationException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -42,11 +44,23 @@ public class DepartmentService {
     }
 
     @Transactional(readOnly = true)
+    public List<DepartmentDto> getAllDepartmentDtoByPredicate(MultiValueMap<String, String> parameters) {
+        return departmentRepository
+                .findAll(DepartmentDto.class, specificationService.getSpecifications(parameters));
+    }
+
+    @Transactional(readOnly = true)
     public Page<DepartmentDto> getDepartmentDtoPageableByPredicate(MultiValueMap<String, String> parameters,
                                                                    Pageable pageable) {
         return departmentRepository
-                .findAll(Department.class, specificationService.getSpecifications(parameters), pageable)
-                .map(departmentMapper::toDepartmentDto);
+                .findAll(DepartmentDto.class, specificationService.getSpecifications(parameters), pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<DepartmentDto> getDepartmentDtoSliceByPredicate(MultiValueMap<String, String> parameters,
+                                                                 Pageable pageable) {
+        return departmentRepository
+                .findAllSlice(DepartmentDto.class, specificationService.getSpecifications(parameters), pageable);
     }
 
     @Transactional

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @Service @RequestMapping("/api/v1/admin/authorities")
@@ -47,6 +49,17 @@ public class AuthorityController {
     }
 
     @GetMapping("")
+    @Operation(summary = "Find all instances of authority by predicate", tags = "authority")
+    @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
+    public ResponseEntity<List<AuthorityDto>> getAllAuthorityByPredicate(
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(authorityService.getAllAuthorityDtoByPredicate(parameters));
+    }
+
+    @GetMapping("/page")
     @Operation(summary = "Find all instances of authority as pages by predicate", tags = "authority")
     @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
     public ResponseEntity<Page<AuthorityDto>> getAuthorityPageableByPredicate(
@@ -56,6 +69,18 @@ public class AuthorityController {
         return ResponseEntity
                 .ok()
                 .body(authorityService.getAuthorityDtoPageableByPredicate(parameters, pageable));
+    }
+
+    @GetMapping("/slice")
+    @Operation(summary = "Find all instances of authority as slices by predicate", tags = "authority")
+    @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
+    public ResponseEntity<Slice<AuthorityDto>> getAuthoritySliceByPredicate(
+            @ParameterObject Pageable pageable,
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(authorityService.getAuthorityDtoSliceByPredicate(parameters, pageable));
     }
 
     @PostMapping("")

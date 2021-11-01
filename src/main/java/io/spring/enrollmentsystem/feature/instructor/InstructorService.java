@@ -4,15 +4,16 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.spring.enrollmentsystem.common.exception.ResourceNotFoundException;
 import io.spring.enrollmentsystem.common.service.PatchService;
 import io.spring.enrollmentsystem.common.service.SpecificationService;
-import io.spring.enrollmentsystem.feature.authority.Authority;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -49,10 +50,23 @@ public class InstructorService {
     }
 
     @Transactional(readOnly = true)
+    public List<InstructorDto> getAllInstructorDtoByPredicate(MultiValueMap<String, String> parameters) {
+        return instructorRepository
+                .findAll(InstructorDto.class, specificationService.getSpecifications(parameters));
+    }
+
+    @Transactional(readOnly = true)
     public Page<InstructorDto> getInstructorDtoPageableByPredicate(MultiValueMap<String, String> parameters,
                                                                    Pageable pageable) {
         return instructorRepository
                 .findAll(InstructorDto.class, specificationService.getSpecifications(parameters), pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<InstructorDto> getInstructorDtoSliceByPredicate(MultiValueMap<String, String> parameters,
+                                                                 Pageable pageable) {
+        return instructorRepository
+                .findAllSlice(InstructorDto.class, specificationService.getSpecifications(parameters), pageable);
     }
 
     @Transactional

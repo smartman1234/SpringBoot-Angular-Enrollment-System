@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import javax.validation.groups.Default;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -59,6 +61,18 @@ public class BuildingController {
     }
 
     @GetMapping("")
+    @Operation(summary = "Find all instances of building by predicate", tags = "building")
+    @JsonView(BaseView.MediumWithId.class)
+    @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
+    public ResponseEntity<List<BuildingDto>> getAllBuildingByPredicate(
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(buildingService.getAllBuildingDtoByPredicate(parameters));
+    }
+
+    @GetMapping("/page")
     @Operation(summary = "Find all instances of building as pages by predicate", tags = "building")
     @JsonView(BaseView.MediumWithId.class)
     @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
@@ -69,6 +83,19 @@ public class BuildingController {
         return ResponseEntity
                 .ok()
                 .body(buildingService.getBuildingDtoPageableByPredicate(parameters, pageable));
+    }
+
+    @GetMapping("/slice")
+    @Operation(summary = "Find all instances of building as slices by predicate", tags = "building")
+    @JsonView(BaseView.MediumWithId.class)
+    @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
+    public ResponseEntity<Slice<BuildingDto>> getBuildingSliceByPredicate(
+            @ParameterObject Pageable pageable,
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(buildingService.getBuildingDtoSliceByPredicate(parameters, pageable));
     }
 
     @PostMapping("")

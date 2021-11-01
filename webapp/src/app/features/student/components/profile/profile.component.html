@@ -1,0 +1,24 @@
+<div class="wrapper">
+	<div class="main">
+		<mat-card class="content-card" >
+			<mat-card-title>Profile</mat-card-title>
+			<mat-card-subtitle>Student Information</mat-card-subtitle>
+			<mat-card-content class="profile-content" *ngIf="student$ | async as student">
+				<ul>
+					<li>
+						<b>Email</b>: {{student.email}}
+					</li>
+					<li>
+						<b>First name</b>: {{student.firstName}}
+					</li>
+					<li>
+						<b>Last name</b>: {{student.lastName}}
+					</li>
+					<li>
+						<b>Maximum Unit per Semester</b>: {{student.maxUnit}}
+					</li>
+				</ul>
+			</mat-card-content>
+		</mat-card>
+	</div>
+</div>

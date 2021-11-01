@@ -22,4 +22,5 @@ public class SystemProperties {
     private Boolean cookieSecure;
     private String cookieSameSite;
     private String namingStrategy;
+    private Integer loginAttemptLimit;
 }

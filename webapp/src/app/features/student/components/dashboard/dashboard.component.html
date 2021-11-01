@@ -1,0 +1,85 @@
+<app-navigation-bar [title]="title"
+					*appVar="{cartNumber: cartNumber$ | async, scheduleNumber: scheduleNumber$ | async} as data">
+	<ng-template #toolbarList>
+		<button mat-button class="mini-badge-toolbar"
+				[routerLink]="['search']"
+				routerLinkActive="active">
+			<mat-icon>
+				search
+			</mat-icon>
+		</button>
+
+		<button mat-button class="mini-badge-toolbar"
+				[routerLink]="['shopping-cart']"
+				routerLinkActive="active">
+			<mat-icon *ngIf="data.cartNumber > 0"
+					  matBadge="{{data.cartNumber}}" matBadgeColor="accent">
+				shopping_cart
+			</mat-icon>
+			<mat-icon *ngIf="data.cartNumber === 0">
+				shopping_cart
+			</mat-icon>
+		</button>
+
+		<button mat-button class="mini-badge-toolbar"
+				[routerLink]="['schedule']"
+				routerLinkActive="active">
+			<mat-icon *ngIf="data.scheduleNumber > 0"
+					  matBadge="{{data.scheduleNumber}}" matBadgeColor="accent">
+				event_node
+			</mat-icon>
+			<mat-icon *ngIf="data.scheduleNumber === 0">
+				event_node
+			</mat-icon>
+		</button>
+	</ng-template>
+
+	<ng-template #sidenavList>
+		<img class="avatar mat-elevation-z8"
+			 src="/assets/images/avatar.jpg"
+			 alt="avatar"/>
+
+		<h4 class="name">
+			<app-greeting></app-greeting>
+		</h4>
+		<p class="designation">Student</p>
+
+		<button mat-button class="menu-button" (click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['profile']"
+				routerLinkActive="active">
+			<mat-icon>person</mat-icon>
+			<span>Profile</span>
+		</button>
+		<button mat-button class="menu-button" (click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['search']"
+				routerLinkActive="active">
+			<mat-icon>search</mat-icon>
+			<span>Search Classes</span>
+		</button>
+		<button mat-button class="menu-button" (click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['shopping-cart']"
+				routerLinkActive="active">
+			<mat-icon>shopping_cart</mat-icon>
+			<span>Shopping Cart</span>
+			<button mat-mini-fab color="accent" class="mini-badge" *ngIf="data.cartNumber > 0">
+				{{data.cartNumber}}
+			</button>
+		</button>
+		<button mat-button class="menu-button" (click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['schedule']"
+				routerLinkActive="active">
+			<mat-icon>event_node</mat-icon>
+			<span>Schedule</span>
+			<button mat-mini-fab color="accent" class="mini-badge" *ngIf="data.scheduleNumber > 0">
+				{{data.scheduleNumber}}
+			</button>
+		</button>
+		<mat-divider></mat-divider>
+	</ng-template>
+
+	<ng-template #sidenavContent>
+		<router-outlet></router-outlet>
+	</ng-template>
+</app-navigation-bar>
+
+

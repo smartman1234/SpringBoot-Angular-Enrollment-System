@@ -1,6 +1,7 @@
 package io.spring.enrollmentsystem.feature.user;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import io.spring.enrollmentsystem.common.annotation.QuerySelectHint;
 import io.spring.enrollmentsystem.common.validator.ValidationGroup;
 import io.spring.enrollmentsystem.common.view.AdminView;
 import io.spring.enrollmentsystem.common.view.BaseView;

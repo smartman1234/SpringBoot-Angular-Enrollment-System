@@ -1,0 +1,17 @@
+.logout-button {
+	.mat-icon {
+		margin-right: 0.4rem;
+	}
+}
+
+.big-button {
+	@media only screen and (max-width: 599.98px) {
+		display: none;
+	}
+}
+
+.small-button {
+	@media only screen and (min-width: 600px) {
+		display: none;
+	}
+}

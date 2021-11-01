@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -30,6 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import javax.validation.groups.Default;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -56,6 +58,17 @@ public class AdminStudentController {
     }
 
     @GetMapping("")
+    @Operation(summary = "Find all instances of student by predicate", tags = "student-admin")
+    @JsonView(AdminView.AdminVeryHighWithId.class)
+    public ResponseEntity<List<StudentDto>> getAllStudentByPredicate(
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(studentService.getAllStudentDtoByPredicate(parameters));
+    }
+
+    @GetMapping("/page")
     @Operation(summary = "Find all instances of student as pages by predicate", tags = "student-admin")
     @JsonView(AdminView.AdminVeryHighWithId.class)
     public ResponseEntity<Page<StudentDto>> getStudentPageableByPredicate(
@@ -65,6 +78,18 @@ public class AdminStudentController {
         return ResponseEntity
                 .ok()
                 .body(studentService.getStudentDtoPageableByPredicate(parameters, pageable));
+    }
+
+    @GetMapping("/slice")
+    @Operation(summary = "Find all instances of student as slices by predicate", tags = "student-admin")
+    @JsonView(AdminView.AdminVeryHighWithId.class)
+    public ResponseEntity<Slice<StudentDto>> getStudentSliceByPredicate(
+            @ParameterObject Pageable pageable,
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(studentService.getStudentDtoSliceByPredicate(parameters, pageable));
     }
 
     @PostMapping("")

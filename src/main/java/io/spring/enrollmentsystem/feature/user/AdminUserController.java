@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -33,6 +34,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.groups.Default;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController @RequestMapping("/api/v1/admin/users")
@@ -51,13 +53,38 @@ public class AdminUserController {
     }
 
     @GetMapping("")
-    @Operation(summary = "Find all instances of user as pages", tags = "user-admin")
+    @Operation(summary = "Find all instances of user by predicate", tags = "user-admin")
     @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
     @JsonView(AdminView.AdminMediumWithId.class)
-    public ResponseEntity<Page<UserDto>> getUserPageable(
+    public ResponseEntity<List<UserDto>> getAllUserByPredicate(
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+        return ResponseEntity
+                .ok()
+                .body(userService.getAllUserDtoByPredicate(parameters));
+    }
+
+    @GetMapping("/page")
+    @Operation(summary = "Find all instances of user as pages by predicate", tags = "user-admin")
+    @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
+    @JsonView(AdminView.AdminMediumWithId.class)
+    public ResponseEntity<Page<UserDto>> getUserPageableByPredicate(
             @ParameterObject Pageable pageable,
             @RequestParam(required = false) MultiValueMap<String, String> parameters) {
-        return ResponseEntity.ok().body(userService.getUserDtoPageable(parameters, pageable));
+        return ResponseEntity
+                .ok()
+                .body(userService.getUserDtoPageableByPredicate(parameters, pageable));
+    }
+
+    @GetMapping("/slice")
+    @Operation(summary = "Find all instances of user as slices by predicate", tags = "user-admin")
+    @Parameter(in = ParameterIn.QUERY, name = "parameters", schema = @Schema(type = "object"), example = "{}")
+    @JsonView(AdminView.AdminMediumWithId.class)
+    public ResponseEntity<Slice<UserDto>> getUserSliceByPredicate(
+            @ParameterObject Pageable pageable,
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+        return ResponseEntity
+                .ok()
+                .body(userService.getUserDtoSliceByPredicate(parameters, pageable));
     }
 
     @PostMapping("")

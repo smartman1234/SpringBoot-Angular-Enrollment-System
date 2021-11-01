@@ -1,0 +1,78 @@
+:host ::ng-deep .login-card {
+
+	.mat-form-field-appearance-outline {
+		.mat-form-field-infix {
+			padding: .5rem;
+			margin-left: 1rem;
+			border-bottom: 0.5rem solid transparent;
+		}
+
+		.mat-form-field-outline-start {
+			background-color: lightgray;
+			width: 40px;
+		}
+
+		.mat-form-field-prefix {
+			margin: 0 auto;
+		}
+
+		//.mat-form-field-wrapper {
+		//	padding-bottom: 1.25rem;
+		//}
+
+		&.ng-valid:not(form):not(.mat-form-field-invalid).ng-dirty .mat-form-field-outline-start {
+			background-color: green;
+		}
+
+		&.mat-form-field-invalid, // used for control.parent invalid
+		&.ng-invalid:not(form).ng-touched { // used for control invalid
+			.mat-form-field-outline-start {
+				background-color: red;
+			}
+		}
+	}
+}
+
+.login-card {
+	$field-width: 29rem;
+
+	max-width: 30rem;
+	text-align: center;
+	padding-top: 3rem;
+	padding-bottom: 3rem;
+	background-color: whitesmoke;
+
+	// center vertically and horizontally
+	position: absolute;
+	right: 50%;
+	bottom: 50%;
+	-webkit-transform: translate(50%, 50%);
+	-moz-transform: translate(50%, 50%);
+	transform: translate(50%, 50%);
+
+	img {
+		height: 17rem;
+		width: 15rem;
+	}
+
+	.login-card-header {
+		height: 5rem;
+		line-height: 5rem;
+		width: $field-width;
+		background-color: green;
+		border-radius: 0.5rem 0.5rem 0 0;
+		color: white;
+		margin: 2.5rem auto;
+		display: flex;
+		justify-content: center;
+	}
+
+	.login-form-field {
+		width: $field-width;
+	}
+
+	.login-button {
+		width: $field-width;
+		height: 4rem;
+	}
+}

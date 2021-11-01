@@ -17,7 +17,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -95,7 +94,7 @@ public class SectionDto {
     @NotNull(groups = ValidationGroup.onCreate.class)
     private UUID termId;
 
-    @JsonView(AdminView.AdminMedium.class)
+    @JsonView(BaseView.VeryHigh.class)
     @Schema(example = "b267509c-2fe2-4696-9b5e-c98a8b41acb7")
     @NotNull(groups = ValidationGroup.onCreate.class)
     private UUID courseId;
@@ -130,19 +129,9 @@ public class SectionDto {
     private String instructorFirstName;
 
     @JsonView(BaseView.VeryHigh.class)
-    @Schema(example = "Fall Semester 2021")
-    @QuerySelectHint(Section_.TERM + KEY_SEPARATOR + Term_.TERM_NAME)
-    private String termName;
-
-    @JsonView(BaseView.VeryHigh.class)
     @Schema(example = "ABM 2240")
     @QuerySelectHint(Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_CODE)
     private String courseCode;
-
-    @JsonView(BaseView.VeryHigh.class)
-    @Schema(example = "3")
-    @QuerySelectHint(Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_UNIT)
-    private Integer courseUnit;
 
     @JsonView(BaseView.VeryHigh.class)
     @Schema(example = "Accounting for Agribusiness I")
@@ -150,14 +139,24 @@ public class SectionDto {
     private String courseName;
 
     @JsonView(BaseView.VeryHigh.class)
-    @Schema(example = "Presentation of the underlying framework and concepts of financial accounting " +
-            "used by businesses and organizations in the food and agribusiness industries. Students " +
-            "learn how accounting information is collected and organized to evaluate the performance and " +
-            "financial status of organizations. Topics include the basics of recording transactions as well " +
-            "as accounting for assets, liabilities, owner’s equity, cash flows, revenue and net income. " +
-            "Additionally, students will learn the preparation of financial statements using generally " +
-            "accepted accounting principles (GAAP).")
-    @QuerySelectHint(Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_DESCRIPTION)
-    private String courseDescription;
+    @Schema(example = "Fall Semester 2021")
+    @QuerySelectHint(Section_.TERM + KEY_SEPARATOR + Term_.TERM_NAME)
+    private String termName;
 
+//    @JsonView(BaseView.VeryHigh.class)
+//    @Schema(example = "3")
+//    @QuerySelectHint(Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_UNIT)
+//    private Integer courseUnit;
+
+
+//    @JsonView(BaseView.VeryHigh.class)
+//    @Schema(example = "Presentation of the underlying framework and concepts of financial accounting " +
+//            "used by businesses and organizations in the food and agribusiness industries. Students " +
+//            "learn how accounting information is collected and organized to evaluate the performance and " +
+//            "financial status of organizations. Topics include the basics of recording transactions as well " +
+//            "as accounting for assets, liabilities, owner’s equity, cash flows, revenue and net income. " +
+//            "Additionally, students will learn the preparation of financial statements using generally " +
+//            "accepted accounting principles (GAAP).")
+//    @QuerySelectHint(Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_DESCRIPTION)
+//    private String courseDescription;
 }

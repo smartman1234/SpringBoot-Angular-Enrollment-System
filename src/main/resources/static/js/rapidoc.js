@@ -15,7 +15,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
         const getCookie = (input) => {
             let cookies = document.cookie.split(";");
             for (let i = 0; i < cookies.length; i++) {
-                let name = cookies[i].split("=")[0];
+                let name = cookies[i].split("=")[0].trim();
                 let value = cookies[i].split("=")[1];
                 if (name === input) {
                     return value;
@@ -30,7 +30,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
             || e.detail.request.method === "PUT"
             || e.detail.request.method === "PATCH"
             || e.detail.request.method === "DELETE") {
-            e.detail.request.headers.append(csrfTokenHeaderName, getCookie(csrfTokenCookieName));
+            const cookieValue = getCookie(csrfTokenCookieName);
+            e.detail.request.headers.append(csrfTokenHeaderName, cookieValue);
         }
 
         tryCount++;

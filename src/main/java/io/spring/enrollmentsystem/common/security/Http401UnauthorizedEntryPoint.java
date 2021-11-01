@@ -19,8 +19,8 @@ public class Http401UnauthorizedEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException ex) throws IOException {
 
         String errorMessage = ex.getMessage();
-        log.error("Unauthorized request for {} - {}", request.getRequestURI(), errorMessage);
+        log.error("{} - {}", errorMessage, request.getRequestURI());
 
-        response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized request - " + errorMessage);
+        response.sendError(HttpStatus.UNAUTHORIZED.value(), errorMessage);
     }
 }

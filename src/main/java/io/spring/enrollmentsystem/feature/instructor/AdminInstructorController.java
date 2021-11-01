@@ -3,7 +3,6 @@ package io.spring.enrollmentsystem.feature.instructor;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.spring.enrollmentsystem.common.validator.ValidationGroup;
-import io.spring.enrollmentsystem.common.view.AdminView;
 import io.spring.enrollmentsystem.common.view.BaseView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MultiValueMap;
@@ -31,6 +31,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import javax.validation.groups.Default;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -57,6 +58,17 @@ public class AdminInstructorController {
     }
 
     @GetMapping("")
+    @Operation(summary = "Find all instances of instructor by predicate", tags = "instructor-admin")
+    @JsonView(BaseView.VeryHighWithId.class)
+    public ResponseEntity<List<InstructorDto>> getAllInstructorByPredicate(
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(instructorService.getAllInstructorDtoByPredicate(parameters));
+    }
+
+    @GetMapping("/page")
     @Operation(summary = "Find all instances of instructor as pages by predicate", tags = "instructor-admin")
     @JsonView(BaseView.VeryHighWithId.class)
     public ResponseEntity<Page<InstructorDto>> getInstructorPageableByPredicate(
@@ -66,6 +78,18 @@ public class AdminInstructorController {
         return ResponseEntity
                 .ok()
                 .body(instructorService.getInstructorDtoPageableByPredicate(parameters, pageable));
+    }
+
+    @GetMapping("/slice")
+    @Operation(summary = "Find all instances of instructor as slices by predicate", tags = "instructor-admin")
+    @JsonView(BaseView.VeryHighWithId.class)
+    public ResponseEntity<Slice<InstructorDto>> getInstructorSliceByPredicate(
+            @ParameterObject Pageable pageable,
+            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
+
+        return ResponseEntity
+                .ok()
+                .body(instructorService.getInstructorDtoSliceByPredicate(parameters, pageable));
     }
 
     @PostMapping("")

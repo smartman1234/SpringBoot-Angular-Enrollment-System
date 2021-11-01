@@ -19,7 +19,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                        AccessDeniedException ex) throws IOException {
 
         String errorMessage = ex.getMessage();
-        log.error("Access denied for {} - {}", request.getRequestURI(), errorMessage);
+        log.error("{} - {}", errorMessage, request.getRequestURI());
 
         response.sendError(HttpStatus.FORBIDDEN.value(), errorMessage);
     }

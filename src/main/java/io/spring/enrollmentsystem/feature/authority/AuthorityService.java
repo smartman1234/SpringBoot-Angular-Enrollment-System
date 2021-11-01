@@ -5,11 +5,13 @@ import io.spring.enrollmentsystem.common.service.SpecificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
 import javax.validation.ValidationException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -43,11 +45,23 @@ public class AuthorityService {
     }
 
     @Transactional(readOnly = true)
+    public List<AuthorityDto> getAllAuthorityDtoByPredicate(MultiValueMap<String, String> parameters) {
+        return authorityRepository
+                .findAll(AuthorityDto.class, specificationService.getSpecifications(parameters));
+    }
+
+    @Transactional(readOnly = true)
     public Page<AuthorityDto> getAuthorityDtoPageableByPredicate(MultiValueMap<String, String> parameters,
                                                                  Pageable pageable) {
         return authorityRepository
-                .findAll(Authority.class, specificationService.getSpecifications(parameters), pageable)
-                .map(authorityMapper::toAuthorityDto);
+                .findAll(AuthorityDto.class, specificationService.getSpecifications(parameters), pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<AuthorityDto> getAuthorityDtoSliceByPredicate(MultiValueMap<String, String> parameters,
+                                                               Pageable pageable) {
+        return authorityRepository
+                .findAllSlice(AuthorityDto.class, specificationService.getSpecifications(parameters), pageable);
     }
 
     @Transactional
