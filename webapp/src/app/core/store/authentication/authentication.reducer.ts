@@ -13,6 +13,7 @@ export const initialUserState: AuthenticationUserState = {
 		username: "",
 		firstName: "",
 		lastName: "",
+		authorities: [],
 	},
 	expiry: 0,
 };

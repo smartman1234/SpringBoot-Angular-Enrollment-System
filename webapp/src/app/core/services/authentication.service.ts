@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
-import { catchError } from "rxjs/operators";
-import { Observable, throwError } from "rxjs";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable } from "rxjs";
 import { AuthenticationUser } from "../models/authentication-user.model";
 import { ApiPath } from "../constants/api-path.enum";
 import { environment } from "../../../environments/environment";
@@ -16,14 +15,10 @@ export class AuthenticationService {
 	readonly loginUrl = this.authApiPath + "/login";
 	readonly refreshUrl = this.authApiPath + "/refresh";
 	readonly logoutUrl = this.authApiPath + "/logout";
-	readonly loadingUrls = {
-		csrfUrl: "GET" + this.csrfUrl,
-		loginUrl: "POST" + this.loginUrl,
-		refreshUrl: "POST" + this.refreshUrl,
-		logoutUrl: "POST" + this.logoutUrl,
-	}
+	readonly adminLoginUrl = this.authApiPath + "/admin/login";
 
 	readonly homepage = environment.homepage;
+	readonly adminHomepage = environment.adminHomepage;
 	redirectUrl: string | null = this.homepage;
 
 	httpOptions = {
@@ -48,5 +43,13 @@ export class AuthenticationService {
 
 	logout(): Observable<any> {
 		return this.http.post(this.logoutUrl, {}, this.httpOptions);
+	}
+
+	adminLogin(username: string, password: string, secretKey: string): Observable<AuthenticationUser> {
+		return this.http.post<AuthenticationUser>(
+			this.adminLoginUrl,
+			{ username, password, secretKey },
+			this.httpOptions
+		);
 	}
 }

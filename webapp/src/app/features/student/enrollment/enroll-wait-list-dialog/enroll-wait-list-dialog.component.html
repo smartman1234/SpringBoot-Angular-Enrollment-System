@@ -1,0 +1,23 @@
+<ng-container>
+	<h2 mat-dialog-title>Enroll From Wait List</h2>
+	<mat-dialog-content>
+		<form id="accessCodeForm" [formGroup]="accessCodeForm">
+			<mat-form-field class="form-field" appearance="outline">
+				<mat-label>Access Code</mat-label>
+				<input matInput formControlName="accessCode">
+				<button *ngIf="accessCode.value" matSuffix mat-icon-button
+						(click)="accessCode.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="accessCode.invalid && (accessCode.dirty || accessCode.touched)">
+					<div *ngIf="accessCode.errors?.required">Access code is required</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+		<button mat-raised-button color="primary" [disabled]="!accessCodeForm.valid"
+				(click)="enrollFromWaitList()">Enroll</button>
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>

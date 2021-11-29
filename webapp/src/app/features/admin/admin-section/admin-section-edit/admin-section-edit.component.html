@@ -1,0 +1,193 @@
+<ng-container>
+	<h2 mat-dialog-title>Edit Section</h2>
+	<mat-dialog-content>
+		<form id="sectionForm" [formGroup]="sectionForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Building</mat-label>
+				<mat-select formControlName="building" (selectionChange)="getRooms()">
+					<mat-option *ngFor="let building of buildings$ | async" [value]="building">
+						{{building.buildingNumber}} - {{building.buildingName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="building.invalid && (building.dirty || building.touched)">
+					<div *ngIf="building.errors?.required">Building is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Room</mat-label>
+				<mat-select formControlName="roomId">
+					<mat-option *ngFor="let room of rooms$ | async" [value]="room.id">
+						{{room.roomNumber}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="roomId.invalid && (roomId.dirty || roomId.touched)">
+					<div *ngIf="roomId.errors?.required">Room id is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Department</mat-label>
+				<mat-select formControlName="department" (selectionChange)="getInstructorPage()">
+					<mat-option *ngFor="let department of department$ | async" [value]="department">
+						{{department.departmentName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="department.invalid && (department.dirty || department.touched)">
+					<div *ngIf="department.errors?.required">Department is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Instructor</mat-label>
+				<mat-select formControlName="instructorId">
+					<mat-option *ngFor="let instructor of instructorPage.content" [value]="instructor.id">
+						{{instructor.email}} - {{instructor.firstName}} {{instructor.lastName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="instructorId.invalid && (instructorId.dirty || instructorId.touched)">
+					<div *ngIf="instructorId.errors?.required">Instructor id is required</div>
+				</mat-error>
+			</mat-form-field>
+			<app-paginator
+				[disabled]="!instructorId.enabled"
+				[hidePageSize]="true"
+				[length]="instructorPage.totalElements"
+				[pageSize]="instructorPage.size"
+				[pageIndex]="instructorPage.number"
+				[showFirstLastButtons]="true"
+				(page)="onPageEvent($event)">
+			</app-paginator>
+			<br>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Meeting Days</mat-label>
+				<input matInput formControlName="meetingDays">
+				<button *ngIf="meetingDays.value" matSuffix mat-icon-button
+						(click)="meetingDays.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="meetingDays.invalid && (meetingDays.dirty || meetingDays.touched)">
+					<div *ngIf="meetingDays.errors?.required">Meeting days are required</div>
+					<div *ngIf="meetingDays.errors?.maxlength">Meeting days exceeds 50 characters</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Meeting Time Start</mat-label>
+				<input type="time" matInput formControlName="meetingTimeStart">
+				<button *ngIf="meetingTimeStart.value" matSuffix mat-icon-button
+						(click)="meetingTimeStart.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="meetingTimeStart.invalid && (meetingTimeStart.dirty || meetingTimeStart.touched)">
+					<div *ngIf="meetingTimeStart.errors?.required">Meeting time start is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Meeting Time End</mat-label>
+				<input type="time" matInput formControlName="meetingTimeEnd">
+				<button *ngIf="meetingTimeEnd.value" matSuffix mat-icon-button
+						(click)="meetingTimeEnd.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="meetingTimeEnd.invalid && (meetingTimeEnd.dirty || meetingTimeEnd.touched)">
+					<div *ngIf="meetingTimeEnd.errors?.required">Meeting time end is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Class Capacity</mat-label>
+				<input type="number" matInput formControlName="classCapacity">
+				<button *ngIf="classCapacity.value" matSuffix mat-icon-button
+						(click)="classCapacity.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="classCapacity.invalid && (classCapacity.dirty || classCapacity.touched)">
+					<div *ngIf="classCapacity.errors?.required">Class capacity is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>WaitList Capacity</mat-label>
+				<input type="number" matInput formControlName="waitlistCapacity">
+				<button *ngIf="waitlistCapacity.value" matSuffix mat-icon-button
+						(click)="waitlistCapacity.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="waitlistCapacity.invalid && (waitlistCapacity.dirty || waitlistCapacity.touched)">
+					<div *ngIf="waitlistCapacity.errors?.required">WaitList capacity is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Enrolled Number</mat-label>
+				<input type="number" matInput formControlName="enrolledNumber">
+				<button *ngIf="enrolledNumber.value" matSuffix mat-icon-button
+						(click)="enrolledNumber.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="enrolledNumber.invalid && (enrolledNumber.dirty || enrolledNumber.touched)">
+					<div *ngIf="enrolledNumber.errors?.required">Enrolled number is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Waiting Number</mat-label>
+				<input type="number" matInput formControlName="waitingNumber">
+				<button *ngIf="waitingNumber.value" matSuffix mat-icon-button
+						(click)="waitingNumber.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="waitingNumber.invalid && (waitingNumber.dirty || waitingNumber.touched)">
+					<div *ngIf="waitingNumber.errors?.required">Waiting number is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Date Start</mat-label>
+				<input type="date" matInput formControlName="dateStart">
+				<button *ngIf="dateStart.value" matSuffix mat-icon-button
+						(click)="dateStart.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="dateStart.invalid && (dateStart.dirty || dateStart.touched)">
+					<div *ngIf="dateStart.errors?.required">Date start is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Date End</mat-label>
+				<input type="date" matInput formControlName="dateEnd">
+				<button *ngIf="dateEnd.value" matSuffix mat-icon-button
+						(click)="dateEnd.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="dateEnd.invalid && (dateEnd.dirty || dateEnd.touched)">
+					<div *ngIf="dateEnd.errors?.required">Date end is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Section Status</mat-label>
+				<mat-select formControlName="sectionStatus">
+					<mat-option *ngFor="let sectionStatus of sectionStatuses" [value]="sectionStatus">
+						{{sectionStatus}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="sectionStatus.invalid && (sectionStatus.dirty || sectionStatus.touched)">
+					<div *ngIf="sectionStatus.errors?.required">Section status is required</div>
+					<div *ngIf="sectionStatus.errors?.maxlength">Section status exceeds 20 characters</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!sectionForm.valid || !sectionForm.dirty"
+				(click)="saveEdit()">Save</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>
+

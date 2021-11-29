@@ -1,7 +1,6 @@
 package io.spring.enrollmentsystem.feature.user;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import io.spring.enrollmentsystem.common.annotation.QuerySelectHint;
 import io.spring.enrollmentsystem.common.validator.ValidationGroup;
 import io.spring.enrollmentsystem.common.view.AdminView;
 import io.spring.enrollmentsystem.common.view.BaseView;
@@ -49,4 +48,7 @@ public class UserDto {
     @JsonView({AdminView.AdminLow.class})
     @NotEmpty(groups = ValidationGroup.onCreate.class)
     private Set<AuthorityDto> authorities;
+
+    @JsonView({AdminView.AdminLoginRequest.class})
+    private String secretKey;
 }

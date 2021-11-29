@@ -1,4 +1,4 @@
-import { AfterContentChecked, Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from "@angular/core";
 import { ThemePalette } from "@angular/material/core";
 import { MatPaginator, PageEvent } from "@angular/material/paginator";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
@@ -8,19 +8,48 @@ import { FormBuilder, FormControl, Validators } from "@angular/forms";
 	templateUrl: "./paginator.component.html",
 	styleUrls: ["./paginator.component.scss"],
 })
-export class PaginatorComponent implements OnInit, AfterContentChecked {
+export class PaginatorComponent implements OnInit {
 
-	@ViewChild(MatPaginator) paginator!: MatPaginator;
-	@Input() pageSize: number = 20;
-	@Input() length: number = 0;
-	@Input() pageIndex: number = 0;
-	@Input() pageSizeOptions: number[] = [];
+	private _pageSize: number = 20;
+	private _length: number = 0;
+	private _pageIndex: number = 0;
+
+	get pageSize() {
+		return this._pageSize;
+	}
+
+	@Input() set pageSize(newValue) {
+		this._pageSize = newValue;
+		this.updatePageInfo();
+	}
+
+	get length() {
+		return this._length;
+	}
+
+	@Input() set length(newValue) {
+		this._length = newValue;
+		this.updatePageInfo();
+	}
+
+	get pageIndex() {
+		return this._pageIndex;
+	}
+
+	@Input() set pageIndex(newValue) {
+		this._pageIndex = newValue;
+		this.updatePageInfo();
+	}
+
+	@Input() pageSizeOptions: number[] = [5, 10, 20, 25, 50, 100];
 	@Input() showFirstLastButtons: boolean = false;
 	@Input() hidePageSize: boolean = false;
 	@Input() disabled: boolean = false;
 	@Input() color: ThemePalette;
 
+	@ViewChild(MatPaginator) paginator!: MatPaginator;
 	@Output() page = new EventEmitter<PageEvent>();
+	maxPageNumber: number = 1;
 
 	goToPage() {
 		if (this.pageNumber.value - 1 === this.paginator.pageIndex) {
@@ -42,11 +71,14 @@ export class PaginatorComponent implements OnInit, AfterContentChecked {
 		this.page.emit(pageEvent);
 	}
 
+	updatePageInfo() {
+		this.pageNumber.setValue(this.pageIndex + 1);
+		this.maxPageNumber = Math.ceil(this.length / this.pageSize);
+	}
+
 	pageNumberForm = this.formBuilder.group({
 		pageNumber: [1, { validators: [Validators.required] }],
 	});
-
-	maxPageNumber: number = 1;
 
 	get pageNumber() {
 		return this.pageNumberForm.get("pageNumber") as FormControl;
@@ -55,10 +87,6 @@ export class PaginatorComponent implements OnInit, AfterContentChecked {
 	constructor(
 		private formBuilder: FormBuilder,
 	) {
-	}
-
-	ngAfterContentChecked(): void {
-		this.maxPageNumber = Math.ceil(this.length / this.pageSize);
 	}
 
 	ngOnInit(): void {

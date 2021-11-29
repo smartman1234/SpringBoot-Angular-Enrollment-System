@@ -1,0 +1,130 @@
+.wrapper {
+	display: flex;
+}
+
+.main {
+	flex: 80%;
+	max-width: 100rem;
+	min-height: calc(100vh - 13rem);
+	height: 100%;
+
+	.search-form {
+		@extend .additional-search-form;
+		margin-bottom: 0.8rem;
+	}
+
+	.additional-search-form {
+		padding: 2rem 7rem 2rem 7rem;
+		@media only screen and (max-width: 959.98px) {
+			padding: 2rem 5rem 2rem 5rem;
+		}
+		@media only screen and (max-width: 599.98px) {
+			padding: 2rem 0.2rem 2rem 0.2rem;
+		}
+	}
+
+	.result-card {
+		@media only screen and (max-width: 599.98px) {
+			padding: 2rem 0.2rem 2rem 0.2rem;
+		}
+		min-height: calc(100vh - 13rem);
+		height: 100%;
+	}
+}
+
+.navigation {
+	flex: 20%;
+	max-width: 30rem;
+	margin-left: 0.8rem;
+
+	@media only screen and (max-width: 839.98px) {
+		display: none;
+	}
+
+	.sticky {
+		position: -webkit-sticky; /* Safari */
+		position: sticky;
+		top: 2rem;
+	}
+
+	.clear-button {
+		width: 100%;
+	}
+
+	.navigation-button {
+		@extend .clear-button;
+		background-color: green;
+		color: white;
+	}
+
+	.submit-button {
+		@extend .clear-button;
+	}
+}
+
+.bottom-navigation {
+	background-color: lightgray;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+
+	@media only screen and (min-width: 840px) {
+		display: none;
+	}
+
+	.clear-button {
+		width: 50%;
+		border-radius: 0;
+	}
+
+	.navigation-button {
+		@extend .clear-button;
+		background-color: green;
+		color: white;
+	}
+
+	.navigation-button100 {
+		@extend .navigation-button;
+		width: 100%;
+	}
+
+	.submit-button {
+		@extend .clear-button;
+		width: 100%;
+	}
+}
+
+.form-field {
+	width: 65%;
+	max-width: 80rem;
+	margin-bottom: 1.6rem;
+	margin-right: 0.2rem;
+
+	.button-toggle-label {
+		font-size: 1.6rem;
+		margin-right: 2.5rem;
+	}
+	.toggle-button {
+		//width: 8rem;
+	}
+}
+
+.form-field-query {
+	width: 34%;
+	max-width: 40rem;
+	margin-bottom: 1.6rem;
+}
+
+.form-check-box {
+	margin-left: 2rem;
+}
+
+.time-field {
+	width: 32.4%;
+	margin-right: 0.1rem;
+}
+
+.time-field2 {
+	display: none;
+}

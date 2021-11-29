@@ -1,0 +1,62 @@
+<ng-container *ngIf="true | isLoading | async">
+	<mat-progress-bar
+		class="example-margin"
+		color="primary"
+		mode="indeterminate">
+	</mat-progress-bar>
+</ng-container>
+
+<mat-card class="login-card">
+	<img src="../../../../assets/images/bronco-horse.png" alt="Photo of Bronco horse">
+
+	<mat-card-header class="login-card-header">
+		<mat-card-title>Welcome</mat-card-title>
+	</mat-card-header>
+
+	<mat-card-content>
+		<form id="loginForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+			<mat-form-field appearance="outline" class="login-form-field">
+				<mat-icon matPrefix>person</mat-icon>
+				<input matInput formControlName="username" placeholder="Username" required>
+				<mat-error *ngIf="username.invalid && (username.dirty || username.touched)">
+					<div *ngIf="username.errors?.required">Username is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field appearance="outline" class="login-form-field"
+							(mouseenter)="mouseIn = true"
+							(mouseleave)="mouseIn = false"
+							(focus)="mouseIn = true"
+							(blur)="mouseIn = false"
+							(focusout)="hideVisibilityIcon = !mouseIn && hidePassword && passwordInput.value===''"
+							(focusin)="hideVisibilityIcon = false">
+				<mat-icon matPrefix>vpn_key</mat-icon>
+				<input matInput #passwordInput formControlName="password"
+					   [type]="hidePassword ? 'password' : 'text'" placeholder="Password" required>
+				<button *ngIf="!hideVisibilityIcon"
+						type="button" mat-icon-button matSuffix (click)="hidePassword = !hidePassword">
+					<mat-icon>{{hidePassword ? "visibility_off" : "visibility"}}</mat-icon>
+				</button>
+
+				<mat-error *ngIf="password.invalid && (password.dirty || password.touched)">
+					<div *ngIf="password.errors?.required">Password is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field appearance="outline" class="login-form-field">
+				<mat-icon matPrefix>key</mat-icon>
+				<input matInput formControlName="secretKey" type="password" placeholder="Secret Key" required>
+				<mat-error *ngIf="secretKey.invalid && (secretKey.dirty || secretKey.touched)">
+					<div *ngIf="secretKey.errors?.required">Secret Key is required</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+	</mat-card-content>
+
+	<mat-card-actions>
+		<button mat-raised-button color="primary" type="submit"
+				class="login-button" form="loginForm"
+				[disabled]="!loginForm.valid">Login
+		</button>
+	</mat-card-actions>
+</mat-card>

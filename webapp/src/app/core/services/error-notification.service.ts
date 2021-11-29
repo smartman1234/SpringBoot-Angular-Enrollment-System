@@ -1,13 +1,16 @@
 import { Injectable } from "@angular/core";
-import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from "@angular/material/snack-bar";
+import { MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from "@angular/material/snack-bar";
 import { HttpErrorResponse } from "@angular/common/http";
+import { NotificationService } from "./notification.service";
 
 @Injectable({
 	providedIn: "root",
 })
 export class ErrorNotificationService {
 
-	constructor(private snackBar: MatSnackBar) {
+	constructor(
+		private notificationService: NotificationService,
+	) {
 	}
 
 	open(errorResponse: any,
@@ -21,12 +24,12 @@ export class ErrorNotificationService {
 			? error.status + " " + error.error + ": " + error.message
 			: errorResponse.message ? errorResponse.message : errorResponse;
 
-		this.snackBar.open(message, "Close", {
-			duration: duration,
-			horizontalPosition: horizontalPosition,
-			verticalPosition: verticalPosition,
-			// panelClass: ["mat-toolbar", "mat-warn"],
-		});
+		this.notificationService.open(
+			message,
+			duration,
+			horizontalPosition,
+			verticalPosition,
+		);
 	}
 
 }

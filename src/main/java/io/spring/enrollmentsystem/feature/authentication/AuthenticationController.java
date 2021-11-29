@@ -1,6 +1,7 @@
 package io.spring.enrollmentsystem.feature.authentication;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import io.spring.enrollmentsystem.common.view.AdminView;
 import io.spring.enrollmentsystem.common.view.BaseView;
 import io.spring.enrollmentsystem.feature.user.UserDto;
 import io.spring.enrollmentsystem.feature.user.UserView;
@@ -45,6 +46,21 @@ public class AuthenticationController {
         return ResponseEntity
                 .ok()
                 .body(authenticationService.login(response, username, password));
+    }
+
+    @PostMapping("/admin/login")
+    @Operation(summary = "Login for admin", tags = "authentication")
+    @JsonView(AdminView.AdminMediumWithId.class)
+    public ResponseEntity<UserDto> adminLogin(@JsonView(AdminView.AdminLoginRequest.class)
+                                              @RequestBody @Valid UserDto loginRequest,
+                                              HttpServletResponse response) {
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
+        String secretKey = loginRequest.getSecretKey();
+
+        return ResponseEntity
+                .ok()
+                .body(authenticationService.adminLogin(response, username, password, secretKey));
     }
 
     @PostMapping("/logout")

@@ -1,0 +1,76 @@
+<ng-container>
+	<h2 mat-dialog-title>Edit Course</h2>
+	<mat-dialog-content>
+		<form id="courseForm" [formGroup]="courseForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Subject</mat-label>
+				<mat-select formControlName="subjectId">
+					<mat-option *ngFor="let subject of subjects$ | async" [value]="subject.id">
+						{{subject.subjectAcronym}} - {{subject.subjectName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="subjectId.invalid && (subjectId.dirty || subjectId.touched)">
+					<div *ngIf="subjectId.errors?.required">Subject id is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Course Code</mat-label>
+				<input matInput formControlName="courseCode">
+				<button *ngIf="courseCode.value" matSuffix mat-icon-button
+						(click)="courseCode.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="courseCode.invalid && (courseCode.dirty || courseCode.touched)">
+					<div *ngIf="courseCode.errors?.required">Course code is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Course Name</mat-label>
+				<input matInput formControlName="courseName">
+				<button *ngIf="courseName.value" matSuffix mat-icon-button
+						(click)="courseName.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="courseName.invalid && (courseName.dirty || courseName.touched)">
+					<div *ngIf="courseName.errors?.required">Course name is required</div>
+					<div *ngIf="courseName.errors?.maxlength">Course name exceeds 200 characters</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Course Description</mat-label>
+				<textarea matInput formControlName="courseDescription"></textarea>
+				<button *ngIf="courseDescription.value" matSuffix mat-icon-button
+						(click)="courseDescription.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="courseDescription.invalid && (courseDescription.dirty || courseDescription.touched)">
+					<div *ngIf="courseDescription.errors?.required">Course description is required</div>
+					<div *ngIf="courseDescription.errors?.maxlength">Course description exceeds 3000 characters</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Course Unit</mat-label>
+				<input type="number" matInput formControlName="courseUnit">
+				<button *ngIf="courseUnit.value" matSuffix mat-icon-button
+						(click)="courseUnit.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="courseUnit.invalid && (courseUnit.dirty || courseUnit.touched)">
+					<div *ngIf="courseUnit.errors?.required">Course unit is required</div>
+					<div *ngIf="courseUnit.errors?.min">Minimum course unit is 0</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!courseForm.valid || !courseForm.dirty"
+				(click)="saveEdit()">Save</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>
+

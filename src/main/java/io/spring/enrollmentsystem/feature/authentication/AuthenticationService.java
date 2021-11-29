@@ -1,6 +1,10 @@
 package io.spring.enrollmentsystem.feature.authentication;
 
 import io.spring.enrollmentsystem.common.configuration.LoginFailAttemptCache;
+import io.spring.enrollmentsystem.common.exception.ResourceNotFoundException;
+import io.spring.enrollmentsystem.feature.admin.Admin;
+import io.spring.enrollmentsystem.feature.admin.AdminRepository;
+import io.spring.enrollmentsystem.feature.admin.AdminService;
 import io.spring.enrollmentsystem.feature.user.User;
 import io.spring.enrollmentsystem.feature.user.UserDto;
 import io.spring.enrollmentsystem.feature.user.UserMapper;
@@ -12,6 +16,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -19,10 +24,17 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
+
+import static io.spring.enrollmentsystem.common.constant.Role.RoleName.ADMIN;
 
 @Service
 @RequiredArgsConstructor @Slf4j
 public class AuthenticationService {
+
+    private final AdminService adminService;
+    private final AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private final UserMapper userMapper;
 
@@ -33,6 +45,16 @@ public class AuthenticationService {
 
     @Transactional
     public UserDto login(HttpServletResponse response, String username, String password) {
+        return this.authenticate(response, username, password, null);
+    }
+
+    @Transactional
+    public UserDto adminLogin(HttpServletResponse response, String username, String password, String secretKey) {
+        return this.authenticate(response, username, password, secretKey);
+    }
+
+    @Transactional
+    public UserDto authenticate(HttpServletResponse response, String username, String password, String secretKey) {
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,
                                                                                                           password);
@@ -45,7 +67,16 @@ public class AuthenticationService {
         }
         try {
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
+//            if (isAdmin(authentication)) {
+//                this.checkAdmin(authentication, secretKey);
+//            }
+            if (secretKey != null) {
+                this.checkAdmin(authentication, secretKey);
+            }
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
             loginFailAttemptCache.getAttemptsCache().invalidate(ipAddress);  // invalidate fail attempt value
             jwtTokenService.generateTokens(response);
             return userMapper.toUserDto((User) authentication.getPrincipal());
@@ -98,5 +129,22 @@ public class AuthenticationService {
         }
 
         return request.getRemoteAddr();
+    }
+
+    private boolean isAdmin(Authentication authentication) {
+        return authentication
+                .getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(ADMIN.getName()));
+    }
+
+    private void checkAdmin(Authentication authentication, String secretKey) {
+        UUID id = ((User) authentication.getPrincipal()).getId();
+//        Admin admin = adminService.getAdminById(id);
+        Admin admin = adminRepository.findById(id).orElseThrow(
+                () -> new BadCredentialsException("Admin id not found!"));
+        if (secretKey == null || !passwordEncoder.matches(secretKey, admin.getSecretKey())) {
+            throw new BadCredentialsException("Secret key does not match!");
+        }
     }
 }

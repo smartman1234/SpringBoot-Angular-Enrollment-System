@@ -24,18 +24,21 @@ interface Options {
 	delete?: boolean,
 }
 
-interface LoadingUrls {
-	readOneUrl: string,
-	readAllUrl: string,
-	readPageUrl: string,
-	readSliceUrl: string,
-	createUrl: string,
-	updateUrl: string,
-	updatePartialUrl: string,
-	deleteUrl: string,
+export interface Pageable {
+	page?: number,
+	size?: number,
+	sort?: string[],
 }
 
 export abstract class AbstractGenericCrudService<T, ID> implements GenericCrudService<T, ID> {
+
+	readonly defaultPageable: Pageable = {
+		page: 0,
+		size: 20,
+		sort: [],
+	}
+
+	pageable: Pageable = this.defaultPageable;
 
 	readonly defaultOptions: Options = {
 		readOneUrl: "/:id",

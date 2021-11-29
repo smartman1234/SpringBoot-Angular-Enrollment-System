@@ -78,7 +78,7 @@
 	</ng-template>
 
 	<ng-template #sidenavContent>
-		<router-outlet></router-outlet>
+		<router-outlet (activate)="onActivate()"></router-outlet>
 	</ng-template>
 </app-navigation-bar>
 

@@ -1,0 +1,51 @@
+<ng-container>
+	<h2 mat-dialog-title>Create New Building</h2>
+	<mat-dialog-content>
+		<form id="buildingForm" [formGroup]="buildingForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Building Number</mat-label>
+				<input type="number" matInput formControlName="buildingNumber">
+				<button *ngIf="buildingNumber.value" matSuffix mat-icon-button
+						(click)="buildingNumber.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="buildingNumber.invalid && (buildingNumber.dirty || buildingNumber.touched)">
+					<div *ngIf="buildingNumber.errors?.required">Building number is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Building Name</mat-label>
+				<input matInput formControlName="buildingName">
+				<button *ngIf="buildingName.value" matSuffix mat-icon-button
+						(click)="buildingName.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="buildingName.invalid && (buildingName.dirty || buildingName.touched)">
+					<div *ngIf="buildingName.errors?.required">Building name is required</div>
+					<div *ngIf="buildingName.errors?.maxlength">Building name exceeds 100 characters</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Building Code</mat-label>
+				<input matInput formControlName="buildingCode">
+				<button *ngIf="buildingCode.value" matSuffix mat-icon-button
+						(click)="buildingCode.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="buildingCode.invalid && (buildingCode.dirty || buildingCode.touched)">
+					<div *ngIf="buildingCode.errors?.required">Building code is required</div>
+					<div *ngIf="buildingCode.errors?.maxlength">Building code exceeds 10 characters</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!buildingForm.valid"
+				(click)="create()">Create
+		</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>

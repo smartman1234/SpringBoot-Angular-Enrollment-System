@@ -1,0 +1,126 @@
+<div class="admin-main">
+	<mat-card class="content-card">
+		<mat-card-title>{{title}}</mat-card-title>
+		<mat-card-subtitle>{{subtitle}}</mat-card-subtitle>
+		<mat-card-content *appVar="roomPage$ | async as roomPage">
+			<form id="buildingForm" [formGroup]="buildingForm">
+				<mat-form-field class="admin-form-field" appearance="outline">
+					<mat-label>Building</mat-label>
+					<mat-select formControlName="building" (selectionChange)="getRoomPage()">
+						<mat-option *ngFor="let building of buildings$ | async" [value]="building">
+							{{building.buildingName}}
+						</mat-option>
+					</mat-select>
+					<mat-error *ngIf="building.invalid && (building.dirty || building.touched)">
+						<div *ngIf="building.errors?.required">Building is required</div>
+					</mat-error>
+				</mat-form-field>
+			</form>
+
+			<div class="admin-function-button">
+				<button mat-raised-button color="accent"
+						(click)="openErrorMessages()">
+					<mat-icon>warning</mat-icon>
+					Error Logs
+				</button>
+				<button mat-raised-button color="primary"
+						(click)="createRoom()">
+					<mat-icon>add</mat-icon>
+					Create
+				</button>
+			</div>
+
+			<ng-container *ngIf="true | isLoading | async; else empty">
+				<app-loading [overlay]="true"></app-loading>
+			</ng-container>
+
+			<ng-template #empty>
+				<app-empty-result *ngIf="roomPage.empty"></app-empty-result>
+			</ng-template>
+
+			<div *ngIf="!roomPage.empty">
+				<div class="admin-table-container mat-elevation-z8">
+					<table class="admin-table" mat-table [dataSource]="roomPage.content" [trackBy]="trackRoom"
+						   matSort [matSortActive]="sortActive" [matSortDirection]="sortDirection" matSortDisableClear
+						   (matSortChange)="onSortChange($event)">
+						<!-- Id Column-->
+						<ng-container matColumnDef="id">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+							<td data-th="Id" mat-cell *matCellDef="let room">
+								<ng-container *ngIf="asRoom(room) as room">
+									{{room.id}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Room Number Column -->
+						<ng-container matColumnDef="roomNumber">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Room Number</th>
+							<td data-th="Room Number" mat-cell *matCellDef="let room">
+								<ng-container *ngIf="asRoom(room) as room">
+									{{room.roomNumber}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Room Capacity Column -->
+						<ng-container matColumnDef="roomCapacity">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Room Capacity</th>
+							<td data-th="Room Capacity" mat-cell *matCellDef="let room">
+								<ng-container *ngIf="asRoom(room) as room">
+									{{room.roomCapacity}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Building Id Column -->
+						<ng-container matColumnDef="buildingId">
+							<th mat-header-cell *matHeaderCellDef>Building Id</th>
+							<td data-th="Building Id" mat-cell *matCellDef="let room">
+								<ng-container *ngIf="asRoom(room) as room">
+									{{room.buildingId}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Edit Column -->
+						<ng-container matColumnDef="edit">
+							<th mat-header-cell *matHeaderCellDef>Edit</th>
+							<td data-th="Edit" mat-cell *matCellDef="let room">
+								<ng-container *ngIf="asRoom(room) as room">
+									<button mat-icon-button (click)="editRoom(room)">
+										<mat-icon>edit</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Delete Column -->
+						<ng-container matColumnDef="delete">
+							<th mat-header-cell *matHeaderCellDef>Delete</th>
+							<td data-th="Delete" mat-cell *matCellDef="let room">
+								<ng-container *ngIf="asRoom(room) as room">
+									<button mat-icon-button color="warn" (click)="deleteRoom(room)">
+										<mat-icon>delete</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+					</table>
+					<div class="admin-mat-paginator-sticky">
+						<app-paginator
+							[length]="roomPage.totalElements"
+							[pageSize]="roomPage.size"
+							[pageIndex]="roomPage.number"
+							[showFirstLastButtons]="true"
+							(page)="onPageEvent($event)">
+						</app-paginator>
+					</div>
+				</div>
+			</div>
+		</mat-card-content>
+	</mat-card>
+</div>

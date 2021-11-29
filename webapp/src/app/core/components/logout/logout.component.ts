@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
-import { Store } from "@ngrx/store";
-import { logout } from "../../store/authentication/authentication.actions";
-import { AppState } from "../../../shared/store/app-store.module";
+import { AuthenticationService } from "../../state/authentication/authentication.service";
 
 @Component({
 	selector: "app-logout",
@@ -12,12 +10,14 @@ import { AppState } from "../../../shared/store/app-store.module";
 export class LogoutComponent implements OnInit {
 
 	constructor(
-		private store: Store<AppState>,
+		private authenticationService: AuthenticationService,
+		// private store: Store<AppState>,
 	) {
 	}
 
 	onLogout() {
-		this.store.dispatch(logout());
+		// this.store.dispatch(logout());
+		this.authenticationService.logout();
 	}
 
 	ngOnInit(): void {

@@ -3,6 +3,7 @@ package io.spring.enrollmentsystem.common.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.data.repository.NoRepositoryBean;
@@ -33,4 +34,7 @@ public interface CustomRepository<T, ID> {
 
     @QueryHints(@QueryHint(name = CACHEABLE, value = "true"))
     <S> List<S> findAll(Class<S> type, @Nullable Specification<T> spec);
+
+    @QueryHints(@QueryHint(name = CACHEABLE, value = "true"))
+    <S> List<S> findAll(Class<S> type, @Nullable Specification<T> spec, Sort sort);
 }

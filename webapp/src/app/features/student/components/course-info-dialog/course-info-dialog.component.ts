@@ -16,7 +16,6 @@ export class CourseInfoDialogComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-
 	}
 
 }

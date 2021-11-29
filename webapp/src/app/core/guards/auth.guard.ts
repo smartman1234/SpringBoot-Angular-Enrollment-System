@@ -12,13 +12,11 @@ import {
 	UrlTree,
 } from "@angular/router";
 import { Observable } from "rxjs";
-import { AuthenticationService } from "../services/authentication.service";
-import { select, Store } from "@ngrx/store";
-import { AppState } from "../../shared/store/app-store.module";
-import { selectExpiry } from "../store/authentication/authentication.selectors";
 import { environment } from "../../../environments/environment";
 import { take } from "rxjs/operators";
 import { ErrorNotificationService } from "../services/error-notification.service";
+import { AuthenticationQuery } from "../state/authentication/authentication.query";
+import { AuthenticationService } from "../state/authentication/authentication.service";
 
 @Injectable({
 	providedIn: "root",
@@ -31,7 +29,8 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
 
 	constructor(
 		private authenticationService: AuthenticationService,
-		private store: Store<AppState>,
+		private authenticationQuery: AuthenticationQuery,
+		// private store: Store<AppState>,
 		private router: Router,
 		private errorNotificationService: ErrorNotificationService,
 	) {
@@ -60,13 +59,17 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
 	}
 
 	isLoggedIn(url: string): boolean {
-		this.store.pipe(
-			select(selectExpiry),
+		// this.store.pipe(
+		// 	select(selectExpiry),
+		// 	take(1),
+		// ).subscribe(expiry => this.userExpiry = expiry);
+		this.authenticationQuery.expiry$.pipe(
 			take(1),
 		).subscribe(expiry => this.userExpiry = expiry);
 
 		const currentTimeStamp = Date.now();
 
+		// redirect to homepage from login page if already logged in
 		if (url.startsWith("/login")) {
 			if (currentTimeStamp > this.userExpiry) {
 				return true;

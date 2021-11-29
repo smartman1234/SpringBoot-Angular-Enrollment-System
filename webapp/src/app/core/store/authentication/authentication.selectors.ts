@@ -19,5 +19,9 @@ export const selectExpiry = createSelector(
 	selectAuthenticationUserState,
 	(state: AuthenticationUserState) => state.expiry,
 );
+export const selectAuthorities = createSelector(
+	selectAuthenticationUserState,
+	(state: AuthenticationUserState) => state.user.authorities,
+);
 
 

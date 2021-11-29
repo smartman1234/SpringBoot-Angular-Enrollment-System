@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
-import { Store } from "@ngrx/store";
-import { login } from "../../store/authentication/authentication.actions";
-import { AppState } from "../../../shared/store/app-store.module";
+import { AuthenticationService } from "../../state/authentication/authentication.service";
 
 @Component({
 	selector: "app-login",
@@ -17,7 +15,8 @@ export class LoginComponent implements OnInit {
 
 	constructor(
 		private formBuilder: FormBuilder,
-		private store: Store<AppState>,
+		private authenticationService: AuthenticationService,
+		// private store: Store<AppState>,
 	) {
 	}
 
@@ -35,9 +34,10 @@ export class LoginComponent implements OnInit {
 	}
 
 	onSubmit() {
-		this.store.dispatch(
-			login({ username: this.username.value, password: this.password.value }),
-		);
+		// this.store.dispatch(
+		// 	login({ username: this.username.value, password: this.password.value }),
+		// );
+		this.authenticationService.login(this.username.value, this.password.value);
 	}
 
 	ngOnInit(): void {

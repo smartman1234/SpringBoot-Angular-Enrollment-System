@@ -1,0 +1,51 @@
+<ng-container *appVar="{pageSection: pageSection$ | async, registeredSectionIds: registeredSectionIds$ | async} as data">
+	<div>
+		<mat-icon color="primary">circle</mat-icon>
+		: Open
+	</div>
+	<div>
+		<mat-icon color="accent">change_history</mat-icon>
+		: WaitList
+	</div>
+	<div>
+		<mat-icon color="warn">square</mat-icon>
+		: Closed
+	</div>
+	<br>
+
+	<ng-container *ngIf="true | isLoading | async; else empty">
+		<app-loading></app-loading>
+	</ng-container>
+
+	<ng-template #empty>
+		<div class="empty" *ngIf="data.pageSection == null || data.pageSection.empty">
+			<span>Wow, such empty</span>
+		</div>
+	</ng-template>
+
+	<ng-container *ngIf="data.pageSection && !data.pageSection.empty">
+		<app-paginator
+			[length]="data.pageSection.totalElements"
+			[pageSize]="data.pageSection.size"
+			[pageIndex]="data.pageSection.number"
+			[showFirstLastButtons]="true"
+			(page)="onPageEvent($event)">
+		</app-paginator>
+
+		<app-search-result
+			[courses]="data.pageSection.content"
+			[registeredSectionIds]="data.registeredSectionIds"
+			(courseInfoEvent)="openCourseInfo($event)"
+			(addToCartEvent)="addToCart($event)">
+		</app-search-result>
+
+		<app-paginator
+			[length]="data.pageSection.totalElements"
+			[pageSize]="data.pageSection.size"
+			[pageIndex]="data.pageSection.number"
+			[pageSizeOptions]="pageSizeOptions"
+			[showFirstLastButtons]="true"
+			(page)="onPageEvent($event)">
+		</app-paginator>
+	</ng-container>
+</ng-container>

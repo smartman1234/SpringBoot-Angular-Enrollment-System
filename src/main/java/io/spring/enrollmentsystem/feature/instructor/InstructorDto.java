@@ -3,6 +3,7 @@ package io.spring.enrollmentsystem.feature.instructor;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.spring.enrollmentsystem.common.annotation.QuerySelectHint;
 import io.spring.enrollmentsystem.common.validator.ValidationGroup;
+import io.spring.enrollmentsystem.common.view.AdminView;
 import io.spring.enrollmentsystem.common.view.BaseView;
 import io.spring.enrollmentsystem.feature.department.Department_;
 import io.spring.enrollmentsystem.feature.user.User_;
@@ -37,6 +38,10 @@ public class InstructorDto {
     @JsonView(BaseView.Low.class)
     @Schema(example = "9ccb0ce7-7df5-48a1-becd-b790a3efbdcb")
     private UUID departmentId;
+
+    @JsonView(BaseView.VeryHigh.class)
+    @Schema(example = "nathanieldoak@cccd.edu")
+    private String email;
 
     @JsonView(BaseView.VeryHigh.class)
     @Schema(example = "Krik")

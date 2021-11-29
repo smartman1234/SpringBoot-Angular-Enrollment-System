@@ -40,22 +40,13 @@ import java.util.UUID;
  * @author Khoale
  * @since 2021-09-02 (00:39:59)
  */
-@RestController @RequestMapping("/api/v1/admin/subjects")
+@RestController @RequestMapping("/api/v1/subjects")
 @Tag(name = "subject", description = "subject API")
-@Validated @PreAuthorize("hasRole(@Role.ADMIN)")
+@Validated @PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor @Slf4j
 public class SubjectController {
 
     private final SubjectService subjectService;
-
-    @GetMapping("/{subjectId}")
-    @Operation(summary = "Find subject by id", tags = "subject")
-    @JsonView(BaseView.MediumWithId.class)
-    public ResponseEntity<SubjectDto> getSubject(@PathVariable UUID subjectId) {
-        return ResponseEntity
-                .ok()
-                .body(subjectService.getSubjectDtoById(subjectId));
-    }
 
     @GetMapping("")
     @Operation(summary = "Find all instances of subject by predicate", tags = "subject")
@@ -66,73 +57,6 @@ public class SubjectController {
         return ResponseEntity
                 .ok()
                 .body(subjectService.getAllSubjectDtoByPredicate(parameters));
-    }
-
-    @GetMapping("/page")
-    @Operation(summary = "Find all instances of subject as pages by predicate", tags = "subject")
-    @JsonView(BaseView.MediumWithId.class)
-    public ResponseEntity<Page<SubjectDto>> getSubjectPageableByPredicate(
-            @ParameterObject Pageable pageable,
-            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
-
-        return ResponseEntity
-                .ok()
-                .body(subjectService.getSubjectDtoPageableByPredicate(parameters, pageable));
-    }
-
-    @GetMapping("/slice")
-    @Operation(summary = "Find all instances of subject as slices by predicate", tags = "subject")
-    @JsonView(BaseView.MediumWithId.class)
-    public ResponseEntity<Slice<SubjectDto>> getSubjectSliceByPredicate(
-            @ParameterObject Pageable pageable,
-            @RequestParam(required = false) MultiValueMap<String, String> parameters) {
-
-        return ResponseEntity
-                .ok()
-                .body(subjectService.getSubjectDtoSliceByPredicate(parameters, pageable));
-    }
-
-    @PostMapping("")
-    @Operation(summary = "Add a new subject", tags = "subject")
-    @JsonView(BaseView.MediumWithId.class)
-    public ResponseEntity<SubjectDto> createSubject(@RequestBody
-                                                    @Validated({ValidationGroup.onCreate.class, Default.class})
-                                                    @JsonView(BaseView.Create.class)
-                                                            SubjectDto subjectDto) {
-        SubjectDto response = subjectService.createSubject(subjectDto);
-        String subjectId = String.valueOf(response.getId());
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequestUri().path("/{subjectId}")
-                .buildAndExpand(subjectId).toUri();
-        return ResponseEntity.created(location).body(response);
-    }
-
-    @PutMapping("/{subjectId}")
-    @Operation(summary = "Update a subject by id", tags = "subject")
-    @JsonView(BaseView.MediumWithId.class)
-    public ResponseEntity<SubjectDto> updateSubject(@PathVariable UUID subjectId,
-                                                    @RequestBody @Valid
-                                                    @JsonView(BaseView.Update.class)
-                                                            SubjectDto subjectDto) {
-        SubjectDto response = subjectService.updateSubject(subjectId, subjectDto);
-        return ResponseEntity.ok().body(response);
-    }
-
-    @PatchMapping(path = "/{subjectId}", consumes = "application/merge-patch+json")
-    @Operation(summary = "Patch a subject by id", tags = "subject")
-    @JsonView(BaseView.MediumWithId.class)
-    public ResponseEntity<SubjectDto> patchSubject(@PathVariable UUID subjectId,
-                                                   @RequestBody JsonMergePatch mergePatchDocument) {
-        SubjectDto response = subjectService.patchSubject(subjectId, mergePatchDocument, BaseView.Update.class);
-        return ResponseEntity.ok().body(response);
-    }
-
-    @DeleteMapping("/{subjectId}")
-    @Operation(summary = "Delete a subject by id", tags = "subject")
-    public ResponseEntity<Void> deleteSubject(@PathVariable UUID subjectId) {
-        subjectService.deleteById(subjectId);
-        return ResponseEntity.noContent().build();
     }
 
 }

@@ -1,0 +1,43 @@
+<ng-container *appVar="{isSmallScreen: 'ltMd' | matchMedia | async} as media">
+	<ng-container *appVar="{pageSection: pageSection$ | async,
+	registeredSectionIds: registeredSectionIds$ | async} as data">
+		<div infiniteScroll
+			 [infiniteScrollDistance]="1"
+			 [infiniteScrollThrottle]="50"
+			 [infiniteScrollContainer]="infiniteScrollContainer"
+			 [fromRoot]="true"
+			 (scrolled)="onScroll(data.pageSection.number, data.pageSection.last)">
+			<div>
+				<mat-icon color="primary">circle</mat-icon>
+				: Open
+			</div>
+			<div>
+				<mat-icon color="accent">change_history</mat-icon>
+				: WaitList
+			</div>
+			<div>
+				<mat-icon color="warn">square</mat-icon>
+				: Closed
+			</div>
+			<br>
+			<ng-container *ngIf="true | isLoading | async; else empty">
+				<app-loading></app-loading>
+			</ng-container>
+
+			<ng-template #empty>
+				<div class="empty" *ngIf="data.pageSection.content.length === 0">
+					<span>Wow, such empty</span>
+				</div>
+			</ng-template>
+
+			<ng-container *ngIf="data.pageSection && !data.pageSection.empty">
+				<app-search-result [accordionOpened]="true"
+								   [courses]="data.pageSection.content"
+								   [registeredSectionIds]="data.registeredSectionIds"
+								   (courseInfoEvent)="openCourseInfo($event)"
+								   (addToCartEvent)="addToCart($event)">
+				</app-search-result>
+			</ng-container>
+		</div>
+	</ng-container>
+</ng-container>

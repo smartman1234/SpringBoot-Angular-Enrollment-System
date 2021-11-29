@@ -35,7 +35,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { EnrollWaitListDialogComponent } from "../../components/enroll-wait-list-dialog/enroll-wait-list-dialog.component";
 import { ConfirmDialogComponent } from "../../../../core/components/confirm-dialog/confirm-dialog.component";
 import { Enrollment } from "../../models/enrollment.model";
-import { EnrollmentStatus } from "../../constant/enrollment-status";
+import { EnrollmentStatus } from "../../../../core/constants/enrollment-status";
 import { HttpParams } from "@angular/common/http";
 import { ErrorNotificationService } from "../../../../core/services/error-notification.service";
 import { selectEnrollmentIds } from "./enrollment.selectors";

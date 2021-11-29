@@ -1,0 +1,49 @@
+<ng-container>
+	<h2 mat-dialog-title>Create New Student</h2>
+	<mat-dialog-content>
+		<form id="studentForm" [formGroup]="studentForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Max Unit</mat-label>
+				<input type="number" matInput formControlName="maxUnit">
+				<button *ngIf="maxUnit.value" matSuffix mat-icon-button
+						(click)="maxUnit.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="maxUnit.invalid && (maxUnit.dirty || maxUnit.touched)">
+					<div *ngIf="maxUnit.errors?.required">Max unit is required</div>
+					<div *ngIf="maxUnit.errors?.max">Maximum unit is 20</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>User</mat-label>
+				<mat-select formControlName="userId">
+					<mat-option *ngFor="let user of userPage.content" [value]="user.id">
+						{{user.username}} - {{user.firstName}} {{user.lastName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="userId.invalid && (userId.dirty || userId.touched)">
+					<div *ngIf="userId.errors?.required">User id is required</div>
+				</mat-error>
+			</mat-form-field>
+			<div>
+				<app-paginator
+					[hidePageSize]="true"
+					[length]="userPage.totalElements"
+					[pageSize]="userPage.size"
+					[pageIndex]="userPage.number"
+					[showFirstLastButtons]="true"
+					(page)="onPageEvent($event)">
+				</app-paginator>
+			</div>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!studentForm.valid"
+				(click)="create()">Create
+		</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>
+

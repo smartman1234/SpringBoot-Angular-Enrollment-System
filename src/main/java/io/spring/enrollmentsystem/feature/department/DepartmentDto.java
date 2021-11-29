@@ -2,6 +2,7 @@ package io.spring.enrollmentsystem.feature.department;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.spring.enrollmentsystem.common.validator.ValidationGroup;
+import io.spring.enrollmentsystem.common.view.AdminView;
 import io.spring.enrollmentsystem.common.view.BaseView;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -30,9 +31,9 @@ public class DepartmentDto {
     @NotNull @Size(max = 100)
     private String departmentName;
 
-    @JsonView(BaseView.Medium.class)
+    @JsonView(BaseView.Low.class)
     @Schema(example = "2d57edfd-8297-4dd2-9de7-c9ab81cb53eb")
-    @NotNull(groups = {ValidationGroup.onCreate.class})
+    @NotNull
     private UUID collegeId;
 
 }

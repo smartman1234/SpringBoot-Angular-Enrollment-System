@@ -1,0 +1,82 @@
+<ng-container>
+	<h2 mat-dialog-title>Create New Enrollment</h2>
+	<mat-dialog-content>
+		<form id="enrollmentForm" [formGroup]="enrollmentForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Term</mat-label>
+				<mat-select formControlName="term" (selectionChange)="getCourses()">
+					<mat-option *ngFor="let term of terms$ | async" [value]="term">
+						{{term.termName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="term.invalid && (term.dirty || term.touched)">
+					<div *ngIf="term.errors?.required">Term is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Subject</mat-label>
+				<mat-select formControlName="subject" (selectionChange)="getCourses()">
+					<mat-option *ngFor="let subject of subjects$ | async" [value]="subject">
+						{{subject.subjectAcronym}} - {{subject.subjectName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="subject.invalid && (subject.dirty || subject.touched)">
+					<div *ngIf="subject.errors?.required">Subject is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Course</mat-label>
+				<mat-select formControlName="course" (selectionChange)="getSections()">
+					<mat-option *ngFor="let course of courses$ | async" [value]="course">
+						{{course.courseCode}} - {{course.courseName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="course.invalid && (course.dirty || course.touched)">
+					<div *ngIf="course.errors?.required">Course is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Section</mat-label>
+				<mat-select formControlName="section">
+					<mat-option *ngFor="let section of sections$ | async" [value]="section">
+						{{section.sectionNumber}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="section.invalid && (section.dirty || section.touched)">
+					<div *ngIf="section.errors?.required">Section is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Student</mat-label>
+				<mat-select formControlName="student">
+					<mat-option *ngFor="let student of studentPage.content" [value]="student">
+						{{student.email}} - {{student.firstName}} {{student.lastName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="student.invalid && (student.dirty || student.touched)">
+					<div *ngIf="student.errors?.required">Student is required</div>
+				</mat-error>
+			</mat-form-field>
+			<app-paginator
+				[disabled]="!student.enabled"
+				[hidePageSize]="true"
+				[length]="studentPage.totalElements"
+				[pageSize]="studentPage.size"
+				[pageIndex]="studentPage.number"
+				[showFirstLastButtons]="true"
+				(page)="onPageEvent($event)">
+			</app-paginator>
+			<br>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!enrollmentForm.valid"
+				(click)="create()">Create</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>

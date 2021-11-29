@@ -3,6 +3,7 @@ package io.spring.enrollmentsystem.feature.room;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.spring.enrollmentsystem.common.annotation.QuerySelectHint;
 import io.spring.enrollmentsystem.common.validator.ValidationGroup;
+import io.spring.enrollmentsystem.common.view.AdminView;
 import io.spring.enrollmentsystem.common.view.BaseView;
 import io.spring.enrollmentsystem.feature.building.Building_;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,14 +37,9 @@ public class RoomDto {
     @Schema(example = "35")
     private Integer roomCapacity;
 
-    @JsonView(BaseView.Medium.class)
+    @JsonView(BaseView.Low.class)
     @Schema(example = "7ce3cd4f-b8b1-4108-94b4-c5b45463bb31")
-    @NotNull(groups = ValidationGroup.onCreate.class)
+    @NotNull
     private UUID buildingId;
-
-    @JsonView(BaseView.High.class)
-    @Schema(example = "1")
-    @QuerySelectHint(Room_.BUILDING + KEY_SEPARATOR + Building_.BUILDING_NUMBER)
-    private Integer buildingNumber;
 
 }

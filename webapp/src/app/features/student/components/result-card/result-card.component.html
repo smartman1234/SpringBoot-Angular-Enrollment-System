@@ -1,5 +1,6 @@
 <div *ngFor="let course of courses">
-	<mat-card class="section-card mat-elevation-z8" *ngFor="let section of course.sections">
+	<mat-card class="section-card mat-elevation-z8"
+			  *ngFor="let section of course.sections; trackBy: trackSection">
 		<mat-card-title>{{course.courseCode}}</mat-card-title>
 		<mat-card-subtitle>
 			{{course.courseName}}

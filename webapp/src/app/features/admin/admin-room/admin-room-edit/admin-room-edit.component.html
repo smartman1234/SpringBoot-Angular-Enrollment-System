@@ -1,0 +1,49 @@
+<ng-container>
+	<h2 mat-dialog-title>Edit Room</h2>
+	<mat-dialog-content>
+		<form id="roomForm" [formGroup]="roomForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Building</mat-label>
+				<mat-select formControlName="buildingId">
+					<mat-option *ngFor="let building of buildings$ | async" [value]="building.id">
+						{{building.buildingCode}} - {{building.buildingName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="buildingId.invalid && (buildingId.dirty || buildingId.touched)">
+					<div *ngIf="buildingId.errors?.required">Building id is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Room Number</mat-label>
+				<input type="number" matInput formControlName="roomNumber">
+				<button *ngIf="roomNumber.value" matSuffix mat-icon-button
+						(click)="roomNumber.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="roomNumber.invalid && (roomNumber.dirty || roomNumber.touched)">
+					<div *ngIf="roomNumber.errors?.required">Room number is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Room Capacity</mat-label>
+				<input type="number" matInput formControlName="roomCapacity">
+				<button *ngIf="roomCapacity.value" matSuffix mat-icon-button
+						(click)="roomCapacity.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="roomCapacity.invalid && (roomCapacity.dirty || roomCapacity.touched)">
+					<div *ngIf="roomCapacity.errors?.required">Room capacity is required</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!roomForm.valid || !roomForm.dirty"
+				(click)="saveEdit()">Save</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>
+

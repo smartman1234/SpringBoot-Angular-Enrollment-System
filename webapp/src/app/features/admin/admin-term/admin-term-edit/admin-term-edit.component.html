@@ -1,0 +1,50 @@
+<ng-container>
+	<h2 mat-dialog-title>Edit Term</h2>
+	<mat-dialog-content>
+		<form id="termForm" [formGroup]="termForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Term Name</mat-label>
+				<input matInput formControlName="termName">
+				<button *ngIf="termName.value" matSuffix mat-icon-button
+						(click)="termName.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="termName.invalid && (termName.dirty || termName.touched)">
+					<div *ngIf="termName.errors?.required">Term name is required</div>
+					<div *ngIf="termName.errors?.maxlength">Term name exceeds 50 characters</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Date Start</mat-label>
+				<input type="date" matInput formControlName="dateStart">
+				<button *ngIf="dateStart.value" matSuffix mat-icon-button
+						(click)="dateStart.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="dateStart.invalid && (dateStart.dirty || dateStart.touched)">
+					<div *ngIf="dateStart.errors?.required">Date Start is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Date End</mat-label>
+				<input type="date" matInput formControlName="dateEnd">
+				<button *ngIf="dateEnd.value" matSuffix mat-icon-button
+						(click)="dateEnd.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="dateEnd.invalid && (dateEnd.dirty || dateEnd.touched)">
+					<div *ngIf="dateEnd.errors?.required">Date End is required</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!termForm.valid || !termForm.dirty"
+				(click)="saveEdit()">Save</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>
+

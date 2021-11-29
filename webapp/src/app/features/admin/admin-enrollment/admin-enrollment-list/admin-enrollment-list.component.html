@@ -1,0 +1,271 @@
+<div class="admin-main">
+	<mat-card class="content-card">
+		<mat-card-title>{{title}}</mat-card-title>
+		<mat-card-subtitle>{{subtitle}}</mat-card-subtitle>
+		<mat-card-content *appVar="enrollmentPage$ | async as enrollmentPage">
+			<form id="filterForm" [formGroup]="filterForm">
+				<div>
+					<mat-form-field class="admin-form-field" appearance="outline">
+						<mat-label>Term</mat-label>
+						<mat-select formControlName="term" (selectionChange)="getCourses()">
+							<mat-option *ngFor="let term of terms$ | async" [value]="term">
+								{{term.termName}}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="term.invalid && (term.dirty || term.touched)">
+							<div *ngIf="term.errors?.required">Term is required</div>
+						</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div>
+					<mat-form-field class="admin-form-field" appearance="outline">
+						<mat-label>Subject</mat-label>
+						<mat-select formControlName="subject" (selectionChange)="getCourses()">
+							<mat-option *ngFor="let subject of subjects$ | async" [value]="subject">
+								{{subject.subjectAcronym}} - {{subject.subjectName}}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="subject.invalid && (subject.dirty || subject.touched)">
+							<div *ngIf="subject.errors?.required">Subject is required</div>
+						</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div>
+					<mat-form-field class="admin-form-field" appearance="outline">
+						<mat-label>Course</mat-label>
+						<mat-select formControlName="course" (selectionChange)="getSections()">
+							<mat-option *ngFor="let course of courses$ | async" [value]="course">
+								{{course.courseCode}} - {{course.courseName}}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="course.invalid && (course.dirty || course.touched)">
+							<div *ngIf="course.errors?.required">Course is required</div>
+						</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div>
+					<mat-form-field class="admin-form-field" appearance="outline">
+						<mat-label>Section</mat-label>
+						<mat-select formControlName="section" (selectionChange)="getEnrollmentPage()">
+							<mat-option *ngFor="let section of sections$ | async" [value]="section">
+								{{section.sectionNumber}}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="section.invalid && (section.dirty || section.touched)">
+							<div *ngIf="section.errors?.required">Section is required</div>
+						</mat-error>
+					</mat-form-field>
+				</div>
+			</form>
+
+			<div class="admin-function-button">
+				<button mat-raised-button color="accent"
+						(click)="openErrorMessages()">
+					<mat-icon>warning</mat-icon>
+					Error Logs
+				</button>
+				<button mat-raised-button color="primary"
+						(click)="createEnrollment()">
+					<mat-icon>add</mat-icon>
+					Create
+				</button>
+			</div>
+
+			<ng-container *ngIf="true | isLoading | async; else empty">
+				<app-loading [overlay]="true"></app-loading>
+			</ng-container>
+
+			<ng-template #empty>
+				<app-empty-result *ngIf="enrollmentPage.empty"></app-empty-result>
+			</ng-template>
+
+			<div *ngIf="!enrollmentPage.empty" class="mat-elevation-z8">
+				<div id="admin-table-container" class="admin-table-container" (scroll)="onScroll($event)">
+					<table class="admin-table"
+						   mat-table [dataSource]="enrollmentPage.content" [trackBy]="trackEnrollment"
+						   matSort [matSortActive]="sortActive" [matSortDirection]="sortDirection" matSortDisableClear
+						   (matSortChange)="onSortChange($event)">
+						<!-- Student Column -->
+						<ng-container matColumnDef="student">
+							<th mat-header-cell *matHeaderCellDef>Student</th>
+							<td data-th="Student" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.studentEmail}}
+									- {{enrollment.studentFirstName}} {{enrollment.studentLastName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Course Column -->
+						<ng-container matColumnDef="course">
+							<th mat-header-cell *matHeaderCellDef>Course</th>
+							<td data-th="Course" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.courseCode}}.{{enrollment.sectionNumber.toString().padStart(2, "0")}}
+									- {{enrollment.courseName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Enrollment Status Column -->
+						<ng-container matColumnDef="enrollmentStatus">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Enrollment Status</th>
+							<td data-th="Enrollment Status" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.enrollmentStatus}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Access Code Column -->
+						<ng-container matColumnDef="accessCode">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Access Code</th>
+							<td data-th="Access Code" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.accessCode}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Meeting Days Column -->
+						<ng-container matColumnDef="meetingDays">
+							<th mat-header-cell *matHeaderCellDef>Meeting Days</th>
+							<td data-th="Meeting Days" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.meetingDays}}
+									{{'2000-01-01 ' + enrollment.meetingTimeStart | date:'shortTime'}}
+									- {{'2000-01-01 ' + enrollment.meetingTimeEnd | date:'shortTime'}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Class Capacity Column -->
+						<ng-container matColumnDef="classCapacity">
+							<th mat-header-cell *matHeaderCellDef>Class Capacity</th>
+							<td data-th="Class Capacity" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.enrolledNumber}}/{{enrollment.classCapacity}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- WaitList Column -->
+						<ng-container matColumnDef="waitlist">
+							<th mat-header-cell *matHeaderCellDef>WaitList</th>
+							<td data-th="WaitList" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.waitingNumber}}/{{enrollment.waitlistCapacity}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Date Column -->
+						<ng-container matColumnDef="date">
+							<th mat-header-cell *matHeaderCellDef>Date</th>
+							<td data-th="Date" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.dateStart | date:'shortDate'}}
+									- {{enrollment.dateEnd | date:'shortDate'}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Room Column -->
+						<ng-container matColumnDef="room">
+							<th mat-header-cell *matHeaderCellDef>Room</th>
+							<td data-th="Room" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									Bldg.{{enrollment.buildingNumber}} - Rm.{{enrollment.roomNumber}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Instructor Column -->
+						<ng-container matColumnDef="instructor">
+							<th mat-header-cell *matHeaderCellDef>Instructor</th>
+							<td data-th="Instructor" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.instructorFirstName}} {{enrollment.instructorLastName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Term Name Column -->
+						<ng-container matColumnDef="termName">
+							<th mat-header-cell *matHeaderCellDef>Term Name</th>
+							<td data-th="Term Name" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.termName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Student Id Column -->
+						<ng-container matColumnDef="studentId">
+							<th mat-header-cell *matHeaderCellDef>Student Id</th>
+							<td data-th="Student Id" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.studentId}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Section Id Column -->
+						<ng-container matColumnDef="sectionId">
+							<th mat-header-cell *matHeaderCellDef>Section Id</th>
+							<td data-th="Section Id" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									{{enrollment.sectionId}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Edit Column -->
+						<ng-container matColumnDef="edit" stickyEnd="true">
+							<th mat-header-cell *matHeaderCellDef>Edit</th>
+							<td data-th="Edit" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									<button mat-icon-button (click)="editEnrollment(enrollment)">
+										<mat-icon>edit</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Delete Column -->
+						<ng-container matColumnDef="delete" stickyEnd="true">
+							<th mat-header-cell *matHeaderCellDef>Delete</th>
+							<td data-th="Delete" mat-cell *matCellDef="let enrollment">
+								<ng-container *ngIf="asEnrollment(enrollment) as enrollment">
+									<button mat-icon-button color="warn" (click)="deleteEnrollment(enrollment)">
+										<mat-icon>delete</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+					</table>
+				</div>
+				<div class="admin-mat-paginator-sticky">
+					<app-paginator
+						[length]="enrollmentPage.totalElements"
+						[pageSize]="enrollmentPage.size"
+						[pageIndex]="enrollmentPage.number"
+						[showFirstLastButtons]="true"
+						(page)="onPageEvent($event)">
+					</app-paginator>
+				</div>
+			</div>
+		</mat-card-content>
+		<button *ngIf="showScrollToTop" class="admin-scroll-top-button"
+				mat-icon-button (click)="scrollToTop()">
+			<mat-icon>arrow_upward</mat-icon>
+		</button>
+	</mat-card>
+</div>
+

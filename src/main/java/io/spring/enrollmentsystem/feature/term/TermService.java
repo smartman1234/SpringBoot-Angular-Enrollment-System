@@ -9,11 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,10 +45,8 @@ public class TermService {
 
     @Transactional(readOnly = true)
     public List<TermDto> getAllTermDtoByPredicate(MultiValueMap<String, String> parameters) {
-        List<TermDto> termDtoList = termRepository
-                .findAll(TermDto.class, specificationService.getSpecifications(parameters));
-        termDtoList.sort(Comparator.comparing(TermDto::getDateStart));
-        return termDtoList;
+        return termRepository
+                .findAll(TermDto.class, specificationService.getSpecifications(parameters), Sort.by(Term_.DATE_START));
     }
 
     @Transactional(readOnly = true)

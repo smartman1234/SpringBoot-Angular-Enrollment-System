@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
-import { select, Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { AuthenticationUser } from "../../models/authentication-user.model";
-import { AppState } from "../../../shared/store/app-store.module";
-import { selectAuthenticationUser } from "../../store/authentication/authentication.selectors";
+import { AuthenticationQuery } from "../../state/authentication/authentication.query";
 
 @Component({
 	selector: "app-greeting",
@@ -13,14 +11,17 @@ import { selectAuthenticationUser } from "../../store/authentication/authenticat
 })
 export class GreetingComponent implements OnInit {
 
-	user$: Observable<AuthenticationUser> = this.store.pipe(select(selectAuthenticationUser));
+	user$!: Observable<AuthenticationUser>;
 
 	constructor(
-		private store: Store<AppState>,
+		// private store: Store<AppState>,
+		private authenticationQuery: AuthenticationQuery,
 	) {
 	}
 
 	ngOnInit(): void {
+		// this.user$ = this.store.pipe(select(selectAuthenticationUser));
+		this.user$ = this.authenticationQuery.user$;
 	}
 
 }

@@ -1,0 +1,27 @@
+<ng-container>
+	<h2 mat-dialog-title>Edit Instructor</h2>
+	<mat-dialog-content>
+		<form id="instructorForm" [formGroup]="instructorForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Department</mat-label>
+				<mat-select formControlName="departmentId">
+					<mat-option *ngFor="let department of departments$ | async" [value]="department.id">
+						{{department.departmentName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="departmentId.invalid && (departmentId.dirty || departmentId.touched)">
+					<div *ngIf="departmentId.errors?.required">Department id is required</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!instructorForm.valid || !instructorForm.dirty"
+				(click)="saveEdit()">Save
+		</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>
+
+

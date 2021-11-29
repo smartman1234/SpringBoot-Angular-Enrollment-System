@@ -2,12 +2,13 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { PageNotFoundComponent } from "./core/components/page-not-found/page-not-found.component";
 import { AuthGuard } from "./core/guards/auth.guard";
+import { AdminGuard } from "./core/guards/admin.guard";
 
 const routes: Routes = [
 	{
 		path: "admin",
 		loadChildren: () => import("./features/admin/admin.module").then(m => m.AdminModule),
-		canLoad: [AuthGuard],
+		canLoad: [AdminGuard],
 	},
 	{
 		path: "student",

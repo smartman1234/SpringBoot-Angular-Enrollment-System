@@ -94,7 +94,7 @@ public class SectionDto {
     @NotNull(groups = ValidationGroup.onCreate.class)
     private UUID termId;
 
-    @JsonView(BaseView.VeryHigh.class)
+    @JsonView(BaseView.Medium.class)
     @Schema(example = "b267509c-2fe2-4696-9b5e-c98a8b41acb7")
     @NotNull(groups = ValidationGroup.onCreate.class)
     private UUID courseId;

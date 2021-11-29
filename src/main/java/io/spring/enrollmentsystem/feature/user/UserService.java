@@ -63,6 +63,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public Slice<UserDto> getUserDtoSliceByPredicate(MultiValueMap<String, String> parameters, Pageable pageable) {
+
         return userRepository
                 .findAll(User.class, specificationService.getSpecifications(parameters), pageable)
                 .map(userMapper::toUserDto);
@@ -129,7 +130,7 @@ public class UserService {
             throw new ValidationException("New password must be different from current password!");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(newPassword));
     }
 
     @Transactional(readOnly = true)

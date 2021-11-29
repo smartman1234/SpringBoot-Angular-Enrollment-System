@@ -1,0 +1,26 @@
+<ng-container>
+	<h2 mat-dialog-title>Edit Enrollment</h2>
+	<mat-dialog-content>
+		<form id="enrollmentForm" [formGroup]="enrollmentForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Access Code</mat-label>
+				<input matInput formControlName="accessCode">
+				<button *ngIf="accessCode.value" matSuffix mat-icon-button
+						(click)="accessCode.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="accessCode.invalid && (accessCode.dirty || accessCode.touched)">
+					<div *ngIf="accessCode.errors?.required">Access Code is required</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="(!enrollmentForm.valid || !enrollmentForm.dirty) && !inCart"
+				(click)="saveEdit()">Enroll</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>
+
+

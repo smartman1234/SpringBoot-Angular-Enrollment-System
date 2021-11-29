@@ -7,9 +7,10 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { CookieModule } from "ngx-cookie";
 import { httpInterceptorProviders } from "./core/interceptors";
 import { CoreModule } from "./core/core.module";
-import { AppStoreModule } from "./shared/store/app-store.module";
 import { HttpClientModule } from "@angular/common/http";
 import { MaterialModule } from "./shared/module/material.module";
+import { environment } from "../environments/environment";
+import { AkitaNgDevtools } from "@datorama/akita-ngdevtools";
 
 @NgModule({
 	declarations: [
@@ -21,8 +22,9 @@ import { MaterialModule } from "./shared/module/material.module";
 		BrowserAnimationsModule,
 		MaterialModule,
 		CookieModule.forRoot(),
-		AppStoreModule,
+		// AppStoreModule,
 		CoreModule,
+		environment.production ? [] : AkitaNgDevtools.forRoot(),
 		AppRoutingModule,
 	],
 	providers: [

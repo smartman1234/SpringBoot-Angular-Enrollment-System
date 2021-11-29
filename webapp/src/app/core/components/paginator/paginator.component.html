@@ -9,9 +9,9 @@
 				   [color]="color"
 				   (page)="onPageEvent($event)">
 	</mat-paginator>
-	<button mat-button [matMenuTriggerFor]="goto">Page: {{pageNumber.value}}</button>
+	<button class="goto-button" mat-button [matMenuTriggerFor]="goto">Page: {{pageNumber.value}}</button>
 	<mat-menu #goto="matMenu">
-		<form id="pageNumberForm" (click)="$event.stopPropagation()"
+		<form id="pageNumberForm" (click)="$event.stopPropagation()" (keydown.enter)="$event.preventDefault()"
 			  [formGroup]="pageNumberForm" (ngSubmit)="goToPage()">
 			<mat-form-field class="form-field" appearance="outline">
 				<mat-label>Go to page [1 - {{maxPageNumber}}]</mat-label>

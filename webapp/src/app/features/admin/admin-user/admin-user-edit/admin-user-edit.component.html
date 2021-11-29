@@ -1,0 +1,71 @@
+<ng-container>
+	<h2 mat-dialog-title>Edit User</h2>
+	<mat-dialog-content>
+		<form id="userForm" [formGroup]="userForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Role</mat-label>
+				<mat-select formControlName="authorities" multiple>
+					<mat-select-trigger>
+						{{authorities.value ? authorities.value[0] : ""}}
+						<span *ngIf="authorities.value?.length > 1" class="admin-additional-selection">
+							(+{{authorities.value.length - 1}} {{authorities.value?.length === 2 ? 'other' : 'others'}})
+						</span>
+					</mat-select-trigger>
+
+					<mat-option *ngFor="let authority of authorities$ | async" [value]="authority.role">
+						{{authority.role}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="authorities.invalid && (authorities.dirty || authorities.touched)">
+					<div *ngIf="authorities.errors?.required">Authorities are required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Username</mat-label>
+				<input matInput formControlName="username">
+				<button *ngIf="username.value" matSuffix mat-icon-button
+						(click)="username.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="username.invalid && (username.dirty || username.touched)">
+					<div *ngIf="username.errors?.required">Username is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-checkbox class="admin-form-field" formControlName="enabled">Enabled</mat-checkbox>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>First Name</mat-label>
+				<input matInput formControlName="firstName">
+				<button *ngIf="firstName.value" matSuffix mat-icon-button
+						(click)="firstName.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)">
+					<div *ngIf="firstName.errors?.required">First name is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Last Name</mat-label>
+				<input matInput formControlName="lastName">
+				<button *ngIf="lastName.value" matSuffix mat-icon-button
+						(click)="lastName.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)">
+					<div *ngIf="lastName.errors?.required">Last name is required</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!userForm.valid || !userForm.dirty"
+				(click)="saveEdit()">Save</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>
+
+

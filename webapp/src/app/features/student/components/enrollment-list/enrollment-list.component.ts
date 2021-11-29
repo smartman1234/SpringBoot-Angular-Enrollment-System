@@ -1,4 +1,4 @@
-import { Component, ContentChild, Input, OnDestroy, OnInit, TemplateRef } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ContentChild, Input, OnDestroy, OnInit, TemplateRef } from "@angular/core";
 import { Enrollment } from "../../models/enrollment.model";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
 import { getAllTerms } from "../../store/term/term.actions";
@@ -9,7 +9,7 @@ import { selectTermInput } from "../../store/search-input/search-input.selectors
 import { selectUserId } from "../../../../core/store/authentication/authentication.selectors";
 import { AppState } from "../../../../shared/store/app-store.module";
 import { EnrollmentService } from "../../services/enrollment.service";
-import { EnrollmentStatus } from "../../constant/enrollment-status";
+import { EnrollmentStatus } from "../../../../core/constants/enrollment-status";
 import { Observable, Subject } from "rxjs";
 import { selectEnrollments } from "../../store/enrollment/enrollment.selectors";
 import {
@@ -25,6 +25,7 @@ import { saveTermInput } from "../../store/search-input/search-input.actions";
 	selector: "app-enrollment-list",
 	templateUrl: "./enrollment-list.component.html",
 	styleUrls: ["./enrollment-list.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EnrollmentListComponent implements OnInit, OnDestroy {
 
@@ -137,6 +138,10 @@ export class EnrollmentListComponent implements OnInit, OnDestroy {
 
 	asEnrollment(value: any): Enrollment {
 		return value as Enrollment;
+	}
+
+	trackEnrollment(index: number, enrollment: Enrollment): string {
+		return enrollment.sectionId;
 	}
 }
 

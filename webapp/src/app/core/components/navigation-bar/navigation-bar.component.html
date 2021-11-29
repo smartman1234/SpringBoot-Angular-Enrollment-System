@@ -53,7 +53,7 @@
 		</mat-sidenav>
 
 		<mat-sidenav-content>
-			<div #content class="content mat-elevation-z8" (scroll)="onScroll($event)">
+			<div #content id="content" class="content mat-elevation-z8" (scroll)="onScroll($event)">
 				<ng-container *ngIf="sidenavContentRef" [ngTemplateOutlet]="sidenavContentRef">
 				</ng-container>
 				<button *ngIf="showScrollToTop" class="scroll-top-button"

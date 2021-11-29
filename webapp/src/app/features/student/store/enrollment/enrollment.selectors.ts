@@ -1,6 +1,6 @@
 import { createSelector } from "@ngrx/store";
 import { EnrollmentState } from "./enrollment.reducer";
-import { EnrollmentStatus } from "../../constant/enrollment-status";
+import { EnrollmentStatus } from "../../../../core/constants/enrollment-status";
 import { selectStudentFeature, StudentState } from "../index";
 
 export const selectEnrollmentState = createSelector(

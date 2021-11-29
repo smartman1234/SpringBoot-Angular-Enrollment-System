@@ -14,24 +14,30 @@ import { NavigationBarComponent } from "./components/navigation-bar/navigation-b
 import { VarDirective } from "./directives/var.directive";
 import { LoadingPipe } from "./pipes/loading.pipe";
 import { PaginatorComponent } from "./components/paginator/paginator.component";
+import { ErrorMessageDialogComponent } from "./components/error-message-dialog/error-message-dialog.component";
+import { AdminLoginComponent } from "./components/admin-login/admin-login.component";
+import { EmptyResultComponent } from "./components/empty-result/empty-result.component";
 
 @NgModule({
 	declarations: [
 		GreetingComponent,
 		PageNotFoundComponent,
+		AdminLoginComponent,
 		LoginComponent,
 		LogoutComponent,
 		LoadingComponent,
 		ConfirmDialogComponent,
 		NavigationBarComponent,
+		ErrorMessageDialogComponent,
+		EmptyResultComponent,
 		PaginatorComponent,
-		MatchMediaPipe,
 		VarDirective,
+		MatchMediaPipe,
 		LoadingPipe,
 	],
 	imports: [
 		SharedModule,
-		CoreStoreModule,
+		// CoreStoreModule,
 		CoreRoutingModule,
 	],
 	exports: [
@@ -40,9 +46,11 @@ import { PaginatorComponent } from "./components/paginator/paginator.component";
 		GreetingComponent,
 		PageNotFoundComponent,
 		NavigationBarComponent,
+		ErrorMessageDialogComponent,
+		EmptyResultComponent,
 		PaginatorComponent,
-		MatchMediaPipe,
 		VarDirective,
+		MatchMediaPipe,
 		LoadingPipe,
 	],
 })

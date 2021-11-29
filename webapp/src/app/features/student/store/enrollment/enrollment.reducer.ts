@@ -9,7 +9,7 @@ import {
 	removeEnrollmentSuccess,
 } from "./enrollment.actions";
 import { EnrollmentId } from "../../models/enrollment.id.model";
-import { EnrollmentStatus } from "../../constant/enrollment-status";
+import { EnrollmentStatus } from "../../../../core/constants/enrollment-status";
 
 export interface EnrollmentState {
 	enrollmentIds: Array<EnrollmentId>,
@@ -28,7 +28,7 @@ const reducer = createReducer(
 		enrollments,
 	})),
 	on(enrollSuccess, (state, { enrollments }) => ({
-		enrollments:  state.enrollments
+		enrollments: state.enrollments
 			.filter(enrollment => !enrollments.some(e => e.sectionId === enrollment.sectionId)),
 		enrollmentIds: state.enrollmentIds
 			.filter(enrollment => !enrollments.some(e => e.sectionId === enrollment.sectionId))
@@ -37,15 +37,27 @@ const reducer = createReducer(
 				enrollmentStatus: enrollment.enrollmentStatus,
 			}))),
 	})),
-	on(enrollFromWaitListSuccess, (state, { enrollment }) => ({
-		enrollments: state.enrollments.filter(e => e.sectionId !== enrollment.sectionId).concat(enrollment),
-		enrollmentIds: state.enrollmentIds
-			.filter(e => e.sectionId !== enrollment.sectionId)
-			.concat({
-				sectionId: enrollment.sectionId,
+	on(enrollFromWaitListSuccess, (state, { enrollment }) => {
+		let enrollingEnrollment: Enrollment | undefined = state
+			.enrollments.find(e => e.sectionId === enrollment.sectionId);
+		if (enrollingEnrollment) {
+			enrollingEnrollment = {
+				...enrollingEnrollment,
 				enrollmentStatus: EnrollmentStatus.ENROLLED,
-			}),
-	})),
+			};
+		} else {
+			enrollingEnrollment = enrollment;
+		}
+		return {
+			enrollments: state.enrollments.filter(e => e.sectionId !== enrollment.sectionId).concat(enrollingEnrollment),
+			enrollmentIds: state.enrollmentIds
+				.filter(e => e.sectionId !== enrollment.sectionId)
+				.concat({
+					sectionId: enrollment.sectionId,
+					enrollmentStatus: EnrollmentStatus.ENROLLED,
+				}),
+		};
+	}),
 	on(removeEnrollmentSuccess, (state, { sectionId }) => ({
 		enrollments: state.enrollments.filter(e => e.sectionId !== sectionId),
 		enrollmentIds: state.enrollmentIds.filter(e => e.sectionId !== sectionId),
@@ -53,6 +65,9 @@ const reducer = createReducer(
 	on(getEnrollmentIdsSuccess, (state, { enrollmentIds }) => ({
 		...state,
 		enrollmentIds,
+		// enrollmentIds: state.enrollmentIds
+		// 	.filter(enrollment => !enrollmentIds.some(e => e.sectionId === enrollment.sectionId))
+		// 	.concat(enrollmentIds),
 	})),
 	on(addSectionToCartSuccess, (state, { sectionId }) => ({
 		...state,

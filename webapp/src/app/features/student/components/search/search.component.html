@@ -33,8 +33,8 @@
 						<mat-form-field class="form-field" appearance="outline">
 							<mat-label>Subject</mat-label>
 							<mat-select formControlName="subject" required>
-								<mat-option *ngFor="let subjectName of subjectNames" [value]="subjectName[0]">
-									{{subjectName[1]}}
+								<mat-option *ngFor="let subject of subjects" [value]="subject.subjectAcronym">
+									{{subject.subjectName}}
 								</mat-option>
 							</mat-select>
 							<mat-error *ngIf="subject.invalid && (subject.dirty || subject.touched)">

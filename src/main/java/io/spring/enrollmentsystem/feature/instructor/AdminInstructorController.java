@@ -3,6 +3,7 @@ package io.spring.enrollmentsystem.feature.instructor;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.spring.enrollmentsystem.common.validator.ValidationGroup;
+import io.spring.enrollmentsystem.common.view.AdminView;
 import io.spring.enrollmentsystem.common.view.BaseView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -97,7 +98,7 @@ public class AdminInstructorController {
     @JsonView(BaseView.HighWithId.class)
     public ResponseEntity<InstructorDto> createInstructor(@RequestBody
                                                           @Validated({ValidationGroup.onCreate.class, Default.class})
-                                                          @JsonView(BaseView.Create.class)
+                                                          @JsonView(AdminView.AdminCreate.class)
                                                                   InstructorDto instructorDto) {
         InstructorDto response = instructorService.createInstructor(instructorDto);
         String instructorId = String.valueOf(response.getId());
@@ -113,7 +114,7 @@ public class AdminInstructorController {
     @JsonView(BaseView.HighWithId.class)
     public ResponseEntity<InstructorDto> updateInstructor(@PathVariable UUID instructorId,
                                                           @RequestBody @Valid
-                                                          @JsonView(BaseView.Update.class)
+                                                          @JsonView(AdminView.AdminUpdate.class)
                                                                   InstructorDto instructorDto) {
         InstructorDto response = instructorService.updateInstructor(instructorId, instructorDto);
         return ResponseEntity.ok().body(response);
@@ -125,7 +126,7 @@ public class AdminInstructorController {
     public ResponseEntity<InstructorDto> patchInstructor(@PathVariable UUID instructorId,
                                                          @RequestBody JsonMergePatch mergePatchDocument) {
         InstructorDto response = instructorService.patchInstructor(instructorId, mergePatchDocument,
-                                                                   BaseView.Update.class);
+                                                                   AdminView.AdminUpdate.class);
         return ResponseEntity.ok().body(response);
     }
 

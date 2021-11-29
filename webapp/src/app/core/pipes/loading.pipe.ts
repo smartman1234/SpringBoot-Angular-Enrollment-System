@@ -1,9 +1,7 @@
 import { Pipe, PipeTransform } from "@angular/core";
-import { select, Store } from "@ngrx/store";
-import { AppState } from "../../shared/store/app-store.module";
 import { Observable } from "rxjs";
-import { selectIsLoading } from "../store/loading/loading.selectors";
 import { debounceTime, map } from "rxjs/operators";
+import { LoadingQuery } from "../state/loading/loading.query";
 
 @Pipe({
 	name: "isLoading",
@@ -11,13 +9,18 @@ import { debounceTime, map } from "rxjs/operators";
 export class LoadingPipe implements PipeTransform {
 
 	constructor(
-		private store: Store<AppState>,
+		// private store: Store<AppState>,
+		private loadingQuery: LoadingQuery,
 	) {
 	}
 
 	transform(value: boolean): Observable<boolean> {
-		return this.store.pipe(
-			select(selectIsLoading),
+		// return this.store.pipe(
+		// 	select(selectIsLoading),
+		// 	debounceTime(0),
+		// 	map(isLoading => value === isLoading),
+		// );
+		return this.loadingQuery.isLoading$.pipe(
 			debounceTime(0),
 			map(isLoading => value === isLoading),
 		);

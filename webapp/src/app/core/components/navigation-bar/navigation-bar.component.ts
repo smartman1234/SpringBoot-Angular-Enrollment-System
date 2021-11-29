@@ -1,5 +1,6 @@
 import { Component, ContentChild, ElementRef, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { MatSidenav } from "@angular/material/sidenav";
+import { ScrollToTopService } from "../../services/scroll-to-top.service";
 
 @Component({
 	selector: "app-navigation-bar",
@@ -9,14 +10,13 @@ import { MatSidenav } from "@angular/material/sidenav";
 export class NavigationBarComponent implements OnInit {
 
 	@ViewChild("sidenav") sidenav!: MatSidenav;
-	@ViewChild("content") content!: ElementRef;
 	@Input() title: string = "";
 
 	@ContentChild("toolbarList") toolbarListRef!: TemplateRef<any>;
 	@ContentChild("sidenavList") sidenavListRef!: TemplateRef<any>;
 	@ContentChild("sidenavContent") sidenavContentRef!: TemplateRef<any>;
 
-	breakPoint: number = 700;
+	breakPoint: number = 1000;
 	showScrollToTop: boolean = false;
 
 	onScroll(event: any) {
@@ -30,14 +30,12 @@ export class NavigationBarComponent implements OnInit {
 	}
 
 	scrollToTop() {
-		this.content.nativeElement.scroll({
-			top: 0,
-			left: 0,
-			behavior: 'smooth'
-		});
+		this.scrollToTopService.scrollToTop("content");
 	}
 
-	constructor() {
+	constructor(
+		private scrollToTopService: ScrollToTopService,
+	) {
 	}
 
 	ngOnInit(): void {

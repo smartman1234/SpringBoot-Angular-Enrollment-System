@@ -1,6 +1,11 @@
 package io.spring.enrollmentsystem.common.view;
 
+import io.spring.enrollmentsystem.feature.user.UserView;
+
 public class AdminView {
+    public interface AdminLoginRequest extends UserView.LoginRequest {
+    }
+
     // access to everything in dto
     public interface AdminPrivate extends BaseView.Private {
     }

@@ -17,7 +17,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -26,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
 import javax.validation.ValidationException;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -73,11 +71,11 @@ public class SectionService {
 
     @Transactional(readOnly = true)
     public List<SectionDto> getAllSectionDtoByPredicate(MultiValueMap<String, String> parameters) {
-        List<SectionDto> sectionDtoList = sectionRepository
-                .findAll(SectionDto.class, specificationService.getSpecifications(parameters));
-        sectionDtoList
-                .sort(Comparator.comparing(SectionDto::getCourseCode).thenComparing(SectionDto::getSectionNumber));
-        return sectionDtoList;
+        return sectionRepository
+                .findAll(SectionDto.class,
+                         specificationService.getSpecifications(parameters),
+                         Sort.by(Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_CODE)
+                                 .and(Sort.by(Section_.SECTION_NUMBER)));
     }
 
     @Transactional(readOnly = true)

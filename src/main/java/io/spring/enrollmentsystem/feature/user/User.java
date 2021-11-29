@@ -25,10 +25,7 @@ import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Change table's name from "user" to "users" due to
- * Postgres reserved key word for "user"
- */
+
 @Entity
 @Table(name="user")
 @Cacheable

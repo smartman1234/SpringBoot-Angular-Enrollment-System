@@ -11,6 +11,7 @@ import java.util.Set;
 @Configuration
 @ConfigurationProperties(prefix = "system")
 public class SystemProperties {
+    private String secretKey;
     private String[] urls;
     private boolean tls;
     private String currentVersion;

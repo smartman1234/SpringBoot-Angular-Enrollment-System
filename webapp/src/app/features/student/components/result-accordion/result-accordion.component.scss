@@ -29,8 +29,11 @@ table {
 	background-color: #f4fdfa;
 }
 
-.course-info-title {
-	margin-right: 0.5rem;
+.course-info-button {
+	background-color: rgba(227, 227, 227, 0.6);
+	.course-info-title {
+		margin-right: 0.5rem;
+	}
 }
 
 .mat-expansion-panel-header-description {

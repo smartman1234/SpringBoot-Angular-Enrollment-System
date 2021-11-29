@@ -1,0 +1,26 @@
+<ng-container>
+	<h2 mat-dialog-title>Create New Course</h2>
+	<mat-dialog-content>
+		<form id="collegeForm" [formGroup]="collegeForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>College Name</mat-label>
+				<input matInput formControlName="collegeName">
+				<button *ngIf="collegeName.value" matSuffix mat-icon-button
+						(click)="collegeName.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="collegeName.invalid && (collegeName.dirty || collegeName.touched)">
+					<div *ngIf="collegeName.errors?.required">College name is required</div>
+					<div *ngIf="collegeName.errors?.maxlength">College name exceeds 100 characters</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!collegeForm.valid"
+				(click)="create()">Create</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>
+

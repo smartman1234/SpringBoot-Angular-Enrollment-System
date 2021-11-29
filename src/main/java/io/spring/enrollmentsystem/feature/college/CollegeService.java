@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
@@ -45,7 +46,9 @@ public class CollegeService {
     @Transactional(readOnly = true)
     public List<CollegeDto> getAllCollegeDtoByPredicate(MultiValueMap<String, String> parameters) {
         return collegeRepository
-                .findAll(CollegeDto.class, specificationService.getSpecifications(parameters));
+                .findAll(CollegeDto.class,
+                         specificationService.getSpecifications(parameters),
+                         Sort.by(College_.COLLEGE_NAME));
     }
 
     @Transactional(readOnly = true)

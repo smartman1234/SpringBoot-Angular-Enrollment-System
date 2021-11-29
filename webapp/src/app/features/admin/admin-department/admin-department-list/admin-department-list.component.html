@@ -1,0 +1,117 @@
+<div class="admin-main">
+	<mat-card class="content-card">
+		<mat-card-title>{{title}}</mat-card-title>
+		<mat-card-subtitle>{{subtitle}}</mat-card-subtitle>
+		<mat-card-content *appVar="departmentPage$ | async as departmentPage">
+			<form id="collegeForm" [formGroup]="collegeForm">
+				<mat-form-field class="admin-form-field" appearance="outline">
+					<mat-label>College</mat-label>
+					<mat-select formControlName="college" (selectionChange)="getDepartmentPage()">
+						<mat-option *ngFor="let college of colleges$ | async" [value]="college">
+							{{college.collegeName}}
+						</mat-option>
+					</mat-select>
+					<mat-error *ngIf="college.invalid && (college.dirty || college.touched)">
+						<div *ngIf="college.errors?.required">College is required</div>
+					</mat-error>
+				</mat-form-field>
+			</form>
+
+			<div class="admin-function-button">
+				<button mat-raised-button color="accent"
+						(click)="openErrorMessages()">
+					<mat-icon>warning</mat-icon>
+					Error Logs
+				</button>
+				<button mat-raised-button color="primary"
+						(click)="createDepartment()">
+					<mat-icon>add</mat-icon>
+					Create
+				</button>
+			</div>
+
+			<ng-container *ngIf="true | isLoading | async; else empty">
+				<app-loading [overlay]="true"></app-loading>
+			</ng-container>
+
+			<ng-template #empty>
+				<app-empty-result *ngIf="departmentPage.empty"></app-empty-result>
+			</ng-template>
+
+			<div *ngIf="!departmentPage.empty">
+				<div class="admin-table-container mat-elevation-z8">
+					<table class="admin-table" mat-table [dataSource]="departmentPage.content" [trackBy]="trackDepartment"
+						   matSort [matSortActive]="sortActive" [matSortDirection]="sortDirection" matSortDisableClear
+						   (matSortChange)="onSortChange($event)">
+						<!-- Id Column-->
+						<ng-container matColumnDef="id">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+							<td data-th="Id" mat-cell *matCellDef="let department">
+								<ng-container *ngIf="asDepartment(department) as department">
+									{{department.id}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Department Name Column -->
+						<ng-container matColumnDef="departmentName">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Department Name</th>
+							<td data-th="Department Name" mat-cell *matCellDef="let department">
+								<ng-container *ngIf="asDepartment(department) as department">
+									{{department.departmentName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- College Id Column -->
+						<ng-container matColumnDef="collegeId">
+							<th mat-header-cell *matHeaderCellDef>College Id</th>
+							<td data-th="College Id" mat-cell *matCellDef="let department">
+								<ng-container *ngIf="asDepartment(department) as department">
+									{{department.collegeId}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Edit Column -->
+						<ng-container matColumnDef="edit">
+							<th mat-header-cell *matHeaderCellDef>Edit</th>
+							<td data-th="Edit" mat-cell *matCellDef="let department">
+								<ng-container *ngIf="asDepartment(department) as department">
+									<button mat-icon-button (click)="editDepartment(department)">
+										<mat-icon>edit</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Delete Column -->
+						<ng-container matColumnDef="delete">
+							<th mat-header-cell *matHeaderCellDef>Delete</th>
+							<td data-th="Delete" mat-cell *matCellDef="let department">
+								<ng-container *ngIf="asDepartment(department) as department">
+									<button mat-icon-button color="warn" (click)="deleteDepartment(department)">
+										<mat-icon>delete</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+					</table>
+					<div class="admin-mat-paginator-sticky">
+						<app-paginator
+							[length]="departmentPage.totalElements"
+							[pageSize]="departmentPage.size"
+							[pageIndex]="departmentPage.number"
+							[showFirstLastButtons]="true"
+							(page)="onPageEvent($event)">
+						</app-paginator>
+					</div>
+				</div>
+			</div>
+		</mat-card-content>
+	</mat-card>
+</div>
+

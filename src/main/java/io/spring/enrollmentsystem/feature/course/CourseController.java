@@ -25,7 +25,7 @@ public class CourseController {
 
     @GetMapping("/{courseId}")
     @Operation(summary = "Find course by id", tags = "course")
-    @JsonView(BaseView.Low.class)
+    @JsonView(BaseView.LowWithId.class)
     public ResponseEntity<CourseDto> getCourse(@PathVariable UUID courseId) {
         return ResponseEntity
                 .ok()

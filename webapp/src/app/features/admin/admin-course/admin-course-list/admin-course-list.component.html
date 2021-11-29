@@ -1,0 +1,146 @@
+<div class="admin-main">
+	<mat-card class="content-card">
+		<mat-card-title>{{title}}</mat-card-title>
+		<mat-card-subtitle>{{subtitle}}</mat-card-subtitle>
+		<mat-card-content *appVar="coursePage$ | async as coursePage">
+			<form id="subjectForm" [formGroup]="subjectForm">
+				<mat-form-field class="admin-form-field" appearance="outline">
+					<mat-label>Subject</mat-label>
+					<mat-select formControlName="subject" (selectionChange)="getCoursePage()">
+						<mat-option *ngFor="let subject of subjects$ | async" [value]="subject">
+							{{subject.subjectName}}
+						</mat-option>
+					</mat-select>
+					<mat-error *ngIf="subject.invalid && (subject.dirty || subject.touched)">
+						<div *ngIf="subject.errors?.required">Subject is required</div>
+					</mat-error>
+				</mat-form-field>
+			</form>
+
+			<div class="admin-function-button">
+				<button mat-raised-button color="accent"
+						(click)="openErrorMessages()">
+					<mat-icon>warning</mat-icon>
+					Error Logs
+				</button>
+				<button mat-raised-button color="primary"
+						(click)="createCourse()">
+					<mat-icon>add</mat-icon>
+					Create
+				</button>
+			</div>
+
+			<ng-container *ngIf="true | isLoading | async; else empty">
+				<app-loading [overlay]="true"></app-loading>
+			</ng-container>
+
+			<ng-template #empty>
+				<app-empty-result *ngIf="coursePage.empty"></app-empty-result>
+			</ng-template>
+
+			<div *ngIf="!coursePage.empty">
+				<div class="admin-table-container mat-elevation-z8">
+					<table class="admin-table" mat-table [dataSource]="coursePage.content" [trackBy]="trackCourse"
+						   matSort [matSortActive]="sortActive" [matSortDirection]="sortDirection" matSortDisableClear
+						   (matSortChange)="onSortChange($event)">
+						<!-- Id Column-->
+						<ng-container matColumnDef="id">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+							<td data-th="Id" mat-cell *matCellDef="let course">
+								<ng-container *ngIf="asCourse(course) as course">
+									{{course.id}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Course Code Column -->
+						<ng-container matColumnDef="courseCode">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Course Code</th>
+							<td data-th="Course Code" mat-cell *matCellDef="let course">
+								<ng-container *ngIf="asCourse(course) as course">
+									{{course.courseCode}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Course Name Column -->
+						<ng-container matColumnDef="courseName">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Course Name</th>
+							<td data-th="Course Name" mat-cell *matCellDef="let course">
+								<ng-container *ngIf="asCourse(course) as course">
+									{{course.courseName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Course Unit Column -->
+						<ng-container matColumnDef="courseUnit">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Course Unit</th>
+							<td data-th="Course Unit" mat-cell *matCellDef="let course">
+								<ng-container *ngIf="asCourse(course) as course">
+									{{course.courseUnit}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Course Description Column -->
+						<ng-container matColumnDef="courseDescription">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Course Description</th>
+							<td data-th="Course Description" mat-cell *matCellDef="let course">
+								<ng-container *ngIf="asCourse(course) as course">
+									{{course.courseDescription}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Subject Id Column -->
+						<ng-container matColumnDef="subjectId">
+							<th mat-header-cell *matHeaderCellDef>Subject Id</th>
+							<td data-th="Subject Id" mat-cell *matCellDef="let course">
+								<ng-container *ngIf="asCourse(course) as course">
+									{{course.subjectId}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Edit Column -->
+						<ng-container matColumnDef="edit">
+							<th mat-header-cell *matHeaderCellDef>Edit</th>
+							<td data-th="Edit" mat-cell *matCellDef="let course">
+								<ng-container *ngIf="asCourse(course) as course">
+									<button mat-icon-button (click)="editCourse(course)">
+										<mat-icon>edit</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Delete Column -->
+						<ng-container matColumnDef="delete">
+							<th mat-header-cell *matHeaderCellDef>Delete</th>
+							<td data-th="Delete" mat-cell *matCellDef="let course">
+								<ng-container *ngIf="asCourse(course) as course">
+									<button mat-icon-button color="warn" (click)="deleteCourse(course)">
+										<mat-icon>delete</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+					</table>
+					<div class="admin-mat-paginator-sticky">
+						<app-paginator
+							[length]="coursePage.totalElements"
+							[pageSize]="coursePage.size"
+							[pageIndex]="coursePage.number"
+							[showFirstLastButtons]="true"
+							(page)="onPageEvent($event)">
+						</app-paginator>
+					</div>
+				</div>
+			</div>
+		</mat-card-content>
+	</mat-card>
+</div>

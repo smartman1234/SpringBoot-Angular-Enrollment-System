@@ -119,6 +119,12 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
         return getQuery(type, spec, Sort.unsorted()).getResultList();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public <S> List<S> findAll(Class<S> type, @Nullable Specification<T> spec, Sort sort) {
+        return getQuery(type, spec, sort).getResultList();
+    }
+
     protected <S> Slice<S> readSlice(TypedQuery<S> query, Pageable pageable) {
         int pageSize = 0;
 
@@ -328,14 +334,13 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
         return pageable.isUnpaged();
     }
 
-
     private <S> Page<S> findAllWithJoinFetch(Class<S> type, @Nullable Specification<T> spec, Pageable pageable) {
         TypedQuery<ID> typedQuery = getQueryIds(spec, pageable);
 
         Page<ID> entityIdsPage = isUnpaged(pageable) ? new PageImpl<>(typedQuery.getResultList())
                 : readExtraPage(typedQuery, getDomainClass(), pageable, spec);
 
-        List<S> resultList = findAllByIdsIn(type, entityIdsPage.getContent());
+        List<S> resultList = findAllByIdsIn(type, entityIdsPage.getContent(), pageable);
 
         return isUnpaged(pageable)
                 ? new PageImpl<>(resultList)
@@ -348,7 +353,7 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
         Slice<ID> idsPage = isUnpaged(pageable) ? new SliceImpl<>(typedQuery.getResultList())
                 : readSlice(typedQuery,  pageable);
 
-        List<S> resultList = findAllByIdsIn(type, idsPage.getContent());
+        List<S> resultList = findAllByIdsIn(type, idsPage.getContent(), pageable);
 
         return new SliceImpl<>(resultList, pageable, idsPage.hasNext());
     }
@@ -369,13 +374,18 @@ public class CustomRepositoryImpl<T, ID> extends SimpleJpaRepository<T, ID> impl
         return this.entityManager.createQuery(query);
     }
 
-    private <S> List<S> findAllByIdsIn(Class<S> type, List<ID> listOfId) {
+    private <S> List<S> findAllByIdsIn(Class<S> type, List<ID> listOfId, Pageable pageable) {
         if (listOfId.isEmpty()) {
             return new ArrayList<>();
         } else {
             Specification<T> specIdsIn = (specRoot, specQuery, specBuilder) -> specRoot
                     .get(this.entityInformation.getIdAttribute())
-                    .in(Sets.newHashSet(listOfId));
+                    .in(listOfId);
+
+            Sort sort = pageable.isPaged() ? pageable.getSort() : Sort.unsorted();
+            if (sort.isSorted()) {
+                return findAll(type, specIdsIn, sort);
+            }
             return findAll(type, specIdsIn);
         }
     }

@@ -1,0 +1,113 @@
+<div class="admin-main">
+	<mat-card class="content-card">
+		<mat-card-title>{{title}}</mat-card-title>
+		<mat-card-subtitle>{{subtitle}}</mat-card-subtitle>
+		<mat-card-content *appVar="buildingPage$ | async as buildingPage">
+			<div class="admin-function-button">
+				<button mat-raised-button color="accent"
+						(click)="openErrorMessages()">
+					<mat-icon>warning</mat-icon>
+					Error Logs
+				</button>
+				<button mat-raised-button color="primary"
+						(click)="createBuilding()">
+					<mat-icon>add</mat-icon>
+					Create
+				</button>
+			</div>
+
+			<ng-container *ngIf="true | isLoading | async; else empty">
+				<app-loading [overlay]="true"></app-loading>
+			</ng-container>
+
+			<ng-template #empty>
+				<app-empty-result *ngIf="buildingPage.empty"></app-empty-result>
+			</ng-template>
+
+			<div *ngIf="!buildingPage.empty">
+				<div class="admin-table-container mat-elevation-z8">
+					<table class="admin-table" mat-table [dataSource]="buildingPage.content" [trackBy]="trackBuilding"
+						   matSort [matSortActive]="sortActive" [matSortDirection]="sortDirection" matSortDisableClear
+						   (matSortChange)="onSortChange($event)">
+						<!-- Id Column-->
+						<ng-container matColumnDef="id">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+							<td data-th="Id" mat-cell *matCellDef="let building">
+								<ng-container *ngIf="asBuilding(building) as building">
+									{{building.id}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Building Number Column -->
+						<ng-container matColumnDef="buildingNumber">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Building Number</th>
+							<td data-th="Building Number" mat-cell *matCellDef="let building">
+								<ng-container *ngIf="asBuilding(building) as building">
+									{{building.buildingNumber}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Building Name Column -->
+						<ng-container matColumnDef="buildingName">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Building Name</th>
+							<td data-th="Building Name" mat-cell *matCellDef="let building">
+								<ng-container *ngIf="asBuilding(building) as building">
+									{{building.buildingName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Building Code Column -->
+						<ng-container matColumnDef="buildingCode">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Building Code</th>
+							<td data-th="Building Code" mat-cell *matCellDef="let building">
+								<ng-container *ngIf="asBuilding(building) as building">
+									{{building.buildingCode}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Edit Column -->
+						<ng-container matColumnDef="edit">
+							<th mat-header-cell *matHeaderCellDef>Edit</th>
+							<td data-th="Edit" mat-cell *matCellDef="let building">
+								<ng-container *ngIf="asBuilding(building) as building">
+									<button mat-icon-button (click)="editBuilding(building)">
+										<mat-icon>edit</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Delete Column -->
+						<ng-container matColumnDef="delete">
+							<th mat-header-cell *matHeaderCellDef>Delete</th>
+							<td data-th="Delete" mat-cell *matCellDef="let building">
+								<ng-container *ngIf="asBuilding(building) as building">
+									<button mat-icon-button color="warn" (click)="deleteBuilding(building)">
+										<mat-icon>delete</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+					</table>
+					<div class="admin-mat-paginator-sticky">
+						<app-paginator
+							[length]="buildingPage.totalElements"
+							[pageSize]="buildingPage.size"
+							[pageIndex]="buildingPage.number"
+							[showFirstLastButtons]="true"
+							(page)="onPageEvent($event)">
+						</app-paginator>
+					</div>
+				</div>
+			</div>
+		</mat-card-content>
+	</mat-card>
+</div>
+

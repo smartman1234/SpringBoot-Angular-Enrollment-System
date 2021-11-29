@@ -1,10 +1,8 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { FormBuilder, FormControl, Validators } from "@angular/forms";
-import { subjects } from "../../constant/subjects";
 import { select, Store } from "@ngrx/store";
 import { selectTermNames } from "../../store/term/term.selectors";
-import { Observable, Subject } from "rxjs";
-import { getAllTerms } from "../../store/term/term.actions";
+import { combineLatest, Observable, Subject } from "rxjs";
 import { filter, takeUntil, withLatestFrom } from "rxjs/operators";
 import {
 	courseNumberQuery,
@@ -28,6 +26,11 @@ import { QueryParamOperator } from "../../../../core/constants/query-param-opera
 import { SearchMode } from "../../constant/search-mode";
 import { Page } from "../../../../core/models/page.model";
 import { PageEvent } from "@angular/material/paginator";
+import { ScrollToTopService } from "../../../../core/services/scroll-to-top.service";
+import { Subject as SubjectModel } from "../../models/subject.model";
+import { selectSubjects } from "../../store/subject/subject.selectors";
+import { getAllTerms } from "../../store/term/term.actions";
+import { getAllSubjects } from "../../store/subject/subject.actions";
 
 @Component({
 	selector: "app-search",
@@ -44,13 +47,13 @@ export class SearchComponent implements OnInit, OnDestroy {
 
 	readonly searchModes = Object.values(SearchMode);
 
-	readonly subjectNames = Object.entries(subjects);
 	readonly courseNumberQueries = Object.entries(courseNumberQuery);
 	readonly meetingTimeQueries = Object.entries(meetingTimeQuery);
 	readonly meetingDayQueries = Object.values(meetingDayQuery);
 	readonly instructorLastNameQueries = Object.entries(instructorLastNameQuery);
 	readonly unitQueries = Object.entries(unitQuery);
 
+	subjects: Array<SubjectModel> = [];
 	termNames: string[] = [];
 	studentId: string = "";
 
@@ -61,11 +64,11 @@ export class SearchComponent implements OnInit, OnDestroy {
 		private formBuilder: FormBuilder,
 		private courseService: CourseService,
 		private store: Store<AppState>,
+		private scrollToTopService: ScrollToTopService,
 	) {
 	}
 
 	onSubmit() {
-
 		this.toggleResult();
 		switch (this.searchMode.value) {
 			case SearchMode.PAGE:
@@ -97,6 +100,8 @@ export class SearchComponent implements OnInit, OnDestroy {
 		this.store.dispatch(getSectionPage({
 			searchInput: this.searchForm.value,
 		}));
+
+		this.scrollToTopService.toTop("content", 50);
 	}
 
 	onScrollBottom(pageIndex: number) {
@@ -121,6 +126,7 @@ export class SearchComponent implements OnInit, OnDestroy {
 			default:
 				this.listVisibility = !this.listVisibility;
 		}
+		this.scrollToTopService.toTop("content");
 	}
 
 	clearForm() {
@@ -147,24 +153,29 @@ export class SearchComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit(): void {
-		//  retrieve valid term names on first render, get current userid,
-		//  restore saved form input, retrieve enrollments
+		//  retrieve valid term names on first render,
+		// retrieve valid subject names on first render,
+		//  get current userid, restore saved form input, retrieve enrollments
 		this.store.dispatch(getAllTerms());
-		this.store.pipe(
-			select(selectTermNames),
-			filter(termNames => termNames.length > 0),
+		this.store.dispatch(getAllSubjects());
+		combineLatest([
+			this.store.pipe(select(selectTermNames)),
+			this.store.pipe(select(selectSubjects)),
+		]).pipe(
+			filter(([termNames, subjects]) => termNames.length > 0 && subjects.length > 0),
 			withLatestFrom(
 				this.store.pipe(select(selectSearchInput)),
 				this.store.pipe(select(selectUserId)),
 			),
-			takeUntil(this.unsubscribe$),
-		).subscribe(([termNames, searchInput, userId]) => {
+		).subscribe(([[termNames, subjects], searchInput, userId]) => {
 			this.termNames = termNames;
+			this.subjects = subjects;
 			this.studentId = userId;
 			if (searchInput.term) {
 				this.searchForm.setValue(searchInput);
 			} else {
 				this.term.setValue(termNames[0]);
+				this.subject.setValue(subjects[0].subjectAcronym);
 			}
 		});
 

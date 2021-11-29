@@ -3,6 +3,7 @@ package io.spring.enrollmentsystem.feature.course;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.spring.enrollmentsystem.common.validator.ValidationGroup;
+import io.spring.enrollmentsystem.common.view.AdminView;
 import io.spring.enrollmentsystem.common.view.BaseView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -97,7 +98,7 @@ public class AdminCourseController {
     @JsonView(BaseView.MediumWithId.class)
     public ResponseEntity<CourseDto> createCourse(@RequestBody
                                                   @Validated({ValidationGroup.onCreate.class, Default.class})
-                                                  @JsonView(BaseView.Create.class)
+                                                  @JsonView(AdminView.AdminCreate.class)
                                                           CourseDto courseDto) {
         CourseDto response = courseService.createCourse(courseDto);
         String courseId = String.valueOf(response.getId());
@@ -113,7 +114,7 @@ public class AdminCourseController {
     @JsonView(BaseView.MediumWithId.class)
     public ResponseEntity<CourseDto> updateCourse(@PathVariable UUID courseId,
                                                   @RequestBody @Valid
-                                                  @JsonView(BaseView.Update.class)
+                                                  @JsonView(AdminView.AdminUpdate.class)
                                                           CourseDto courseDto) {
         CourseDto response = courseService.updateCourse(courseId, courseDto);
         return ResponseEntity.ok().body(response);
@@ -124,7 +125,7 @@ public class AdminCourseController {
     @JsonView(BaseView.MediumWithId.class)
     public ResponseEntity<CourseDto> patchCourse(@PathVariable UUID courseId,
                                                  @RequestBody JsonMergePatch mergePatchDocument) {
-        CourseDto response = courseService.patchCourse(courseId, mergePatchDocument, BaseView.Update.class);
+        CourseDto response = courseService.patchCourse(courseId, mergePatchDocument, AdminView.AdminUpdate.class);
         return ResponseEntity.ok().body(response);
     }
 

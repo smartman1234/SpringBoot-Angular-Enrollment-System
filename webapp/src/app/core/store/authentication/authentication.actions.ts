@@ -5,6 +5,12 @@ export const login = createAction(
 	"[Authentication] Login",
 	props<{ username: string, password: string }>(),
 );
+
+export const adminLogin = createAction(
+	"[Authentication] Admin Login",
+	props<{ username: string, password: string, secretKey: string }>(),
+);
+
 export const loginSuccess = createAction(
 	"[Authentication] Login Success",
 	props<{ user: AuthenticationUser, expiry: number }>(),

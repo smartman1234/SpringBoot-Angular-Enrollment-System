@@ -5,11 +5,13 @@ import io.spring.enrollmentsystem.common.exception.ResourceNotFoundException;
 import io.spring.enrollmentsystem.common.service.PatchService;
 import io.spring.enrollmentsystem.common.service.SpecificationService;
 import io.spring.enrollmentsystem.feature.user.UserService;
+import io.spring.enrollmentsystem.feature.user.User_;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
@@ -17,6 +19,8 @@ import org.springframework.util.MultiValueMap;
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.UUID;
+
+import static io.spring.enrollmentsystem.common.constant.SpecsConstant.KEY_SEPARATOR;
 
 /**
  * (Student) service
@@ -55,7 +59,10 @@ public class StudentService {
     @Transactional(readOnly = true)
     public List<StudentDto> getAllStudentDtoByPredicate(MultiValueMap<String, String> parameters) {
         return studentRepository
-                .findAll(StudentDto.class, specificationService.getSpecifications(parameters));
+                .findAll(StudentDto.class,
+                         specificationService.getSpecifications(parameters),
+                         Sort.by(Student_.USER + KEY_SEPARATOR + User_.LAST_NAME)
+                                 .and(Sort.by(Student_.USER + KEY_SEPARATOR + User_.FIRST_NAME)));
     }
 
     @Transactional(readOnly = true)

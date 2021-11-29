@@ -1,10 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { CourseSection } from "../../models/course.sections.model";
+import { Section } from "../../models/section.model";
 
 @Component({
 	selector: "app-result-card",
 	templateUrl: "./result-card.component.html",
 	styleUrls: ["./result-card.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResultCardComponent implements OnInit {
 
@@ -19,6 +21,10 @@ export class ResultCardComponent implements OnInit {
 
 	addToCart(sectionId: string) {
 		this.addToCartEvent.emit(sectionId);
+	}
+
+	trackSection(index: number, section: Section): string {
+		return section.id;
 	}
 
 	constructor() {

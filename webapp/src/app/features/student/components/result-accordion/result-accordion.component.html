@@ -5,12 +5,12 @@
 				{{course.courseCode}} - {{course.courseName}}
 			</mat-panel-title>
 		</mat-expansion-panel-header>
-		<button mat-button (click)="openCourseInfo(course.courseId)">
+		<button mat-button class="course-info-button" (click)="openCourseInfo(course.courseId)">
 			<span class="course-info-title">Course Info</span>
 			<mat-icon>info</mat-icon>
 		</button>
 		<ng-template matExpansionPanelContent>
-			<table mat-table [dataSource]="course.sections">
+			<table mat-table [dataSource]="course.sections" [trackBy]="trackSection">
 				<!-- Section Column -->
 				<ng-container matColumnDef="section">
 					<th mat-header-cell *matHeaderCellDef>Section</th>

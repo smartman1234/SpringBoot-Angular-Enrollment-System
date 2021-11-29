@@ -1,0 +1,37 @@
+<ng-container>
+	<h2 mat-dialog-title>Edit Course</h2>
+	<mat-dialog-content>
+		<form id="departmentForm" [formGroup]="departmentForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>College</mat-label>
+				<mat-select formControlName="collegeId">
+					<mat-option *ngFor="let college of colleges$ | async" [value]="college.id">
+						{{college.collegeName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="collegeId.invalid && (collegeId.dirty || collegeId.touched)">
+					<div *ngIf="collegeId.errors?.required">College id is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Department Name</mat-label>
+				<input matInput formControlName="departmentName">
+				<button *ngIf="departmentName.value" matSuffix mat-icon-button
+						(click)="departmentName.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="departmentName.invalid && (departmentName.dirty || departmentName.touched)">
+					<div *ngIf="departmentName.errors?.required">Department name is required</div>
+					<div *ngIf="departmentName.errors?.maxlength">Department name exceeds 100 characters</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!departmentForm.valid || !departmentForm.dirty"
+				(click)="saveEdit()">Save</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>

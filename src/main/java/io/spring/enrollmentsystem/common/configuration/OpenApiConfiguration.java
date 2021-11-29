@@ -113,7 +113,6 @@ public class OpenApiConfiguration {
     // Springdoc bean configuration
     @Bean
     public OpenAPI customOpenAPI() {
-
         return new OpenAPI()
                 .info(new Info()
                               .title("Enrollment System API")
@@ -187,6 +186,22 @@ public class OpenApiConfiguration {
                         .addExamples("", new Example()
                                 .value("{\n  \"username\": \"" + systemProperties.getAdminUserName() + "\",\n"
                                                + "  \"password\": \"" + systemProperties.getAdminPassword() + "\"\n}")));
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "dev")
+    public OpenApiCustomiser adminLoginRequestExample() {
+        return openApi -> openApi.getPaths().values().stream()
+                .filter(pathItem -> pathItem.getPost() != null)
+                .flatMap(pathItem -> pathItem.readOperations().stream())
+                .filter(operation -> operation.getOperationId().equals("adminLogin"))
+                .forEach(operation -> operation.getRequestBody()
+                        .getContent()
+                        .get("application/json")
+                        .addExamples("", new Example()
+                                .value("{\n  \"username\": \"" + systemProperties.getAdminUserName() + "\",\n"
+                                               + "  \"password\": \"" + systemProperties.getAdminPassword() + "\",\n"
+                                               + "  \"secretKey\": \"" + systemProperties.getSecretKey() + "\"\n}")));
     }
 
     @Bean
@@ -361,6 +376,7 @@ public class OpenApiConfiguration {
             if (value.getGet() != null) {
                 switch (key) {
                     case adminUrl + "subjects":
+                    case "/api/v1/subjects":
                     case adminUrl + "subjects" + "/page":
                     case adminUrl + "subjects" + "/slice":
                         value.getGet().addParametersItem(subject);

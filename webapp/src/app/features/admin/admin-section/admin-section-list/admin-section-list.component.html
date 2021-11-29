@@ -1,0 +1,307 @@
+<div class="admin-main">
+	<mat-card class="content-card">
+		<mat-card-title>{{title}}</mat-card-title>
+		<mat-card-subtitle>{{subtitle}}</mat-card-subtitle>
+		<mat-card-content *appVar="sectionPage$ | async as sectionPage">
+			<form id="filterForm" [formGroup]="filterForm">
+				<div>
+					<mat-form-field class="admin-form-field" appearance="outline">
+						<mat-label>Term</mat-label>
+						<mat-select formControlName="term" (selectionChange)="getSectionPage()">
+							<mat-option *ngFor="let term of terms$ | async" [value]="term">
+								{{term.termName}}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="term.invalid && (term.dirty || term.touched)">
+							<div *ngIf="term.errors?.required">Term is required</div>
+						</mat-error>
+					</mat-form-field>
+				</div>
+
+				<div>
+					<mat-form-field class="admin-form-field" appearance="outline">
+						<mat-label>Subject</mat-label>
+						<mat-select formControlName="subject" (selectionChange)="getSectionPage()">
+							<mat-option *ngFor="let subject of subjects$ | async" [value]="subject">
+								{{subject.subjectAcronym}} - {{subject.subjectName}}
+							</mat-option>
+						</mat-select>
+						<mat-error *ngIf="subject.invalid && (subject.dirty || subject.touched)">
+							<div *ngIf="subject.errors?.required">Subject is required</div>
+						</mat-error>
+					</mat-form-field>
+				</div>
+			</form>
+
+			<div class="admin-function-button">
+				<button mat-raised-button color="accent"
+						(click)="openErrorMessages()">
+					<mat-icon>warning</mat-icon>
+					Error Logs
+				</button>
+				<button mat-raised-button color="primary"
+						(click)="createSection()">
+					<mat-icon>add</mat-icon>
+					Create
+				</button>
+			</div>
+
+			<ng-container *ngIf="true | isLoading | async; else empty">
+				<app-loading [overlay]="true"></app-loading>
+			</ng-container>
+
+			<ng-template #empty>
+				<app-empty-result *ngIf="sectionPage.empty"></app-empty-result>
+			</ng-template>
+
+			<div *ngIf="!sectionPage.empty" class="mat-elevation-z8">
+				<div id="admin-table-container" class="admin-table-container" (scroll)="onScroll($event)">
+					<table class="admin-table"
+						   mat-table [dataSource]="sectionPage.content" [trackBy]="trackSection"
+						   matSort [matSortActive]="sortActive" [matSortDirection]="sortDirection" matSortDisableClear
+						   (matSortChange)="onSortChange($event)">
+						<!-- Id Column-->
+						<ng-container matColumnDef="id">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+							<td data-th="Id" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.id}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Course Column -->
+						<ng-container matColumnDef="course">
+							<th mat-header-cell *matHeaderCellDef>Course</th>
+							<td data-th="Course" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.courseCode}} - {{section.courseName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Section Number Column -->
+						<ng-container matColumnDef="sectionNumber">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Section Number</th>
+							<td data-th="Section Number" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.sectionNumber}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Meeting Days Column -->
+						<ng-container matColumnDef="meetingDays">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Meeting Days</th>
+							<td data-th="Meeting Days" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.meetingDays}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Meeting Time Start Column -->
+						<ng-container matColumnDef="meetingTimeStart">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Meeting Time Start</th>
+							<td data-th="Meeting Time Start" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{'2000-01-01 ' + section.meetingTimeStart | date:'shortTime'}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Meeting Time End Column -->
+						<ng-container matColumnDef="meetingTimeEnd">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Meeting Time End</th>
+							<td data-th="Meeting Time End" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{'2000-01-01 ' + section.meetingTimeEnd | date:'shortTime'}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Class Capacity Column -->
+						<ng-container matColumnDef="classCapacity">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Class Capacity</th>
+							<td data-th="Class Capacity" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.classCapacity}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- WaitList Capacity Column -->
+						<ng-container matColumnDef="waitlistCapacity">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>WaitList Capacity</th>
+							<td data-th="WaitList Capacity" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.waitlistCapacity}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Enrolled Number Column -->
+						<ng-container matColumnDef="enrolledNumber">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Enrolled Number</th>
+							<td data-th="Enrolled Number" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.enrolledNumber}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Waiting Number Column -->
+						<ng-container matColumnDef="waitingNumber">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Waiting Number</th>
+							<td data-th="Waiting Number" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.waitingNumber}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Date Start Column -->
+						<ng-container matColumnDef="dateStart">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Date Start</th>
+							<td data-th="Date Start" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.dateStart | date:'shortDate'}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Date End Column -->
+						<ng-container matColumnDef="dateEnd">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Date End</th>
+							<td data-th="Date End" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.dateEnd | date:'shortDate'}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Section Status Column -->
+						<ng-container matColumnDef="sectionStatus">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Section Status</th>
+							<td data-th="Section Status" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.sectionStatus}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Room Column -->
+						<ng-container matColumnDef="room">
+							<th mat-header-cell *matHeaderCellDef>Room</th>
+							<td data-th="Room" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									Bldg.{{section.buildingNumber}} - Rm.{{section.roomNumber}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Instructor Column -->
+						<ng-container matColumnDef="instructor">
+							<th mat-header-cell *matHeaderCellDef>Instructor</th>
+							<td data-th="Instructor" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.instructorFirstName}} {{section.instructorLastName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Term Name Column -->
+						<ng-container matColumnDef="termName">
+							<th mat-header-cell *matHeaderCellDef>Term Name</th>
+							<td data-th="Term Name" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.termName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Term Id Column -->
+						<ng-container matColumnDef="termId">
+							<th mat-header-cell *matHeaderCellDef>Term Id</th>
+							<td data-th="Term Id" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.termId}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Course Id Column -->
+						<ng-container matColumnDef="courseId">
+							<th mat-header-cell *matHeaderCellDef>Course Id</th>
+							<td data-th="Course Id" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.courseId}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Room Id Column -->
+						<ng-container matColumnDef="roomId">
+							<th mat-header-cell *matHeaderCellDef>Room Id</th>
+							<td data-th="Room Id" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.roomId}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Instructor Id Column -->
+						<ng-container matColumnDef="instructorId">
+							<th mat-header-cell *matHeaderCellDef>Instructor Id</th>
+							<td data-th="Instructor Id" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									{{section.instructorId}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Edit Column -->
+						<ng-container matColumnDef="edit" stickyEnd="true">
+							<th mat-header-cell *matHeaderCellDef>Edit</th>
+							<td data-th="Edit" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									<button mat-icon-button (click)="editSection(section)">
+										<mat-icon>edit</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Delete Column -->
+						<ng-container matColumnDef="delete" stickyEnd="true">
+							<th mat-header-cell *matHeaderCellDef>Delete</th>
+							<td data-th="Delete" mat-cell *matCellDef="let section">
+								<ng-container *ngIf="asSection(section) as section">
+									<button mat-icon-button color="warn" (click)="deleteSection(section)">
+										<mat-icon>delete</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+					</table>
+				</div>
+				<div class="admin-mat-paginator-sticky">
+					<app-paginator
+						[length]="sectionPage.totalElements"
+						[pageSize]="sectionPage.size"
+						[pageIndex]="sectionPage.number"
+						[showFirstLastButtons]="true"
+						(page)="onPageEvent($event)">
+					</app-paginator>
+				</div>
+			</div>
+		</mat-card-content>
+		<button *ngIf="showScrollToTop" class="admin-scroll-top-button"
+				mat-icon-button (click)="scrollToTop()">
+			<mat-icon>arrow_upward</mat-icon>
+		</button>
+	</mat-card>
+</div>

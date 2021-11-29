@@ -1,0 +1,108 @@
+<app-navigation-bar [title]="title">
+	<ng-template #sidenavList class="side-list">
+		<img class="avatar mat-elevation-z8"
+			 src="/assets/images/avatar.jpg"
+			 alt="avatar"/>
+
+		<h4 class="name">
+			<app-greeting></app-greeting>
+		</h4>
+		<p class="designation">Admin</p>
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['authority']"
+				routerLinkActive="active">
+			<span>Authority</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['building']"
+				routerLinkActive="active">
+			<span>Building</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['college']"
+				routerLinkActive="active">
+			<span>College</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['course']"
+				routerLinkActive="active">
+			<span>Course</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['department']"
+				routerLinkActive="active">
+			<span>Department</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['enrollment']"
+				routerLinkActive="active">
+			<span>Enrollment</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['instructor']"
+				routerLinkActive="active">
+			<span>Instructor</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['room']"
+				routerLinkActive="active">
+			<span>Room</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['section']"
+				routerLinkActive="active">
+			<span>Section</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['student']"
+				routerLinkActive="active">
+			<span>Student</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['subject']"
+				routerLinkActive="active">
+			<span>Subject</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['term']"
+				routerLinkActive="active">
+			<span>Term</span>
+		</button>
+
+		<button mat-button class="menu-button"
+				(click)="navBar.sidenav.mode === 'over' ? navBar.sidenav.toggle() : ''"
+				[routerLink]="['user']"
+				routerLinkActive="active">
+			<span>User</span>
+		</button>
+
+		<mat-divider></mat-divider>
+	</ng-template>
+
+	<ng-template #sidenavContent>
+		<router-outlet (activate)="onActivate()"></router-outlet>
+	</ng-template>
+</app-navigation-bar>

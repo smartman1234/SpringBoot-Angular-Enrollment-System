@@ -4,17 +4,23 @@ import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.spring.enrollmentsystem.common.exception.ResourceNotFoundException;
 import io.spring.enrollmentsystem.common.service.PatchService;
 import io.spring.enrollmentsystem.common.service.SpecificationService;
+import io.spring.enrollmentsystem.feature.user.UserService;
+import io.spring.enrollmentsystem.feature.user.User_;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
+import javax.validation.ValidationException;
 import java.util.List;
 import java.util.UUID;
+
+import static io.spring.enrollmentsystem.common.constant.SpecsConstant.KEY_SEPARATOR;
 
 /**
  * (Instructor) service
@@ -28,6 +34,7 @@ public class InstructorService {
 
     private final InstructorRepository instructorRepository;
     private final InstructorMapper instructorMapper;
+    private final UserService userService;
     private final PatchService patchService;
     private final SpecificationService specificationService;
 
@@ -52,7 +59,10 @@ public class InstructorService {
     @Transactional(readOnly = true)
     public List<InstructorDto> getAllInstructorDtoByPredicate(MultiValueMap<String, String> parameters) {
         return instructorRepository
-                .findAll(InstructorDto.class, specificationService.getSpecifications(parameters));
+                .findAll(InstructorDto.class,
+                         specificationService.getSpecifications(parameters),
+                         Sort.by(Instructor_.USER + KEY_SEPARATOR + User_.LAST_NAME)
+                                 .and(Sort.by(Instructor_.USER + KEY_SEPARATOR + User_.FIRST_NAME)));
     }
 
     @Transactional(readOnly = true)
@@ -71,6 +81,12 @@ public class InstructorService {
 
     @Transactional
     public InstructorDto createInstructor(InstructorDto instructorDto) {
+        UUID instructorId = instructorDto.getUserId();
+        userService.getUserById(instructorId);
+        if (instructorRepository.existsById(instructorId)) {
+            throw new ValidationException("Instructor with user id " + instructorDto.getUserId() + " already exists!");
+        }
+
         Instructor transientInstructor = instructorMapper.toInstructor(instructorDto);
         return instructorMapper.toInstructorDto(instructorRepository.save(transientInstructor));
     }

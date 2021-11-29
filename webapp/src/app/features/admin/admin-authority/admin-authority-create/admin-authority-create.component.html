@@ -1,0 +1,25 @@
+<ng-container>
+	<h2 mat-dialog-title>Create New Authority</h2>
+	<mat-dialog-content>
+		<form id="authorityForm" [formGroup]="authorityForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Role</mat-label>
+				<input matInput formControlName="role">
+				<button *ngIf="role.value" matSuffix mat-icon-button
+						(click)="role.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="role.invalid && (role.dirty || role.touched)">
+					<div *ngIf="role.errors?.required">Role is required</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!authorityForm.valid"
+				(click)="create()">Create</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>
+

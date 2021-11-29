@@ -1,0 +1,134 @@
+<div class="admin-main">
+	<mat-card class="content-card">
+		<mat-card-title>{{title}}</mat-card-title>
+		<mat-card-subtitle>{{subtitle}}</mat-card-subtitle>
+		<mat-card-content *appVar="studentPage$ | async as studentPage">
+			<div class="admin-function-button">
+				<button mat-raised-button color="accent"
+						(click)="openErrorMessages()">
+					<mat-icon>warning</mat-icon>
+					Error Logs
+				</button>
+				<button mat-raised-button color="primary"
+						(click)="createStudent()">
+					<mat-icon>add</mat-icon>
+					Create
+				</button>
+			</div>
+
+			<ng-container *ngIf="true | isLoading | async; else empty">
+				<app-loading [overlay]="true"></app-loading>
+			</ng-container>
+
+			<ng-template #empty>
+				<app-empty-result *ngIf="studentPage.empty"></app-empty-result>
+			</ng-template>
+
+			<div *ngIf="!studentPage.empty">
+				<div class="admin-table-container mat-elevation-z8">
+					<table class="admin-table" mat-table [dataSource]="studentPage.content" [trackBy]="trackStudent"
+						   matSort [matSortActive]="sortActive" [matSortDirection]="sortDirection" matSortDisableClear
+						   (matSortChange)="onSortChange($event)">
+						<!-- Id Column-->
+						<ng-container matColumnDef="id">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
+							<td data-th="Id" mat-cell *matCellDef="let student">
+								<ng-container *ngIf="asStudent(student) as student">
+									{{student.id}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Email Column -->
+						<ng-container matColumnDef="email">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+							<td data-th="Email" mat-cell *matCellDef="let student">
+								<ng-container *ngIf="asStudent(student) as student">
+									{{student.email}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- First Name Column -->
+						<ng-container matColumnDef="firstName">
+							<th mat-header-cell *matHeaderCellDef>First Name</th>
+							<td data-th="First Name" mat-cell *matCellDef="let student">
+								<ng-container *ngIf="asStudent(student) as student">
+									{{student.firstName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Last Name Column -->
+						<ng-container matColumnDef="lastName">
+							<th mat-header-cell *matHeaderCellDef>Last Name</th>
+							<td data-th="Last Name" mat-cell *matCellDef="let student">
+								<ng-container *ngIf="asStudent(student) as student">
+									{{student.lastName}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Max Unit Column -->
+						<ng-container matColumnDef="maxUnit">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>Max Unit</th>
+							<td data-th="Max Unit" mat-cell *matCellDef="let student">
+								<ng-container *ngIf="asStudent(student) as student">
+									{{student.maxUnit}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- User Id Column -->
+						<ng-container matColumnDef="userId">
+							<th mat-header-cell *matHeaderCellDef mat-sort-header>User Id</th>
+							<td data-th="User Id" mat-cell *matCellDef="let student">
+								<ng-container *ngIf="asStudent(student) as student">
+									{{student.userId}}
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Edit Column -->
+						<ng-container matColumnDef="edit">
+							<th mat-header-cell *matHeaderCellDef>Edit</th>
+							<td data-th="Edit" mat-cell *matCellDef="let student">
+								<ng-container *ngIf="asStudent(student) as student">
+									<button mat-icon-button (click)="editStudent(student)">
+										<mat-icon>edit</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<!-- Delete Column -->
+						<ng-container matColumnDef="delete">
+							<th mat-header-cell *matHeaderCellDef>Delete</th>
+							<td data-th="Delete" mat-cell *matCellDef="let student">
+								<ng-container *ngIf="asStudent(student) as student">
+									<button mat-icon-button color="warn" (click)="deleteStudent(student)">
+										<mat-icon>delete</mat-icon>
+									</button>
+								</ng-container>
+							</td>
+						</ng-container>
+
+						<tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+						<tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+					</table>
+					<div class="admin-mat-paginator-sticky">
+						<app-paginator
+							[length]="studentPage.totalElements"
+							[pageSize]="studentPage.size"
+							[pageIndex]="studentPage.number"
+							[showFirstLastButtons]="true"
+							(page)="onPageEvent($event)">
+						</app-paginator>
+					</div>
+				</div>
+			</div>
+		</mat-card-content>
+	</mat-card>
+</div>
+
+

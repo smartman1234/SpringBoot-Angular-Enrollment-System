@@ -11,6 +11,7 @@ import io.spring.enrollmentsystem.feature.instructor.Instructor_;
 import io.spring.enrollmentsystem.feature.room.Room_;
 import io.spring.enrollmentsystem.feature.section.SectionStatus;
 import io.spring.enrollmentsystem.feature.section.Section_;
+import io.spring.enrollmentsystem.feature.student.Student_;
 import io.spring.enrollmentsystem.feature.term.Term_;
 import io.spring.enrollmentsystem.feature.user.User_;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -150,27 +151,44 @@ public class EnrollmentDto {
     private String courseCode;
 
     @JsonView(BaseView.VeryHigh.class)
-    @Schema(example = "3")
-    @QuerySelectHint(Enrollment_.SECTION + KEY_SEPARATOR +
-            Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_UNIT)
-    private Integer courseUnit;
-
-    @JsonView(BaseView.VeryHigh.class)
     @Schema(example = "Accounting for Agribusiness I")
     @QuerySelectHint(Enrollment_.SECTION + KEY_SEPARATOR +
             Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_NAME)
     private String courseName;
 
     @JsonView(BaseView.VeryHigh.class)
-    @Schema(example = "Presentation of the underlying framework and concepts of financial accounting " +
-            "used by businesses and organizations in the food and agribusiness industries. Students " +
-            "learn how accounting information is collected and organized to evaluate the performance and " +
-            "financial status of organizations. Topics include the basics of recording transactions as well " +
-            "as accounting for assets, liabilities, owner’s equity, cash flows, revenue and net income. " +
-            "Additionally, students will learn the preparation of financial statements using generally " +
-            "accepted accounting principles (GAAP).")
-    @QuerySelectHint(Enrollment_.SECTION + KEY_SEPARATOR +
-            Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_DESCRIPTION)
-    private String courseDescription;
+    @Schema(example = "Herbach")
+    @QuerySelectHint(Enrollment_.STUDENT + KEY_SEPARATOR +
+            Student_.USER + KEY_SEPARATOR + User_.LAST_NAME)
+    private String studentLastName;
+
+    @JsonView(BaseView.VeryHigh.class)
+    @Schema(example = "Doak")
+    @QuerySelectHint(Enrollment_.STUDENT + KEY_SEPARATOR +
+            Student_.USER + KEY_SEPARATOR + User_.FIRST_NAME)
+    private String studentFirstName;
+
+    @JsonView({BaseView.VeryHigh.class})
+    @Schema(example = "nathanieldoak@cccd.edu")
+    @QuerySelectHint(Enrollment_.STUDENT + KEY_SEPARATOR + Student_.EMAIL)
+    private String studentEmail;
+
+//    @JsonView(BaseView.VeryHigh.class)
+//    @Schema(example = "3")
+//    @QuerySelectHint(Enrollment_.SECTION + KEY_SEPARATOR +
+//            Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_UNIT)
+//    private Integer courseUnit;
+
+//    @JsonView(BaseView.VeryHigh.class)
+//    @Schema(example = "Presentation of the underlying framework and concepts of financial accounting " +
+//            "used by businesses and organizations in the food and agribusiness industries. Students " +
+//            "learn how accounting information is collected and organized to evaluate the performance and " +
+//            "financial status of organizations. Topics include the basics of recording transactions as well " +
+//            "as accounting for assets, liabilities, owner’s equity, cash flows, revenue and net income. " +
+//            "Additionally, students will learn the preparation of financial statements using generally " +
+//            "accepted accounting principles (GAAP).")
+//    @QuerySelectHint(Enrollment_.SECTION + KEY_SEPARATOR +
+//            Section_.COURSE + KEY_SEPARATOR + Course_.COURSE_DESCRIPTION)
+//    private String courseDescription;
 
 }

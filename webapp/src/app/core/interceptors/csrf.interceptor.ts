@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { BehaviorSubject, Observable, throwError } from "rxjs";
 import { CookieService } from "ngx-cookie";
-import { AuthenticationService } from "../services/authentication.service";
 import { catchError, filter, finalize, switchMap } from "rxjs/operators";
+import { AuthenticationService } from "../state/authentication/authentication.service";
 
 @Injectable()
 export class CsrfInterceptor implements HttpInterceptor {

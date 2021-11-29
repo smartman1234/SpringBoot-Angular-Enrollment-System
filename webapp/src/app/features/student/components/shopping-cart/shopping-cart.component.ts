@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { EnrollmentStatus } from "../../constant/enrollment-status";
+import { EnrollmentStatus } from "../../../../core/constants/enrollment-status";
 import { Enrollment } from "../../models/enrollment.model";
 
 @Component({

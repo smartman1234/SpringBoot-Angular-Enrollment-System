@@ -1,6 +1,6 @@
 import { createAction, props } from "@ngrx/store";
 import { Enrollment } from "../../models/enrollment.model";
-import { EnrollmentStatus } from "../../constant/enrollment-status";
+import { EnrollmentStatus } from "../../../../core/constants/enrollment-status";
 import { EnrollmentId } from "../../models/enrollment.id.model";
 
 export const getEnrollments = createAction(

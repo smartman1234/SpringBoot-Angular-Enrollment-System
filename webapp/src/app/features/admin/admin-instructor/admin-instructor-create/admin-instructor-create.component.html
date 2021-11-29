@@ -1,0 +1,47 @@
+<ng-container>
+	<h2 mat-dialog-title>Create New Instructor</h2>
+	<mat-dialog-content>
+		<form id="instructorForm" [formGroup]="instructorForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Department</mat-label>
+				<mat-select formControlName="departmentId">
+					<mat-option *ngFor="let department of departments$ | async" [value]="department.id">
+						{{department.departmentName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="departmentId.invalid && (departmentId.dirty || departmentId.touched)">
+					<div *ngIf="departmentId.errors?.required">Department id is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>User</mat-label>
+				<mat-select formControlName="userId">
+					<mat-option *ngFor="let user of userPage.content" [value]="user.id">
+						{{user.username}} - {{user.firstName}} {{user.lastName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="userId.invalid && (userId.dirty || userId.touched)">
+					<div *ngIf="userId.errors?.required">User id is required</div>
+				</mat-error>
+			</mat-form-field>
+			<div>
+				<app-paginator
+					[hidePageSize]="true"
+					[length]="userPage.totalElements"
+					[pageSize]="userPage.size"
+					[pageIndex]="userPage.number"
+					[showFirstLastButtons]="true"
+					(page)="onPageEvent($event)">
+				</app-paginator>
+			</div>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!instructorForm.valid"
+				(click)="create()">Create
+		</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>

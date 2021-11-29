@@ -1,0 +1,52 @@
+<ng-container>
+	<h2 mat-dialog-title>Edit Subject</h2>
+	<mat-dialog-content>
+		<form id="subjectForm" [formGroup]="subjectForm">
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Department</mat-label>
+				<mat-select formControlName="departmentId">
+					<mat-option *ngFor="let department of departments$ | async" [value]="department.id">
+						{{department.departmentName}}
+					</mat-option>
+				</mat-select>
+				<mat-error *ngIf="departmentId.invalid && (departmentId.dirty || departmentId.touched)">
+					<div *ngIf="departmentId.errors?.required">Department id is required</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Subject Name</mat-label>
+				<input matInput formControlName="subjectName">
+				<button *ngIf="subjectName.value" matSuffix mat-icon-button
+						(click)="subjectName.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="subjectName.invalid && (subjectName.dirty || subjectName.touched)">
+					<div *ngIf="subjectName.errors?.required">Subject name is required</div>
+					<div *ngIf="subjectName.errors?.maxlength">Subject name exceeds 100 characters</div>
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field class="admin-form-field" appearance="outline">
+				<mat-label>Subject Acronym</mat-label>
+				<input matInput formControlName="subjectAcronym">
+				<button *ngIf="subjectAcronym.value" matSuffix mat-icon-button
+						(click)="subjectAcronym.setValue('')">
+					<mat-icon>close</mat-icon>
+				</button>
+				<mat-error *ngIf="subjectAcronym.invalid && (subjectAcronym.dirty || subjectAcronym.touched)">
+					<div *ngIf="subjectAcronym.errors?.required">Subject description is required</div>
+					<div *ngIf="subjectAcronym.errors?.maxlength">Subject description exceeds 3 characters</div>
+				</mat-error>
+			</mat-form-field>
+		</form>
+
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-raised-button color="primary" [disabled]="!subjectForm.valid || !subjectForm.dirty"
+				(click)="saveEdit()">Save</button>
+		<button mat-button mat-dialog-close>Cancel</button>
+	</mat-dialog-actions>
+</ng-container>
+
+

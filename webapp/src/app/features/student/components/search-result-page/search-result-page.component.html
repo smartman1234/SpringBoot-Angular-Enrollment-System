@@ -14,31 +14,32 @@
 			: Closed
 		</div>
 		<br>
-		<app-paginator
-			[length]="data.pageSection.totalElements"
-			[pageSize]="pageSize"
-			[pageSizeOptions]="pageSizeOptions"
-			[showFirstLastButtons]="true"
-			(page)="onPageEvent($event)">
-		</app-paginator>
 
 		<ng-container *ngIf="true | isLoading | async; else empty">
 			<app-loading></app-loading>
 		</ng-container>
 
 		<ng-template #empty>
-			<div class="empty" *ngIf="data.pageSection.content.length === 0">
+			<div class="empty" *ngIf="data.pageSection == null || data.pageSection.empty">
 				<span>Wow, such empty</span>
 			</div>
 		</ng-template>
 
-		<ng-container *ngIf="data.pageSection.content.length > 0">
+		<ng-container *ngIf="data.pageSection && !data.pageSection.empty">
+			<app-paginator
+				[length]="data.pageSection.totalElements"
+				[pageSize]="data.pageSection.size"
+				[pageIndex]="data.pageSection.number"
+				[showFirstLastButtons]="true"
+				(page)="onPageEvent($event)">
+			</app-paginator>
+
 			<div *ngIf="!media.isSmallScreen">
 				<app-result-accordion
-									  [courses]="data.pageSection.content"
-									  [registeredSectionIds]="data.registeredSectionIds"
-									  (courseInfoEvent)="openCourseInfo($event)"
-									  (addToCartEvent)="addToCart($event)">
+					[courses]="data.pageSection.content"
+					[registeredSectionIds]="data.registeredSectionIds"
+					(courseInfoEvent)="openCourseInfo($event)"
+					(addToCartEvent)="addToCart($event)">
 				</app-result-accordion>
 			</div>
 			<div *ngIf="media.isSmallScreen">
@@ -51,7 +52,8 @@
 
 			<app-paginator
 				[length]="data.pageSection.totalElements"
-				[pageSize]="pageSize"
+				[pageSize]="data.pageSection.size"
+				[pageIndex]="data.pageSection.number"
 				[pageSizeOptions]="pageSizeOptions"
 				[showFirstLastButtons]="true"
 				(page)="onPageEvent($event)">

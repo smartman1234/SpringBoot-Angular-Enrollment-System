@@ -123,6 +123,6 @@
   },
   "defaultProject": "webapp",
   "cli": {
-    "defaultCollection": "@ngrx/schematics"
+    "defaultCollection": "@datorama/akita"
   }
 }

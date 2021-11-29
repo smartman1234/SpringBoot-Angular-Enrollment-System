@@ -44,12 +44,12 @@
 	</ng-template>
 
 	<ng-template let-enrollment #smallActionButton>
-		<mat-card-actions *ngIf="asEnrollment(enrollment) as enrollment">
+		<mat-card-footer *ngIf="asEnrollment(enrollment) as enrollment">
 			<button mat-raised-button class="action-button" color="warn"
 					(click)="enrollmentList.removeEnrollment(enrollment)">
 				Remove
 			</button>
-		</mat-card-actions>
+		</mat-card-footer>
 	</ng-template>
 
 	<ng-template let-enrollments #enrollButton>

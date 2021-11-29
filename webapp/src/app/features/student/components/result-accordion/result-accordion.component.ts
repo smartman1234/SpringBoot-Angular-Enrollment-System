@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { CourseSection } from "../../models/course.sections.model";
 import { Section } from "../../models/section.model";
 
@@ -6,6 +6,7 @@ import { Section } from "../../models/section.model";
 	selector: "app-result-accordion",
 	templateUrl: "./result-accordion.component.html",
 	styleUrls: ["./result-accordion.component.scss"],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResultAccordionComponent implements OnInit {
 
@@ -23,6 +24,10 @@ export class ResultAccordionComponent implements OnInit {
 
 	addToCart(sectionId: string) {
 		this.addToCartEvent.emit(sectionId);
+	}
+
+	trackSection(index: number, section: Section): string {
+		return section.id;
 	}
 
 	constructor() {

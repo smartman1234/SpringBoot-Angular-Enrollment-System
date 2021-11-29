@@ -3,6 +3,7 @@ package io.spring.enrollmentsystem.feature.term;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import io.spring.enrollmentsystem.common.validator.ValidationGroup;
+import io.spring.enrollmentsystem.common.view.AdminView;
 import io.spring.enrollmentsystem.common.view.BaseView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -103,7 +104,7 @@ public class AdminTermController {
     @JsonView(BaseView.MediumWithId.class)
     public ResponseEntity<TermDto> createTerm(@RequestBody
                                               @Validated({ValidationGroup.onCreate.class, Default.class})
-                                              @JsonView(BaseView.Create.class)
+                                              @JsonView(AdminView.AdminCreate.class)
                                                       TermDto termDto) {
         TermDto response = termService.createTerm(termDto);
         String termId = String.valueOf(response.getId());
@@ -119,7 +120,7 @@ public class AdminTermController {
     @JsonView(BaseView.MediumWithId.class)
     public ResponseEntity<TermDto> updateTerm(@PathVariable UUID termId,
                                               @RequestBody @Valid
-                                              @JsonView(BaseView.Update.class)
+                                              @JsonView(AdminView.AdminUpdate.class)
                                                       TermDto termDto) {
         TermDto response = termService.updateTerm(termId, termDto);
         return ResponseEntity.ok().body(response);
@@ -130,7 +131,7 @@ public class AdminTermController {
     @JsonView(BaseView.MediumWithId.class)
     public ResponseEntity<TermDto> patchTerm(@PathVariable UUID termId,
                                              @RequestBody JsonMergePatch mergePatchDocument) {
-        TermDto response = termService.patchTerm(termId, mergePatchDocument, BaseView.Update.class);
+        TermDto response = termService.patchTerm(termId, mergePatchDocument, AdminView.AdminUpdate.class);
         return ResponseEntity.ok().body(response);
     }
 
