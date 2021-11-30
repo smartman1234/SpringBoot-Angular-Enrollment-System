@@ -14,13 +14,11 @@ export class GreetingComponent implements OnInit {
 	user$!: Observable<AuthenticationUser>;
 
 	constructor(
-		// private store: Store<AppState>,
 		private authenticationQuery: AuthenticationQuery,
 	) {
 	}
 
 	ngOnInit(): void {
-		// this.user$ = this.store.pipe(select(selectAuthenticationUser));
 		this.user$ = this.authenticationQuery.user$;
 	}
 

@@ -3,7 +3,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-import { akitaProviders } from "./app/shared/akita/persist-state";
+import { akitaProviders } from "./app/shared/store/app-store.module";
 
 if (environment.production) {
   enableProdMode();

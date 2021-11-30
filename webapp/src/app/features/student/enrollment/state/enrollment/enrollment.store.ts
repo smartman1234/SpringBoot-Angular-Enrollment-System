@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { EntityState, EntityStore, StoreConfig } from "@datorama/akita";
 import { Enrollment } from "./enrollment.model";
-import { EnrollmentId } from "../../../models/enrollment.id.model";
+import { EnrollmentId } from "../enrollment-id/enrollment-id.model";
 
 export interface EnrollmentState extends EntityState<Enrollment> {
 	enrollmentIds: Array<EnrollmentId>,

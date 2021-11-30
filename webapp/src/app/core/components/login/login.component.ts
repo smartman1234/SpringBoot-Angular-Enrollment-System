@@ -16,7 +16,6 @@ export class LoginComponent implements OnInit {
 	constructor(
 		private formBuilder: FormBuilder,
 		private authenticationService: AuthenticationService,
-		// private store: Store<AppState>,
 	) {
 	}
 
@@ -34,9 +33,6 @@ export class LoginComponent implements OnInit {
 	}
 
 	onSubmit() {
-		// this.store.dispatch(
-		// 	login({ username: this.username.value, password: this.password.value }),
-		// );
 		this.authenticationService.login(this.username.value, this.password.value);
 	}
 

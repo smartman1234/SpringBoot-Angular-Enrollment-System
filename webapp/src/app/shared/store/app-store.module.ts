@@ -1,22 +1,18 @@
 import { NgModule } from "@angular/core";
-import { EffectsModule } from "@ngrx/effects";
-import { ActionReducerMap, StoreModule } from "@ngrx/store";
 import { environment } from "../../../environments/environment";
-import { StoreDevtoolsModule } from "@ngrx/store-devtools";
-import { metaReducers } from "./meta.reducer";
 import { AkitaNgDevtools } from "@datorama/akita-ngdevtools";
+import { persistState } from "@datorama/akita";
 
-export interface AppState {
-}
+const storage = persistState({
+	key: "akitaAuth",
+	include: ["authentication"],
+});
 
-export const reducers: ActionReducerMap<AppState> = {};
+export const akitaProviders = [{ provide: 'persistStorage', useValue: storage }];
 
 @NgModule({
 	declarations: [],
 	imports: [
-		StoreModule.forRoot(reducers, { metaReducers }),
-		EffectsModule.forRoot([]),
-		environment.production ? [] : StoreDevtoolsModule.instrument(),
 		environment.production ? [] : AkitaNgDevtools.forRoot(),
 	],
 	providers: [],

@@ -11,12 +11,10 @@ export class LogoutComponent implements OnInit {
 
 	constructor(
 		private authenticationService: AuthenticationService,
-		// private store: Store<AppState>,
 	) {
 	}
 
 	onLogout() {
-		// this.store.dispatch(logout());
 		this.authenticationService.logout();
 	}
 

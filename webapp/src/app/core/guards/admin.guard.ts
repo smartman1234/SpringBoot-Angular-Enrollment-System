@@ -32,7 +32,6 @@ export class AdminGuard implements CanActivate, CanActivateChild, CanLoad {
 	constructor(
 		private authenticationService: AuthenticationService,
 		private authenticationQuery: AuthenticationQuery,
-		// private store: Store<AppState>,
 		private router: Router,
 		private errorNotificationService: ErrorNotificationService,
 	) {
@@ -61,16 +60,6 @@ export class AdminGuard implements CanActivate, CanActivateChild, CanLoad {
 	}
 
 	isAdmin(url: string): boolean {
-		// this.store.pipe(
-		// 	select(selectExpiry),
-		// 	take(1),
-		// ).subscribe(expiry => this.userExpiry = expiry);
-		//
-		// this.store.pipe(
-		// 	select(selectAuthorities),
-		// 	take(1),
-		// ).subscribe(authorities => this.authorities = authorities);
-
 		this.authenticationQuery.expiry$.pipe(
 			take(1),
 		).subscribe(expiry => this.userExpiry = expiry);

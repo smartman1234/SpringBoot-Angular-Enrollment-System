@@ -1,4 +1,4 @@
-import { Section } from "../../../models/section.model";
+import { Section } from "./section.model";
 
 export interface CourseSection {
 	courseCode: string,

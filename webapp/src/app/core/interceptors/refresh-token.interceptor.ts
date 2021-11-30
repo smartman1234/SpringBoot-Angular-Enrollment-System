@@ -20,7 +20,6 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
 		private loadingService: LoadingService,
 		private errorNotificationService: ErrorNotificationService,
 		private router: Router,
-		// private store: Store,
 	) {
 	}
 
@@ -49,7 +48,6 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
 			return this.authenticationService.refresh().pipe(
 				switchMap(() => {
 					let expiry = Date.now() + Number(this.cookieService.get("REFRESH-TOKEN-TTL")) * 1000;
-					// this.store.dispatch(refreshSuccess({ expiry }));
 					this.authenticationService.refreshSuccess(expiry);
 
 					// Upon successful token refreshing, Spring security issues new XSRF-TOKEN cookie as replacement.
@@ -65,7 +63,6 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
 				}),
 				catchError(errorResponse => {
 					if (errorResponse instanceof HttpErrorResponse && errorResponse.status === 401) {
-						// this.store.dispatch(refreshFailReset());
 						this.authenticationService.refreshFailReset();
 						this.authenticationService.redirectUrl = this.router.url
 							.split("?")[0]
@@ -81,8 +78,6 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
 					return throwError(errorResponse);
 				}),
 				finalize(() => {
-					// this.store.dispatch(decreaseRequest());
-					// this.store.dispatch(loadingOff());
 					this.loadingService.decreaseRequest();
 					this.loadingService.loadingOff();
 					this.isRefreshTokenProcessing = false;

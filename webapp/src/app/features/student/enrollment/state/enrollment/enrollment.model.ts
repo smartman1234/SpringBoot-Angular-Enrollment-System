@@ -1,4 +1,4 @@
-import { SectionBase } from "../../../models/section.model";
+import { SectionBase } from "../../../search/state/section/section.model";
 
 export interface Enrollment extends SectionBase {
 	studentId: string,

@@ -42,7 +42,7 @@
 				<div *appVar="{isSmallScreen: 'ltMd' | matchMedia | async} as media">
 					<div *ngIf="!media.isSmallScreen">
 						<table mat-table [dataSource]="enrollments" [trackBy]="trackEnrollment"
-							   class="mat-elevation-z8">
+							   class="table mat-elevation-z8">
 							<!-- Course and Section Column -->
 							<ng-container matColumnDef="section">
 								<th mat-header-cell *matHeaderCellDef>Course & Section</th>

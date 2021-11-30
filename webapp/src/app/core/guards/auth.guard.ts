@@ -30,7 +30,6 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
 	constructor(
 		private authenticationService: AuthenticationService,
 		private authenticationQuery: AuthenticationQuery,
-		// private store: Store<AppState>,
 		private router: Router,
 		private errorNotificationService: ErrorNotificationService,
 	) {
@@ -59,10 +58,6 @@ export class AuthGuard implements CanActivate, CanActivateChild, CanLoad {
 	}
 
 	isLoggedIn(url: string): boolean {
-		// this.store.pipe(
-		// 	select(selectExpiry),
-		// 	take(1),
-		// ).subscribe(expiry => this.userExpiry = expiry);
 		this.authenticationQuery.expiry$.pipe(
 			take(1),
 		).subscribe(expiry => this.userExpiry = expiry);

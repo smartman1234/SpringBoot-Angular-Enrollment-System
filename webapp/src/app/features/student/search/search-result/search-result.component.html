@@ -12,7 +12,7 @@
 					<mat-icon>info</mat-icon>
 				</button>
 				<ng-template matExpansionPanelContent>
-					<table mat-table [dataSource]="course.sections" [trackBy]="trackSection">
+					<table class="table" mat-table [dataSource]="course.sections" [trackBy]="trackSection">
 						<!-- Section Column -->
 						<ng-container matColumnDef="section">
 							<th mat-header-cell *matHeaderCellDef>Section</th>

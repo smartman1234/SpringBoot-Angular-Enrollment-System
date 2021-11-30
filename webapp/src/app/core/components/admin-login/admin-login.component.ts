@@ -16,7 +16,6 @@ export class AdminLoginComponent implements OnInit {
 	constructor(
 		private formBuilder: FormBuilder,
 		private authenticationService: AuthenticationService,
-		// private store: Store<AppState>,
 	) {
 	}
 
@@ -39,14 +38,6 @@ export class AdminLoginComponent implements OnInit {
 	}
 
 	onSubmit() {
-		// this.store.dispatch(
-		// 	adminLogin({
-		// 		username: this.username.value,
-		// 		password: this.password.value,
-		// 		secretKey: this.secretKey.value
-		// 	}),
-		// );
-
 		this.authenticationService.adminLogin(this.username.value, this.password.value, this.secretKey.value);
 	}
 

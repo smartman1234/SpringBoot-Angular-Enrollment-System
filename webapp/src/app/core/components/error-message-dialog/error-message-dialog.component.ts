@@ -10,7 +10,6 @@ import { ErrorLogQuery } from "../../state/error-log/error-log.query";
 export class ErrorMessageDialogComponent implements OnInit {
 
 	constructor(
-		// public store: Store<AppState>,
 		private errorLogQuery: ErrorLogQuery,
 	) {
 	}
@@ -18,7 +17,6 @@ export class ErrorMessageDialogComponent implements OnInit {
 	errorMessages$!: Observable<string[]>;
 
 	ngOnInit(): void {
-		// this.errorMessages$ = this.store.pipe(select(selectErrorMessages));
 		this.errorMessages$ = this.errorLogQuery.errorMessages$;
 	}
 

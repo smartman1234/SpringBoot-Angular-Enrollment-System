@@ -7,6 +7,7 @@ import { SearchModule } from "./search/search.module";
 import { EnrollmentModule } from "./enrollment/enrollment.module";
 import { ProfileModule } from "./profile/profile.module";
 import { DashboardComponent } from "./dashboard/dashboard.component";
+import { StudentComponent } from './student.component';
 
 @NgModule({
 	imports: [
@@ -15,23 +16,11 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
 		SearchModule,
 		EnrollmentModule,
 		ProfileModule,
-		// StudentStoreModule,
 		StudentRoutingModule,
 	],
 	declarations: [
 		DashboardComponent,
-		// SearchComponent,
-		// SearchResultListComponent,
-		// ScheduleComponent,
-		// ShoppingCartComponent,
-		// ProfileComponent,
-		// CourseInfoDialogComponent,
-		// EnrollmentListComponent,
-		// EnrollWaitListDialogComponent,
-		// ResultCardComponent,
-		// SearchResultPageComponent,
-		// SearchResultSliceComponent,
-		// ResultAccordionComponent,
+  StudentComponent,
 	],
 })
 export class StudentModule {
