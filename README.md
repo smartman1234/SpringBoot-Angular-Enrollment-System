@@ -24,7 +24,7 @@ Todo
 
 - Angular
 - Angular Material
-- Ngrx
+- Akita
 
 ## Screenshot
 ![screenshot1](https://i.imgur.com/Njkw7OA.png?1)

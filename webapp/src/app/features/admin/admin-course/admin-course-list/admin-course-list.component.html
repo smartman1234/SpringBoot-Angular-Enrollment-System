@@ -6,7 +6,7 @@
 			<form id="subjectForm" [formGroup]="subjectForm">
 				<mat-form-field class="admin-form-field" appearance="outline">
 					<mat-label>Subject</mat-label>
-					<mat-select formControlName="subject" (selectionChange)="getCoursePage()">
+					<mat-select formControlName="subject" (selectionChange)="getCoursePage({page: 0})">
 						<mat-option *ngFor="let subject of subjects$ | async" [value]="subject">
 							{{subject.subjectName}}
 						</mat-option>

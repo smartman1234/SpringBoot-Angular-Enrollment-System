@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+	production: true,
+	homepage: "/student/dashboard",
+	adminHomepage: "/admin/dashboard",
 };

@@ -49,7 +49,7 @@
 				<div>
 					<mat-form-field class="admin-form-field" appearance="outline">
 						<mat-label>Section</mat-label>
-						<mat-select formControlName="section" (selectionChange)="getEnrollmentPage()">
+						<mat-select formControlName="section" (selectionChange)="getEnrollmentPage({page: 0})">
 							<mat-option *ngFor="let section of sections$ | async" [value]="section">
 								{{section.sectionNumber}}
 							</mat-option>

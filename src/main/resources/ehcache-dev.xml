@@ -48,29 +48,28 @@
         </expiry>
         <resources>
             <heap unit="entries">5000</heap>
-            <offheap unit="MB">20</offheap>
         </resources>
     </cache-template>
 
-<!--    <cache-template name="large">-->
-<!--        <key-type>java.lang.Object</key-type>-->
-<!--        <value-type>java.lang.Object</value-type>-->
-<!--        <expiry>-->
-<!--            <ttl unit="seconds">600</ttl>-->
-<!--        </expiry>-->
-<!--        <resources>-->
-<!--            <heap unit="entries">10000</heap>-->
-<!--            <offheap unit="MB">20</offheap>-->
-<!--            <disk persistent="true" unit="MB">50</disk>-->
-<!--        </resources>-->
-<!--    </cache-template>-->
+    <cache-template name="large">
+        <key-type>java.lang.Object</key-type>
+        <value-type>java.lang.Object</value-type>
+        <expiry>
+            <ttl unit="seconds">600</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">10000</heap>
+            <offheap unit="MB">20</offheap>
+            <disk persistent="true" unit="MB">50</disk>
+        </resources>
+    </cache-template>
 
-    <cache alias="default-query-results-region" uses-template="medium"/>
+    <cache alias="default-query-results-region" uses-template="default"/>
     <cache alias="default-update-timestamps-region" uses-template="default"/>
 
     <cache alias="io.spring.enrollmentsystem.feature.user.User" uses-template="default"/>
     <cache alias="io.spring.enrollmentsystem.feature.user.User.authorities" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.authority.Authority" uses-template="small"/>
+    <cache alias="io.spring.enrollmentsystem.feature.authority.Authority" uses-template="default"/>
     <cache alias="io.spring.enrollmentsystem.feature.authority.Authority.users" uses-template="default"/>
 
     <cache alias="io.spring.enrollmentsystem.feature.college.College" uses-template="small"/>
@@ -83,17 +82,17 @@
     <cache alias="io.spring.enrollmentsystem.feature.subject.Subject" uses-template="small"/>
     <cache alias="io.spring.enrollmentsystem.feature.subject.Subject.listOfCourse" uses-template="small"/>
     <cache alias="io.spring.enrollmentsystem.feature.course.Course" uses-template="small"/>
-    <cache alias="io.spring.enrollmentsystem.feature.course.Course.listOfSection" uses-template="small"/>
+    <cache alias="io.spring.enrollmentsystem.feature.course.Course.listOfSection" uses-template="medium"/>
     <cache alias="io.spring.enrollmentsystem.feature.term.Term" uses-template="small"/>
-    <cache alias="io.spring.enrollmentsystem.feature.term.Term.listOfSection" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.room.Room" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.room.Room.listOfSection" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.instructor.Instructor" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.instructor.Instructor.listOfSection" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.section.Section" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.section.Section.listOfEnrollment" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.student.Student" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.student.Student.listOfEnrollment" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.enrollment.Enrollment" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.user.UserProfile" uses-template="default"/>
+    <cache alias="io.spring.enrollmentsystem.feature.term.Term.listOfSection" uses-template="medium"/>
+    <cache alias="io.spring.enrollmentsystem.feature.room.Room" uses-template="small"/>
+    <cache alias="io.spring.enrollmentsystem.feature.room.Room.listOfSection" uses-template="medium"/>
+    <cache alias="io.spring.enrollmentsystem.feature.instructor.Instructor" uses-template="medium"/>
+    <cache alias="io.spring.enrollmentsystem.feature.instructor.Instructor.listOfSection" uses-template="medium"/>
+    <cache alias="io.spring.enrollmentsystem.feature.section.Section" uses-template="medium"/>
+    <cache alias="io.spring.enrollmentsystem.feature.section.Section.listOfEnrollment" uses-template="medium"/>
+    <cache alias="io.spring.enrollmentsystem.feature.student.Student" uses-template="medium"/>
+    <cache alias="io.spring.enrollmentsystem.feature.student.Student.listOfEnrollment" uses-template="medium"/>
+    <cache alias="io.spring.enrollmentsystem.feature.enrollment.Enrollment" uses-template="medium"/>
+    <cache alias="io.spring.enrollmentsystem.feature.user.UserProfile" uses-template="medium"/>
 </config>

@@ -6,7 +6,7 @@
 			<form id="collegeForm" [formGroup]="collegeForm">
 				<mat-form-field class="admin-form-field" appearance="outline">
 					<mat-label>College</mat-label>
-					<mat-select formControlName="college" (selectionChange)="getDepartmentPage()">
+					<mat-select formControlName="college" (selectionChange)="getDepartmentPage({page: 0})">
 						<mat-option *ngFor="let college of colleges$ | async" [value]="college">
 							{{college.collegeName}}
 						</mat-option>

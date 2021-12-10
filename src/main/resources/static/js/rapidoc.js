@@ -46,15 +46,15 @@ window.addEventListener("DOMContentLoaded", (event) => {
     });
 
     document.getElementById("btn1").addEventListener("click", () => {
-        rapidocEl.setAttribute("spec-url", "https://localhost:8443/v3/api-docs/enrollmentsystem-user")
+        rapidocEl.setAttribute("spec-url", "http://localhost:8080/v3/api-docs/enrollmentsystem-user")
     });
 
     document.getElementById("btn2").addEventListener("click", () => {
-        rapidocEl.setAttribute("spec-url", "https://localhost:8443/v3/api-docs/enrollmentsystem-admin")
+        rapidocEl.setAttribute("spec-url", "http://localhost:8080/v3/api-docs/enrollmentsystem-admin")
     });
 
     document.getElementById("btn3").addEventListener("click", () => {
-        rapidocEl.setAttribute("spec-url", "https://localhost:8443/v3/api-docs")
+        rapidocEl.setAttribute("spec-url", "http://localhost:8080/v3/api-docs")
     });
 
     document.getElementById("btn4").addEventListener("click", () => {

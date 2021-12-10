@@ -6,7 +6,7 @@
 			<form id="authoritiesForm" [formGroup]="authoritiesForm">
 				<mat-form-field class="admin-form-field" appearance="outline">
 					<mat-label>Role</mat-label>
-					<mat-select formControlName="authorities" multiple (selectionChange)="getUserPage()">
+					<mat-select formControlName="authorities" multiple (selectionChange)="getUserPage({page: 0})">
 						<mat-select-trigger>
 							{{authorities.value ? authorities.value[0] ? authorities.value[0].role : "" : ""}}
 							<span *ngIf="authorities.value?.length > 1" class="admin-additional-selection">

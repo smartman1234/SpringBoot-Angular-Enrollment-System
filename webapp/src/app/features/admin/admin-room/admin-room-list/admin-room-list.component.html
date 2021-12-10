@@ -6,7 +6,7 @@
 			<form id="buildingForm" [formGroup]="buildingForm">
 				<mat-form-field class="admin-form-field" appearance="outline">
 					<mat-label>Building</mat-label>
-					<mat-select formControlName="building" (selectionChange)="getRoomPage()">
+					<mat-select formControlName="building" (selectionChange)="getRoomPage({page: 0})">
 						<mat-option *ngFor="let building of buildings$ | async" [value]="building">
 							{{building.buildingName}}
 						</mat-option>

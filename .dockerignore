@@ -1,7 +1,7 @@
 ######################## Spring boot ###################
-### miscellaneous ###
-Dockerfile.postgresql
-docker-compose.postgres-only.yml
+### misc ###
+Dockerfile.*
+docker-compose.*
 /spring-boot-ehcache/
 src/main/java/io/spring/enrollmentsystem/common/bootstrap
 src/main/resources/hotswap-agent.properties
@@ -93,5 +93,3 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-
-

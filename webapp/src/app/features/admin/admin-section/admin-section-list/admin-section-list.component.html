@@ -7,7 +7,7 @@
 				<div>
 					<mat-form-field class="admin-form-field" appearance="outline">
 						<mat-label>Term</mat-label>
-						<mat-select formControlName="term" (selectionChange)="getSectionPage()">
+						<mat-select formControlName="term" (selectionChange)="getSectionPage({page: 0})">
 							<mat-option *ngFor="let term of terms$ | async" [value]="term">
 								{{term.termName}}
 							</mat-option>
@@ -21,7 +21,7 @@
 				<div>
 					<mat-form-field class="admin-form-field" appearance="outline">
 						<mat-label>Subject</mat-label>
-						<mat-select formControlName="subject" (selectionChange)="getSectionPage()">
+						<mat-select formControlName="subject" (selectionChange)="getSectionPage({page: 0})">
 							<mat-option *ngFor="let subject of subjects$ | async" [value]="subject">
 								{{subject.subjectAcronym}} - {{subject.subjectName}}
 							</mat-option>

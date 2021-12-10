@@ -62,20 +62,19 @@
         </dependency>
 
 
-        <!-- Jasypt-->
-        <dependency>
-            <groupId>com.github.ulisesbocchio</groupId>
-            <artifactId>jasypt-spring-boot-starter</artifactId>
-            <version>${jasypt.version}</version>
-        </dependency>
-
-
         <!-- Devtools-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Spring dotenv -->
+        <dependency>
+            <groupId>me.paulschwarz</groupId>
+            <artifactId>spring-dotenv</artifactId>
+            <version>2.4.1</version>
         </dependency>
 
 
@@ -202,20 +201,11 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
 
     <build>
         <plugins>
-
-            <!-- jasypt maven plugin to encrypt application.properties from terminal-->
-            <!--            <plugin>-->
-            <!--                <groupId>com.github.ulisesbocchio</groupId>-->
-            <!--                <artifactId>jasypt-maven-plugin</artifactId>-->
-            <!--                <version>${jasypt.version}</version>-->
-            <!--            </plugin>-->
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -252,6 +242,12 @@
                     <target>${java.version}</target>
 
                     <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                            <version>${parent.version}</version>
+                        </path>
+
                         <!-- needed for generating Hibernate meta model classes-->
                         <path>
                             <groupId>org.hibernate</groupId>
@@ -288,27 +284,6 @@
 
                 </configuration>
             </plugin>
-
-
-            <!-- Plugin to enable Hibernate bytecode enhancement for lazy loading.
-            Combining with @LazyToOne(LazyToOneOption.NO_PROXY) on the parent side of
-            @OneToOne relationship to enable lazy loading (By default, lazy
-            loading does not work for parent side of @OneToOne) -->
-            <!--            <plugin>-->
-            <!--                <groupId>org.hibernate.orm.tooling</groupId>-->
-            <!--                <artifactId>hibernate-enhance-maven-plugin</artifactId>-->
-            <!--                <version>${hibernate.version}</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <configuration>-->
-            <!--                            <enableLazyInitialization>true</enableLazyInitialization>-->
-            <!--                        </configuration>-->
-            <!--                        <goals>-->
-            <!--                            <goal>enhance</goal>-->
-            <!--                        </goals>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
         </plugins>
     </build>
 
