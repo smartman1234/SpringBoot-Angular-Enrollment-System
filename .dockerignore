@@ -10,7 +10,7 @@ src/main/java/io/spring/enrollmentsystem/Main.java
 src/main/resources/db/changelog/versions
 src/main/resources/db/changelog/liquibase.properties
 src/main/resources/*.sql
-*.sql
+!*.sql
 webapp/*.pem
 
 ### environment variables ###

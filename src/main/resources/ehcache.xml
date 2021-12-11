@@ -65,13 +65,13 @@
         </resources>
     </cache-template>
 
-    <cache alias="default-query-results-region" uses-template="default"/>
-    <cache alias="default-update-timestamps-region" uses-template="default"/>
+    <cache alias="default-query-results-region" uses-template="medium"/>
+    <cache alias="default-update-timestamps-region" uses-template="medium"/>
 
-    <cache alias="io.spring.enrollmentsystem.feature.user.User" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.user.User.authorities" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.authority.Authority" uses-template="default"/>
-    <cache alias="io.spring.enrollmentsystem.feature.authority.Authority.users" uses-template="default"/>
+    <cache alias="io.spring.enrollmentsystem.feature.user.User" uses-template="medium"/>
+    <cache alias="io.spring.enrollmentsystem.feature.user.User.authorities" uses-template="small"/>
+    <cache alias="io.spring.enrollmentsystem.feature.authority.Authority" uses-template="small"/>
+    <cache alias="io.spring.enrollmentsystem.feature.authority.Authority.users" uses-template="medium"/>
 
     <cache alias="io.spring.enrollmentsystem.feature.college.College" uses-template="small"/>
     <cache alias="io.spring.enrollmentsystem.feature.college.College.listOfDepartment" uses-template="small"/>

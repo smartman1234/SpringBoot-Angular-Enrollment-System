@@ -1,7 +1,7 @@
 ######################## Spring boot ###################
 ### miscellaneous ###
-Dockerfile.postgresql
-docker-compose.postgres-only.yml
+Dockerfile.db-build
+docker-compose.db-build.yml
 /spring-boot-ehcache/
 src/main/java/io/spring/enrollmentsystem/common/bootstrap
 src/main/resources/hotswap-agent.properties

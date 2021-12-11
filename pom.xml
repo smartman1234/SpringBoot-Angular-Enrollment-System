@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.spring</groupId>
     <artifactId>enrollment-system</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>enrollment-system</name>
     <description>Course Enrollment System project using Spring Boot</description>
 
