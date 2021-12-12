@@ -36,13 +36,13 @@ docker-compose build
 ```bazaar
 docker-compose up -d
 ```
-**Login page**: http://localhost:4200
+**Login page**: <a href="http://localhost:4200" target="_blank">http://localhost:4200</a>
 
 username: admin1 
 
 password: adminpass
 
-**Admin login page**: http://localhost:4200/admin/login
+**Admin login page**: [http://localhost:4200/admin/login](http://localhost:4200/admin/login)
 
 username: admin
 
@@ -50,7 +50,7 @@ password: adminpass
 
 secret-key: Ho3ELy8i-r1oEJohreVQfB2BcgxikhZhl8uAc_q-gjQ=
 
-**OpenAPI**: http://localhost:8080/rapidoc.html
+**OpenAPI**: [http://localhost:8080/rapidoc.html](http://localhost:8080/rapidoc.html)
 
 ## Screenshot
 ![screenshot1](https://i.imgur.com/Njkw7OA.png?1)
