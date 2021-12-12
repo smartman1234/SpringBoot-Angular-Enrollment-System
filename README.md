@@ -21,12 +21,44 @@ Todo
 - Ehcache
 - Springdoc
 - Rapidoc
+- Docker
+
 
 - Angular
 - Angular Material
 - Akita
+- Nginx
+
+## Run docker
+```bazaar
+docker-compose build
+```
+```bazaar
+docker-compose up -d
+```
+**Login page**: http://localhost:4200
+
+username: admin1 
+
+password: adminpass
+
+**Admin login page**: http://localhost:4200/admin/login
+
+username: admin
+
+password: adminpass
+
+secret-key: Ho3ELy8i-r1oEJohreVQfB2BcgxikhZhl8uAc_q-gjQ=
+
+**OpenAPI**: http://localhost:8080/rapidoc.html
 
 ## Screenshot
 ![screenshot1](https://i.imgur.com/Njkw7OA.png?1)
 ![screenshot1](https://i.imgur.com/LEAoecy.png?1)
 ![screenshot1](https://i.imgur.com/OJaBP6Z.png?1)
+
+### Admin dashboard
+![screenshot1](https://i.imgur.com/xMhLPmn.png?1)
+
+### OpenAPI
+![screenshot1](https://i.imgur.com/JTkGOrW.png?1)
