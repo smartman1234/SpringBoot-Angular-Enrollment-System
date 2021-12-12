@@ -22,7 +22,7 @@ services:
       - REDIS_HOST=redis
       - POSTGRES_HOST=postgresql
     depends_on:
-      - myredis
+      - redis
       - postgresql
   postgresql:
     image: kle97/postgres-enrollment-system:14-alpine

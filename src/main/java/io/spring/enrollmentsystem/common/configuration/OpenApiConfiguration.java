@@ -184,7 +184,7 @@ public class OpenApiConfiguration {
                         .getContent()
                         .get("application/json")
                         .addExamples("", new Example()
-                                .value("{\n  \"username\": \"" + systemProperties.getAdminUserName() + "\",\n"
+                                .value("{\n  \"username\": \"" + systemProperties.getAdminUserName() + "1" + "\",\n"
                                                + "  \"password\": \"" + systemProperties.getAdminPassword() + "\"\n}")));
     }
 

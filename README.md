@@ -38,9 +38,9 @@ docker-compose up -d
 ```
 **Login page**: [http://localhost:4200](http://localhost:4200)
 
-username: admin1 
+username: jimflener 
 
-password: adminpass
+password: pass123
 
 **Admin login page**: [http://localhost:4200/admin/login](http://localhost:4200/admin/login)
 

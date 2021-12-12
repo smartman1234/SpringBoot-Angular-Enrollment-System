@@ -68,11 +68,9 @@ public class AuthenticationService {
         try {
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
-//            if (isAdmin(authentication)) {
-//                this.checkAdmin(authentication, secretKey);
-//            }
-            if (secretKey != null) {
-                this.checkAdmin(authentication, secretKey);
+            UUID id = ((User) authentication.getPrincipal()).getId();
+            if (id != null && adminRepository.existsById(id)) {
+                this.checkAdmin(id, secretKey);
             }
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -138,9 +136,7 @@ public class AuthenticationService {
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(ADMIN.getName()));
     }
 
-    private void checkAdmin(Authentication authentication, String secretKey) {
-        UUID id = ((User) authentication.getPrincipal()).getId();
-//        Admin admin = adminService.getAdminById(id);
+    private void checkAdmin(UUID id, String secretKey) {
         Admin admin = adminRepository.findById(id).orElseThrow(
                 () -> new BadCredentialsException("Admin id not found!"));
         if (secretKey == null || !passwordEncoder.matches(secretKey, admin.getSecretKey())) {
