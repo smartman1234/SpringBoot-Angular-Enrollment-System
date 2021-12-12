@@ -207,6 +207,24 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <excludes>
+                        <exclude>io/spring/enrollmentsystem/Main.java</exclude>
+                        <exclude>io/spring/enrollmentsystem/common/bootstrap/*</exclude>
+                        <exclude>**/hotswap-agent.properties</exclude>
+                        <exclude>**/*.sql</exclude>
+                        <exclude>**/*.p12</exclude>
+                        <exclude>**/db/changelog/versions/*</exclude>
+                        <exclude>**/db/changelog/liquibase.properties</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${project.parent.version}</version>

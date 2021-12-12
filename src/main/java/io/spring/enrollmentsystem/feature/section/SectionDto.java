@@ -139,7 +139,7 @@ public class SectionDto {
     private String courseName;
 
     @JsonView(BaseView.VeryHigh.class)
-    @Schema(example = "Fall Semester 2021")
+    @Schema(example = "Spring Semester 2022")
     @QuerySelectHint(Section_.TERM + KEY_SEPARATOR + Term_.TERM_NAME)
     private String termName;
 

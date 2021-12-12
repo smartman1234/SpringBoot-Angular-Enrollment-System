@@ -214,7 +214,7 @@ public class OpenApiConfiguration {
         parameterList.add(new Parameter().in(in).required(true)
                                   .name(Section_.TERM + dot + Term_.TERM_NAME + "["
                                                 + EQUALS_IGNORE_CASE + "]")
-                                  .schema(new Schema<String>().type("string").example("fall semester 2021")));
+                                  .schema(new Schema<String>().type("string").example("spring semester 2022")));
         parameterList.add(new Parameter().in(in).required(true)
                                   .name(Section_.COURSE + dot + Course_.SUBJECT + dot + Subject_.SUBJECT_ACRONYM
                                                 + "[" + EQUALS_IGNORE_CASE + "]")
@@ -331,7 +331,7 @@ public class OpenApiConfiguration {
                 .example("abm");
         Parameter section2 = new Parameter().in(in).schema(schema).required(false)
                 .name(Section_.TERM + dot + Term_.TERM_NAME + "[" + EQUALS_IGNORE_CASE + "]")
-                .example("fall semester 2021");
+                .example("spring semester 2022");
         Parameter section3 = new Parameter().in(in).schema(schema).required(false)
                 .name(Section_.ROOM + dot + Room_.ROOM_NUMBER)
                 .example("3");
@@ -364,7 +364,7 @@ public class OpenApiConfiguration {
                 .name(Enrollment_.SECTION + dot + Section_.ID);
         Parameter enrollment3 = new Parameter().in(in).schema(schema).required(false)
                 .name(Enrollment_.SECTION + dot + Section_.TERM + dot + Term_.TERM_NAME)
-                .example("Fall Semester 2021");
+                .example("Spring Semester 2022");
         Parameter enrollment4 = new Parameter().in(in).schema(schema).required(false)
                 .name(Enrollment_.STUDENT + dot + Student_.USER + dot + User_.FIRST_NAME)
                 .example("Nathaniel");

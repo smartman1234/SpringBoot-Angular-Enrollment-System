@@ -6,12 +6,12 @@ import org.springframework.util.MultiValueMap;
 /**
  * This service converts parameters map to JPA specifications
  * Query parameter examples:
- * 1. /sections/?term.termName[eqIc]=Fall Semester 2021
+ * 1. /sections/?term.termName[eqIc]=Spring Semester 2022
  * &course.subject.subjectAcronym[eqIc]=ACC&sectionStatus[eqIc]=OPEN
- * 2. /sections/?section.term.termName[eqIc]=Fall Semester 2021
+ * 2. /sections/?section.term.termName[eqIc]=Spring Semester 2022
  * &enrollmentStatus[inIc]=Enrolled,WaitList
  * Special filter with 'OR' operator:
- * /sections?term.termName[eqIc]=Fall Semester 2021
+ * /sections?term.termName[eqIc]=Spring Semester 2022
  * &course.subject.subjectAcronym[eqIc]=ACC
  * &specialFilter=meetingDays[likeIc]=Mo[or]meetingDays[likeIc]=We
  */

@@ -25,7 +25,7 @@ public class TermDto {
     private UUID id;
 
     @JsonView(BaseView.Low.class)
-    @Schema(example = "Fall Semester 2021")
+    @Schema(example = "Spring Semester 2022")
     @Size(max = 50)
     private String termName;
 

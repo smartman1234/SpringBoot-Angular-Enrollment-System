@@ -4,12 +4,12 @@ import { Observable } from "rxjs";
 import { environment } from "../../../environments/environment";
 
 @Injectable()
-export class BaseUrlInterceptor implements HttpInterceptor {
+export class ApiUrlInterceptor implements HttpInterceptor {
 
-	readonly baseUrl = environment.baseUrl;
+	readonly apiUrl = environment.apiUrl;
 
 	intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-		// request = request.clone({ url: `${this.baseUrl}${request.url}` })
+		// request = request.clone({ url: `${this.apiUrl}${request.url}` })
 		request = request.clone({ url: `/api/v1${request.url}` })
 		console.log(request.url);
 		console.log(request.params.toString());

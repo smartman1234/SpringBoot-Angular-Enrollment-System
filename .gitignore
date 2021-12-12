@@ -56,6 +56,11 @@ build/
 
 ### VS Code ###
 .vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
 
 
 ######################## Angular webapp ###################
@@ -81,6 +86,7 @@ chrome-profiler-events*.json
 *.sublime-workspace
 
 # misc
+/webapp/.angular/cache
 /webapp/.sass-cache
 /webapp/connect.lock
 /webapp/coverage
