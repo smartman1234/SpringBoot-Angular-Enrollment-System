@@ -36,7 +36,7 @@ docker-compose build
 ```bazaar
 docker-compose up -d
 ```
-**Login page**: <a href="http://localhost:4200" target="_blank">http://localhost:4200</a>
+**Login page**: [http://localhost:4200](http://localhost:4200)
 
 username: admin1 
 
