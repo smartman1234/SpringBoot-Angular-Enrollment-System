@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import static io.spring.enrollmentsystem.common.constant.SpecsConstant.EQUALS_IGNORE_CASE;
 import static io.spring.enrollmentsystem.common.constant.SpecsConstant.KEY_SEPARATOR;
 
 @RestController
@@ -110,16 +109,12 @@ public class SectionController {
     }
 
     private void validateParameters(MultiValueMap<String, String> parameters) {
-        if (!parameters.containsKey(Section_.TERM + "." + Term_.TERM_NAME
-                                            + "[" + EQUALS_IGNORE_CASE + "]")) {
-            throw new ValidationException("Parameter '" + Section_.TERM + "." + Term_.TERM_NAME + "["
-                                                  + EQUALS_IGNORE_CASE + "]" + "' is required!");
+        if (!parameters.containsKey(Section_.TERM + "." + Term_.TERM_NAME)) {
+            throw new ValidationException("Parameter '" + Section_.TERM + "." + Term_.TERM_NAME + " is required!");
         }
-        if (!parameters.containsKey(Section_.COURSE + "." + Course_.SUBJECT + "." + Subject_.SUBJECT_ACRONYM
-                                            + "[" + EQUALS_IGNORE_CASE + "]")) {
+        if (!parameters.containsKey(Section_.COURSE + "." + Course_.SUBJECT + "." + Subject_.SUBJECT_ACRONYM)) {
             throw new ValidationException("Parameter '" + Section_.COURSE + "." + Course_.SUBJECT
-                                                  + "." + Subject_.SUBJECT_ACRONYM + "["
-                                                  + EQUALS_IGNORE_CASE + "]" + "' is required!");
+                                                  + "." + Subject_.SUBJECT_ACRONYM + " is required!");
         }
     }
 }

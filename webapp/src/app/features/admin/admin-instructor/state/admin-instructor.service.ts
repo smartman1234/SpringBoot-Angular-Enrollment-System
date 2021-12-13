@@ -40,7 +40,7 @@ export class AdminInstructorService extends AbstractGenericCrudService<AdminInst
 
 	getAll(departmentName: string) {
 		let httpParams = new HttpParams()
-			.append(`department.departmentName[${QueryParamOperator.EQUALS_IGNORE_CASE}]`, departmentName);
+			.append(`department.departmentName`, departmentName);
 		const readAll$ = this.readAll(httpParams).pipe(tap(entities => {
 			this.adminInstructorStore.set(entities);
 		}));
@@ -53,7 +53,7 @@ export class AdminInstructorService extends AbstractGenericCrudService<AdminInst
 		this.pageable = { ...this.pageable, ...pageable };
 
 		let httpParams = new HttpParams({ fromObject: { ...this.pageable } })
-			.append(`department.departmentName[${QueryParamOperator.EQUALS_IGNORE_CASE}]`, this.departmentName);
+			.append(`department.departmentName`, this.departmentName);
 		this.readPage(httpParams).pipe(
 			tap(instructorPage => this.adminInstructorStore.update({ instructorPage })),
 		).subscribe();
@@ -64,7 +64,7 @@ export class AdminInstructorService extends AbstractGenericCrudService<AdminInst
 
 		if (departmentName) {
 			httpParams = httpParams
-				.append(`department.departmentName[${QueryParamOperator.EQUALS_IGNORE_CASE}]`, departmentName);
+				.append(`department.departmentName`, departmentName);
 		}
 
 		return this.readPage(httpParams);

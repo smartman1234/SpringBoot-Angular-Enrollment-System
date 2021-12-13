@@ -51,7 +51,7 @@ export class AdminSubjectService extends AbstractGenericCrudService<AdminSubject
 		this.pageable = { ...this.pageable, ...pageable };
 
 		let httpParams = new HttpParams({ fromObject: { ...this.pageable } })
-			.append(`department.departmentName[${QueryParamOperator.EQUALS_IGNORE_CASE}]`, this.departmentName);
+			.append(`department.departmentName`, this.departmentName);
 		this.readPage(httpParams).pipe(
 			tap(subjectPage => this.adminSubjectStore.update({ subjectPage })),
 		).subscribe();

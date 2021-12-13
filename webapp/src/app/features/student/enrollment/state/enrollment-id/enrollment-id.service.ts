@@ -34,7 +34,7 @@ export class EnrollmentIdService extends AbstractGenericCrudService<EnrollmentId
 
 	getEnrollmentIds(termName: string, studentId: string) {
 		const url = this.getUrlWithId(this.entityUrl + this.enrollmentIdsUrl, studentId);
-		const key = `section.term.termName[${QueryParamOperator.EQUALS_IGNORE_CASE}]`;
+		const key = `section.term.termName`;
 		this.http.get<Array<EnrollmentId>>(url, { ...this.httpOptions, params: { [key]: termName } }).pipe(
 			tap(enrollmentIds => this.enrollmentIdStore.set(enrollmentIds)),
 			catchError(errorResponse => {

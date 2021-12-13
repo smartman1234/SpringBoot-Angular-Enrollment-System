@@ -42,7 +42,7 @@ export class EnrollmentService extends AbstractGenericCrudService<Enrollment, st
 
 	getAll(enrollmentStatuses: EnrollmentStatus[], termName: string, studentId: string) {
 		let queryParams = new HttpParams()
-			.append(`section.term.termName[${QueryParamOperator.EQUALS_IGNORE_CASE}]`, termName)
+			.append(`section.term.termName`, termName)
 			.append(`enrollmentStatus[${QueryParamOperator.IN_IGNORE_CASE}]`, enrollmentStatuses.join(","));
 
 		console.log(studentId);

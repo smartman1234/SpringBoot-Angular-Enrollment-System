@@ -42,8 +42,8 @@ export class AdminSectionService extends AbstractGenericCrudService<AdminSection
 
 	getAll(termId: string, courseId: string) {
 		let httpParams = new HttpParams()
-			.append(`term.id[${QueryParamOperator.EQUALS_IGNORE_CASE}]`, termId)
-			.append(`course.id[${QueryParamOperator.EQUALS_IGNORE_CASE}]`, courseId);
+			.append(`term.id`, termId)
+			.append(`course.id`, courseId);
 
 		const readAll$ = this.readAll(httpParams).pipe(tap(entities => {
 			this.adminSectionStore.add(entities);
@@ -68,8 +68,8 @@ export class AdminSectionService extends AbstractGenericCrudService<AdminSection
 		}
 
 		let httpParams = new HttpParams({ fromObject: { ...this.pageable } })
-			.append(`term.termName[${QueryParamOperator.EQUALS_IGNORE_CASE}]`, this.termName)
-			.append(`course.subject.subjectAcronym[${QueryParamOperator.EQUALS_IGNORE_CASE}]`, this.subjectAcronym);
+			.append(`term.termName`, this.termName)
+			.append(`course.subject.subjectAcronym`, this.subjectAcronym);
 		this.readPage(httpParams).pipe(
 			tap(sectionPage => this.adminSectionStore.update({ sectionPage })),
 		).subscribe();

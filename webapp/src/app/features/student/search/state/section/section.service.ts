@@ -115,12 +115,12 @@ export class SectionService extends AbstractGenericCrudService<Section, string> 
 		let queryParams: QueryParams = {};
 
 		if (searchInput.term) {
-			const key = `term.termName[${QueryParamOperator.EQUALS_IGNORE_CASE}]`;
+			const key = `term.termName`;
 			queryParams[key] = searchInput.term;
 		}
 
 		if (searchInput.subject) {
-			const key = `course.subject.subjectAcronym[${QueryParamOperator.EQUALS_IGNORE_CASE}]`;
+			const key = `course.subject.subjectAcronym`;
 			queryParams[key] = searchInput.subject;
 		}
 
@@ -145,8 +145,8 @@ export class SectionService extends AbstractGenericCrudService<Section, string> 
 		}
 
 		if (searchInput.sectionStatusOpen) {
-			const key = `sectionStatus[${QueryParamOperator.EQUALS_IGNORE_CASE}]`;
-			queryParams[key] = "OPEN";
+			const key = `sectionStatus`;
+			queryParams[key] = "Open";
 		}
 
 		if (searchInput.meetingTimeStart && searchInput.meetingTimeStartQuery) {
