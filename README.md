@@ -2,7 +2,7 @@
 A course enrollment system using Spring Boot and Angular
 
 ## Demo
-Todo
+https://course-enrollment-system.herokuapp.com
 
 ## Features
 - Rest API
