@@ -1,9 +1,6 @@
 # Course Enrollment System (Spring Boot + Angular)
 A course enrollment system using Spring Boot and Angular
 
-## Demo
-https://course-enrollment-system.herokuapp.com
-
 ## Features
 - Rest API
 - Token based authentication (JWT)
